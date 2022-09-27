@@ -43,15 +43,15 @@ const NavBar = () => {
     return(
         <>
         <header className="flex flex-row items-center justify-between drop-shadow-md py-2 px-5 bg-white">
-            <div className="flex flex-row justify-center items-center cursor-pointer uppercase">
+        <a href="/Home" className="flex flex-row justify-center items-center cursor-pointer uppercase">
         <img
           className="w-6 h-6 object-contain cursor-pointer"
           src={chikwamaLogo}
           alt="Chikwama Logo"
         />
         <span>Chikwama</span>
-      </div>
-      <nav className="flex flex-row justify-center items-center list-none">
+      </a>
+      <nav className="flex flex-row justify-center items-center list-none px-6">
         <li className="cursor-pointer mr-3 hover:text-fuchsia-700">Pricing</li>
         <li className="cursor-pointer mr-3 hover:text-fuchsia-700">Docs</li>
         <li className="cursor-pointer mr-3 hover:text-fuchsia-700">{connectWalletButton()}</li>

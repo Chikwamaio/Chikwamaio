@@ -9,6 +9,7 @@ import { ethers } from 'ethers';
 const CashPoints = () => {
 
     const [data, getData] = useState([]);
+    const [isActive, setIsActive] = useState([]);
 
     const getCashPoints = async () => {
         const abi = cashPoints.abi;
@@ -26,11 +27,34 @@ const CashPoints = () => {
         {
           console.log('wallet connected');
     
-          let CashPointAddress = await cashPointsContract.keys(1);
-          console.log(CashPointAddress);
+          let NumberOfCashPointsTXN = await cashPointsContract.count();
+          let count = NumberOfCashPointsTXN.toNumber();
+          let cashPoints = new Array(count);
+          let active = new Array(count);
+          for(let i = 1; i <= count; i++)
+          {
+            let CashPointAddress = await cashPointsContract.keys(i);
+            console.log(CashPointAddress);
 
-          let getCashPoint = await cashPointsContract.getCashPoint(CashPointAddress);
-          getData(getCashPoint);
+            let getCashPoint = await cashPointsContract.getCashPoint(CashPointAddress);
+            let now = new Date();
+            let cpDate = new Date(getCashPoint._endTime);
+            if(cpDate >= now)
+            {
+                active.push(true);
+            }
+            else
+            {
+                active.push(false);
+            }
+
+            cashPoints.push(getCashPoint);
+            
+            
+          }
+          console.log(active);
+          setIsActive(active);
+          getData(cashPoints);
         }
        }
     
@@ -43,31 +67,52 @@ const CashPoints = () => {
         <NavBar/>
         <main className=' text-black container mx-auto px-6 pt-16 flex-1 text-left'>
             <h1 className='text-2xl text-slate-500 py-8' >Cash points:</h1>
-        <table class="table-auto py-12">
+        <table class="table-auto">
   <thead>
     <tr>
       <th>Name</th>
-      <th>Latitude</th>
-      <th>Longitude</th>
+      <th>City</th>
       <th>Phone number</th>
       <th>Currency</th>
       <th>Buy</th>
       <th>Sell</th>
       <th>End Time</th>
-      
-      <th>isActive</th>
+      <th>Status</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-    {data.map((items,i) =>(
-        <td>
-      {items.toString()}
-      </td>
-      ))}
+  {data?.map((items,i) =>(
+    <tr key={i}>
+    <td >
+      {items._name.toString()}
+    </td>
+    <td >
+      Blantyre
+    </td>
+    <td >
+      {items._phoneNumber.toString()}
+    </td>
+    <td >
+      {items._currency.toString()}
+    </td>
+    <td >
+      {items._buy.toString()}
+    </td>
+    <td >
+      {items._sell.toString()}
+    </td>
+    <td >
+      {items._endTime.toString()}
+    </td>
+    <td className={isActive[i]?'bg-green-800 text-white text-center py-2': 'bg-red-600 text-white text-center'} >
+      {isActive[i].toString()}
+    </td>
+    <td >
+      {}
+    </td>
     </tr>
    
-    
+   ))}
 
   </tbody>
 </table>
