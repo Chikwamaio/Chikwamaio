@@ -34,7 +34,6 @@ const CashPoints = () => {
           for(let i = 1; i <= count; i++)
           {
             let CashPointAddress = await cashPointsContract.keys(i);
-            console.log(CashPointAddress);
 
             let getCashPoint = await cashPointsContract.getCashPoint(CashPointAddress);
             let now = new Date();
@@ -52,7 +51,7 @@ const CashPoints = () => {
             
             
           }
-          console.log(active);
+
           setIsActive(active);
           getData(cashPoints);
         }
@@ -69,7 +68,7 @@ const CashPoints = () => {
             <h1 className='text-2xl text-slate-500 py-8' >Cash points:</h1>
         <table class="table-auto">
   <thead>
-    <tr>
+    <tr className='bg-slate-400' >
       <th>Name</th>
       <th>City</th>
       <th>Phone number</th>
@@ -84,7 +83,9 @@ const CashPoints = () => {
   {data?.map((items,i) =>(
     <tr key={i}>
     <td >
+        <a className='mx-3 underline-offset-2 hover:opacity-20 duration-150' href={"https://www.google.com/maps?q="+ethers.utils.formatEther(items._latitude)+","+ethers.utils.formatEther(items._longitude)}>
       {items._name.toString()}
+      </a>
     </td>
     <td >
       Blantyre
@@ -96,15 +97,15 @@ const CashPoints = () => {
       {items._currency.toString()}
     </td>
     <td >
-      {items._buy.toString()}
+      {ethers.utils.formatEther(items._buy)}
     </td>
     <td >
-      {items._sell.toString()}
+      {ethers.utils.formatEther(items._sell)}
     </td>
     <td >
       {items._endTime.toString()}
     </td>
-    <td className={isActive[i]?'bg-green-800 text-white text-center py-2': 'bg-red-600 text-white text-center'} >
+    <td className={isActive[i]?'bg-green-800 text-white text-center mx-3': 'bg-red-600 text-white text-center mx-3'} >
       {isActive[i].toString()}
     </td>
     <td >
