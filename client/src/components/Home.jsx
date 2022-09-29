@@ -9,17 +9,27 @@ import { useNavigate } from "react-router-dom";
 const Home = () => {
     const [count, setCount] = useState(0)
     const [revenue, setRevenue] = useState(0)
+    const [tokenBalance, setTokenBalance] = useState(0)
     const navigate = useNavigate();
-    const contractAddress = '0xb1DFF8DCD07d903780952aECD09Cb04CDcDC3BE7';
+    const contractAddress = '0x58501aB63580c7f72057CA0a2ee6715C2Ee27a87';
     const abi = cashPoints.abi;
     const [currentAccount, setCurrentAccount] = useState(null);
-    let NumberOfCashPoints
-
-    const checkWalletIsConnected = async () => {
+    let NumberOfCashPoints;
     const { ethereum } = window;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
+
+    const buyTokensHandler = async () => {
+        
+    
+        await cashPointsContract.withdraw(4900000000000000);
+          
+    }
+    const checkWalletIsConnected = async () => {
+    
+    const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
+    console.log(accounts[0]);
 
     if(!ethereum)
     {
@@ -29,13 +39,16 @@ const Home = () => {
     {
       console.log('wallet connected');
 
+      let tokenBalance = await cashPointsContract.balanceOf(accounts[0]);
+      setTokenBalance(ethers.utils.formatEther(tokenBalance));
+
       let NumberOfCashPointsTXN = await cashPointsContract.count();
       NumberOfCashPoints = NumberOfCashPointsTXN.toNumber();
       setCount(NumberOfCashPoints);
 
       provider.getBalance(contractAddress).then((balance) => {
         // convert a currency unit from wei to ether
-        const balanceInDai = ethers.utils.formatEther(balance)
+        const balanceInDai = ethers.utils.formatEther(balance);
         setRevenue(balanceInDai);
         console.log(`balance: ${balanceInDai} xDai`)
        })
@@ -63,12 +76,17 @@ const Home = () => {
       <div className='text-lg  float-left text-yellow-400 md:text-2xl lg:text-3xl py-2 px-4 md:py-4 md:px-10 lg:py-6 lg:px-12 bg-slate-800 bg-opacity-20 w-fit mx-auto mb-4 rounded-full'>
       US$ {revenue} Contract Balance
       </div>
-      <button onClick={goToCashPoints} className='text-lg float-left text-fuchsia-700 md:text-2xl lg:text-3xl py-2 px-4 md:py-4 md:px-10 lg:py-6 lg:px-12 bg-slate-800 bg-opacity-20 w-fit mx-auto mb-8 rounded-full hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700'>
+      <button onClick={goToCashPoints} className='text-lg float-left text-fuchsia-700 md:text-2xl lg:text-3xl py-2 px-4 md:py-4 md:px-10 lg:py-6 lg:px-12 bg-slate-800 bg-opacity-20 w-fit mx-auto mb-8 rounded-full hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 hover:py-5'>
       {count} Cash points
       </button>
       <div className='text-lg float-left text-yellow-400 md:text-2xl lg:text-3xl py-2 px-4 md:py-4 md:px-10 lg:py-6 lg:px-12 bg-slate-800 bg-opacity-20 w-fit mx-auto mb-8 rounded-full'>
       2% Transaction fee
       </div>
+      <div className='text-lg float-left text-yellow-400 md:text-2xl lg:text-3xl py-2 px-4 md:py-4 md:px-10 lg:py-6 lg:px-12 bg-slate-800 bg-opacity-20 w-fit mx-auto mb-8 rounded-full'>
+      {tokenBalance} CHK   Token Balance</div>
+      <button onClick={buyTokensHandler} className="text-white text-xl float-right bg-fuchsia-700 mx-20 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
+            Buy
+          </button>
       </main>
       <Footer/>
     </div>

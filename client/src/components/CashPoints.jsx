@@ -10,14 +10,21 @@ const CashPoints = () => {
 
     const [data, getData] = useState([]);
     const [isActive, setIsActive] = useState([]);
+    const abi = cashPoints.abi;
+    const { ethereum } = window;
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+    const contractAddress = '0x58501aB63580c7f72057CA0a2ee6715C2Ee27a87';
+    const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
+
+    const createCashPointHandler = async () => {
+        
+    
+        await cashPointsContract.addCashPoint();
+          
+    }
 
     const getCashPoints = async () => {
-        const abi = cashPoints.abi;
-        const { ethereum } = window;
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const contractAddress = '0xb1DFF8DCD07d903780952aECD09Cb04CDcDC3BE7';
-        const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
     
         if(!ethereum)
         {
@@ -80,14 +87,14 @@ const CashPoints = () => {
   </thead>
   <tbody>
   {data?.map((items,i) =>(
-    <tr className={isActive[i]?'bg-green-800 bg-opacity-20 text-center mx-3': 'bg-yellow-600 bg-opacity-20 text-center mx-3'} key={i}>
+    <tr className={isActive[i]?'bg-green-800 bg-opacity-20 text-left mx-3': 'bg-yellow-600 bg-opacity-20 text-left mx-3'} key={i}>
     <td >
         <a className='mx-3 underline-offset-2 hover:opacity-20 duration-150' href={"https://www.google.com/maps?q="+ethers.utils.formatEther(items._latitude)+","+ethers.utils.formatEther(items._longitude)}>
       {items._name.toString()}
       </a>
     </td>
     <td >
-      Blantyre
+      Some City
     </td>
     <td >
       {items._phoneNumber.toString()}
@@ -110,7 +117,7 @@ const CashPoints = () => {
 
   </tbody>
 </table>
-<button className="text-white text-3xl float-right bg-fuchsia-700 mx-20 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
+<button onClick={createCashPointHandler} className="text-white text-3xl float-right bg-fuchsia-700 mx-20 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
             +
           </button>
 </main>

@@ -3,11 +3,11 @@ pragma solidity >=0.4.22 <0.9.0;
 //pragma solidity ^0.5.8;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract CashPoints {
-    uint public count = 0;
-    
-    
+
+contract CashPoints is ERC20{
+
     struct CashPoint {
         string _name; //short Name
         int _latitude;
@@ -25,14 +25,33 @@ contract CashPoints {
     event CreatedCashPoint(address cashpoint);
      //add the keyword payable to the state variable
     address payable public Owner;
-    
+    uint public price; //erc20 token price
+    uint public cashPointPrice = 0.5 * (1 ether);
 
-    //set the owner to the msg.sender
-    constructor () {
+    uint public count = 0;
+    
+    constructor() ERC20("Chikwama", "CHK") {
+        _mint(msg.sender, 100000 * (1 ether));
         Owner = payable(msg.sender); 
     }
+
+    function setPrice() private
+    {
+        price = (address(this).balance/totalSupply())* (1 ether) ;
+    }
+
+    function buyTokens() external payable
+    {
+        setPrice();
+        require(totalSupply()<=1000000 * (1 ether), "total supply reached");
+        _mint(msg.sender, msg.value * price);
+
+    }
+
     
-    function addCashPoint(string memory name, int mylat, int mylong, string memory phone, string memory currency, uint buy, uint sell, string memory endtime) external payable {
+    function addCashPoint(string memory name, int mylat, int mylong, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable {
+      uint fee = duration * cashPointPrice;
+      require(msg.value > fee, "You are short");
       require(!cashpoints[msg.sender]._isCashPoint, "already a cashpoint");
             cashpoints[msg.sender] = CashPoint(name, mylat, mylong, phone, currency, buy, sell, endtime, true);
             count++;
@@ -58,19 +77,26 @@ contract CashPoints {
         require(msg.sender == Owner, 'Not owner');
         _;
     }
-    
 
-    //the owner can withdraw from the contract because payable was added to the state variable above
-    function withdraw (uint _amount) public onlyOwner {
-        Owner.transfer(_amount); 
+    modifier onlyHolder() {
+        require(balanceOf(msg.sender) > 0, 'Not holder');
+        _;
     }
     
-
-    //to.transfer works because we made the address above payable.
-    function transfer(address payable _to, uint _amount) public onlyOwner {
-        _to.transfer(_amount); //to.transfer works because we made the address above payable.
+    function transferXDai(address payable _to, uint _amount) public {
+        (bool success, ) = _to.call{value: _amount}("");
+        require(success, "Failed to send xDai");
     }
 
+    
+
+    //holders can withdraw from the contract because payable was added to the state variable above
+    function withdraw (uint _amount) public onlyHolder {
+        setPrice();
+        require((balanceOf(msg.sender) * price) > _amount, "You are trying to withdraw more than your stake");
+        _burn(msg.sender, _amount * price);
+        transferXDai(payable(msg.sender), _amount); 
+    }
 
 
    
