@@ -10,8 +10,9 @@ const Home = () => {
     const [count, setCount] = useState(0)
     const [revenue, setRevenue] = useState(0)
     const [tokenBalance, setTokenBalance] = useState(0)
+    const [tokenPrice, setTokenPrice] = useState(0)
     const navigate = useNavigate();
-    const contractAddress = '0x58501aB63580c7f72057CA0a2ee6715C2Ee27a87';
+    const contractAddress = '0xb31516b0e24c5230D0a19B1bbE752b5A37940298';
     const abi = cashPoints.abi;
     const [currentAccount, setCurrentAccount] = useState(null);
     let NumberOfCashPoints;
@@ -23,7 +24,7 @@ const Home = () => {
     const buyTokensHandler = async () => {
         
     
-        await cashPointsContract.withdraw(4900000000000000);
+        await cashPointsContract.buyTokens({ value: ethers.utils.parseUnits("1", "ether")});
           
     }
     const checkWalletIsConnected = async () => {
@@ -41,6 +42,9 @@ const Home = () => {
 
       let tokenBalance = await cashPointsContract.balanceOf(accounts[0]);
       setTokenBalance(ethers.utils.formatEther(tokenBalance));
+
+      let tokenPrice = await cashPointsContract.price();
+      setTokenPrice(ethers.utils.formatEther(tokenPrice));
 
       let NumberOfCashPointsTXN = await cashPointsContract.count();
       NumberOfCashPoints = NumberOfCashPointsTXN.toNumber();
@@ -80,7 +84,7 @@ const Home = () => {
       {count} Cash points
       </button>
       <div className='text-lg float-left text-yellow-400 md:text-2xl lg:text-3xl py-2 px-4 md:py-4 md:px-10 lg:py-6 lg:px-12 bg-slate-800 bg-opacity-20 w-fit mx-auto mb-8 rounded-full'>
-      2% Transaction fee
+      {tokenPrice} Current Price
       </div>
       <div className='text-lg float-left text-yellow-400 md:text-2xl lg:text-3xl py-2 px-4 md:py-4 md:px-10 lg:py-6 lg:px-12 bg-slate-800 bg-opacity-20 w-fit mx-auto mb-8 rounded-full'>
       {tokenBalance} CHK   Token Balance</div>

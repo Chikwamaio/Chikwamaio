@@ -14,7 +14,7 @@ const CashPoints = () => {
     const { ethereum } = window;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const contractAddress = '0x58501aB63580c7f72057CA0a2ee6715C2Ee27a87';
+    const contractAddress = '0xb31516b0e24c5230D0a19B1bbE752b5A37940298';
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
 
     const createCashPointHandler = async () => {
