@@ -31,8 +31,7 @@ contract CashPoints is ERC20{
     uint public count = 0;
     
     constructor() ERC20("Chikwama", "CHK") {
-        _mint(msg.sender, 100000 * (1 ether));
-        price = 30000000000000;
+        _mint(msg.sender, 100000);
         Owner = payable(msg.sender); 
     }
 
@@ -51,7 +50,7 @@ contract CashPoints is ERC20{
     
     function addCashPoint(string memory name, int mylat, int mylong, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable {
       uint fee = duration * cashPointPrice;
-      require(msg.value > fee, "You are short");
+      require(msg.value == fee, "Please pay the recommended fee");
       require(!cashpoints[msg.sender]._isCashPoint, "already a cashpoint");
             cashpoints[msg.sender] = CashPoint(name, mylat, mylong, phone, currency, buy, sell, endtime, true);
             count++;

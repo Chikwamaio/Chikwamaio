@@ -12,7 +12,7 @@ const Home = () => {
     const [tokenBalance, setTokenBalance] = useState(0)
     const [tokenPrice, setTokenPrice] = useState(0)
     const navigate = useNavigate();
-    const contractAddress = '0xb31516b0e24c5230D0a19B1bbE752b5A37940298';
+    const contractAddress = '0x94b198902D78DfEE3C5Da41417DD4673c089b5b7';
     const abi = cashPoints.abi;
     const [currentAccount, setCurrentAccount] = useState(null);
     let NumberOfCashPoints;
