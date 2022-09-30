@@ -14,7 +14,7 @@ const CashPoints = () => {
     const { ethereum } = window;
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const contractAddress = '0x94b198902D78DfEE3C5Da41417DD4673c089b5b7';
+    const contractAddress = '0x26Df51aAF93D168EE87561dB8b04ac7CF97656Df';
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
 
     const createCashPointHandler = async () => {
@@ -28,7 +28,7 @@ const CashPoints = () => {
     
         if(!ethereum)
         {
-          console.log('wallet not connected');
+          alert('please install metamask');
         }
         else if(ethereum)
         {

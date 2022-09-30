@@ -12,7 +12,7 @@ const Home = () => {
     const [tokenBalance, setTokenBalance] = useState(0)
     const [tokenPrice, setTokenPrice] = useState(0)
     const navigate = useNavigate();
-    const contractAddress = '0x94b198902D78DfEE3C5Da41417DD4673c089b5b7';
+    const contractAddress = '0x26Df51aAF93D168EE87561dB8b04ac7CF97656Df';
     const abi = cashPoints.abi;
     const [currentAccount, setCurrentAccount] = useState(null);
     let NumberOfCashPoints;
@@ -23,8 +23,8 @@ const Home = () => {
 
     const buyTokensHandler = async () => {
         
-    
-        await cashPointsContract.buyTokens({ value: ethers.utils.parseUnits("1", "ether")});
+        await cashPointsContract.setPrice();
+        await cashPointsContract.buyTokens({ value: ethers.utils.parseUnits("2", "ether")});
           
     }
     const checkWalletIsConnected = async () => {
@@ -34,7 +34,7 @@ const Home = () => {
 
     if(!ethereum)
     {
-      console.log('wallet not connected');
+      alert('Please install metamask');
     }
     else if(ethereum)
     {

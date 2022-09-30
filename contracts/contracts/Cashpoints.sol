@@ -27,23 +27,21 @@ contract CashPoints is ERC20{
     address payable public Owner;
     uint public price; //erc20 token price
     uint public cashPointPrice = 0.5 * (1 ether);
-
     uint public count = 0;
     
     constructor() ERC20("Chikwama", "CHK") {
-        _mint(msg.sender, 100000);
+        price = 0.1 * (1 ether);
         Owner = payable(msg.sender); 
     }
 
-    function setPrice() private
+    function setPrice() public
     {
-       price = address(this).balance/(totalSupply() / (1 ether));
+       price = (address(this).balance/totalSupply());
     }
 
     function buyTokens() external payable
     {
-        setPrice();
-        _mint(msg.sender, msg.value * price);
+        _mint(msg.sender, (msg.value / price));
 
     }
 
@@ -89,18 +87,17 @@ contract CashPoints is ERC20{
 
     function checkIfICanWithdraw(uint256 _amount) public view returns (bool)
     {
-        return ((balanceOf(msg.sender)/ (1 ether)) * (price ))>= _amount;
+        return (balanceOf(msg.sender) * (price )) >= _amount;
     }
 
     function checkTokensToBurn(uint _amount) public view returns (uint256)
     {
-        return (_amount/price)*(1 ether);
+        return (_amount/(totalSupply()*price))*totalSupply();
     }
     
 
     //holders can withdraw from the contract because payable was added to the state variable above
     function withdraw (uint _amount) public onlyHolder {
-        setPrice();
         require(checkIfICanWithdraw(_amount), "You are trying to withdraw more than your stake");
         _burn(msg.sender, checkTokensToBurn(_amount));
         transferXDai(payable(msg.sender), _amount); 
