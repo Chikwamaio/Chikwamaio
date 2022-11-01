@@ -23,6 +23,7 @@ contract CashPoints is ERC20{
     mapping (address=>CashPoint) public cashpoints;
     mapping(uint=>address) public keys;
     event CreatedCashPoint(address cashpoint);
+    event Received(address, uint);
      //add the keyword payable to the state variable
     address payable public Owner;
     uint public constant MAX_SUPPLY = 100000;
@@ -33,6 +34,11 @@ contract CashPoints is ERC20{
     constructor() ERC20("Chikwama", "CHK") {
         Owner = payable(msg.sender);
         _mint(Owner, 10000); 
+    }
+
+    
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
     }
 
     function setPrice() public

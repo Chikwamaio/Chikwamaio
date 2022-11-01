@@ -40,8 +40,28 @@ describe("Cashpoints", function () {
   describe("Transactions", function () {
 
     it("Should fail if a holder tries to withdraw when there is no value in contract", async function () {
-      const { cashpoints, owner } = await loadFixture(deployCashpointsContract);
+      const { cashpoints, owner, otherAccount } = await loadFixture(deployCashpointsContract);
+      //await otherAccount.sendTransaction({ to: cashpoints.address, value: 1000 });
       await expect(cashpoints.connect(owner).withdraw(20)).to.be.revertedWith('There is no value in this contract');
+    })
+
+    it("Should fail if a non-holder tries to withdraw", async function () {
+      const { cashpoints, otherAccount } = await loadFixture(deployCashpointsContract);
+      await expect(cashpoints.connect(otherAccount).withdraw(20)).to.be.revertedWith('Not holder');
+    })
+
+    it("Should emit event when funds received", async function () {
+      const { cashpoints, owner, otherAccount } = await loadFixture(deployCashpointsContract);
+      await expect(
+      otherAccount.sendTransaction({ to: cashpoints.address, value: 1000 })
+      ).to.emit(cashpoints, "Received")
+    })
+
+    it("Should receive funds", async function () {
+      const { cashpoints, owner, otherAccount } = await loadFixture(deployCashpointsContract);
+      await expect(
+      otherAccount.sendTransaction({ to: cashpoints.address, value: 1000 })
+      ).to.changeEtherBalance(cashpoints.address, 1000);
     })
   })
 });
