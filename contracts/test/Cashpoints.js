@@ -41,7 +41,7 @@ describe("Cashpoints", function () {
 
     it("Should fail if a holder tries to withdraw when there is no value in contract", async function () {
       const { cashpoints, owner } = await loadFixture(deployCashpointsContract);
-      expect(await cashpoints.connect(owner).withdraw(20)).to.be.revertedWith('There is no value in this contract');
+      await expect(cashpoints.connect(owner).withdraw(20)).to.be.revertedWith('There is no value in this contract');
     })
   })
 });
