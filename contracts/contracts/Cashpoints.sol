@@ -25,29 +25,32 @@ contract CashPoints is ERC20{
     event CreatedCashPoint(address cashpoint);
      //add the keyword payable to the state variable
     address payable public Owner;
-    uint public price; //erc20 token price
-    uint public cashPointPrice = 0.5 * (1 ether);
+    uint public constant MAX_SUPPLY = 100000;
+    uint public PRICE_PER_TOKEN; //erc20 token price
+    uint public CASHPOINT_FEE = 0.5 ether;
     uint public count = 0;
     
     constructor() ERC20("Chikwama", "CHK") {
-        price = 0.1 * (1 ether);
-        Owner = payable(msg.sender); 
+        Owner = payable(msg.sender);
+        _mint(Owner, 10000); 
     }
 
     function setPrice() public
     {
-       price = (address(this).balance/totalSupply());
+       PRICE_PER_TOKEN = (address(this).balance/totalSupply()) * 1 ether ;
     }
 
-    function buyTokens() external payable
-    {
-        _mint(msg.sender, (msg.value / price));
-
+    function mint(uint _amount) external payable
+    {   require(address(this).balance > 0, "There is no value in this contract");
+        setPrice();
+        uint quantity = _amount / PRICE_PER_TOKEN;
+        require(totalSupply() + quantity <= MAX_SUPPLY, "Max supply reached");
+        _mint(msg.sender, (_amount / PRICE_PER_TOKEN));
     }
 
     
     function addCashPoint(string memory name, int mylat, int mylong, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable {
-      uint fee = duration * cashPointPrice;
+      uint fee = duration * CASHPOINT_FEE;
       require(msg.value == fee, "Please pay the recommended fee");
       require(!cashpoints[msg.sender]._isCashPoint, "already a cashpoint");
             cashpoints[msg.sender] = CashPoint(name, mylat, mylong, phone, currency, buy, sell, endtime, true);
@@ -85,23 +88,27 @@ contract CashPoints is ERC20{
         require(success, "Failed to send xDai");
     }
 
-    function checkIfICanWithdraw(uint256 _amount) public view returns (bool)
+    function checkIfICanWithdraw(uint256 _amount) public returns (bool)
     {
-        return (balanceOf(msg.sender) * (price )) >= _amount;
+        setPrice();
+        return (balanceOf(msg.sender) * (PRICE_PER_TOKEN )) >= _amount;
     }
 
-    function checkTokensToBurn(uint _amount) public view returns (uint256)
+    function checkTokensToBurn(uint _amount) public returns (uint256)
     {
-        return (_amount/(totalSupply()*price))*totalSupply();
+        setPrice();
+        return (_amount/(totalSupply()*PRICE_PER_TOKEN))*totalSupply();
     }
     
 
     //holders can withdraw from the contract because payable was added to the state variable above
     function withdraw (uint _amount) public onlyHolder {
+        require(address(this).balance > 0, "There is no value in this contract");
         require(checkIfICanWithdraw(_amount), "You are trying to withdraw more than your stake");
         _burn(msg.sender, checkTokensToBurn(_amount));
         transferXDai(payable(msg.sender), _amount); 
     }
+
 
 
    
