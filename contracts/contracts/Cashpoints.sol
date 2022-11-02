@@ -43,15 +43,14 @@ contract CashPoints is ERC20{
 
     function setPrice() public
     {
-       PRICE_PER_TOKEN = (address(this).balance/totalSupply()) * 1 ether ;
+       require(address(this).balance > 0, "There is no value in this contract");
+       PRICE_PER_TOKEN = (address(this).balance/totalSupply());
     }
 
-    function mint(uint _amount) external payable
-    {   require(address(this).balance > 0, "There is no value in this contract");
-        setPrice();
-        uint quantity = _amount / PRICE_PER_TOKEN;
-        require(totalSupply() + quantity <= MAX_SUPPLY, "Max supply reached");
-        _mint(msg.sender, (_amount / PRICE_PER_TOKEN));
+    function buyTokens(uint _amount) external payable {
+        require(_amount * PRICE_PER_TOKEN == msg.value, "You are sending the wrong amount to this contract");
+        require(totalSupply() + _amount <= MAX_SUPPLY, "Max supply reached");
+        _mint(msg.sender, _amount);
     }
 
     
@@ -96,19 +95,18 @@ contract CashPoints is ERC20{
 
     function checkIfICanWithdraw(uint256 _amount) public returns (bool)
     {
-        setPrice();
-        return (balanceOf(msg.sender) * (PRICE_PER_TOKEN )) >= _amount;
+        return (balanceOf(msg.sender) * (PRICE_PER_TOKEN)) >= _amount;
     }
 
     function checkTokensToBurn(uint _amount) public returns (uint256)
     {
-        setPrice();
         return (_amount/(totalSupply()*PRICE_PER_TOKEN))*totalSupply();
     }
     
 
     //holders can withdraw from the contract because payable was added to the state variable above
     function withdraw (uint _amount) public onlyHolder {
+        setPrice();
         require(address(this).balance > 0, "There is no value in this contract");
         require(checkIfICanWithdraw(_amount), "You are trying to withdraw more than your stake");
         _burn(msg.sender, checkTokensToBurn(_amount));
