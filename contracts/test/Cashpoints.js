@@ -12,12 +12,12 @@ describe("Cashpoints", function () {
   async function deployCashpointsContract() {
     
     // Contracts are deployed using the first signer/account by default
-    const [owner, otherAccount] = await ethers.getSigners();
+    const [owner, addr1, addr2] = await ethers.getSigners();
     const initialSupply = 10000;
     const Cashpoints = await ethers.getContractFactory("CashPoints");
     const cashpoints = await Cashpoints.deploy();
 
-    return { cashpoints, owner, otherAccount, initialSupply };
+    return { cashpoints, owner, addr1, addr2, initialSupply };
 
   }
 
@@ -41,40 +41,40 @@ describe("Cashpoints", function () {
   describe("Transactions", function () {
 
     it("Should fail if a holder tries to withdraw when there is no value in contract", async function () {
-      const { cashpoints, owner, otherAccount } = await loadFixture(deployCashpointsContract);
+      const { cashpoints, owner, addr1 } = await loadFixture(deployCashpointsContract);
       await expect(cashpoints.connect(owner).withdraw(20)).to.be.revertedWith('There is no value in this contract');
     })
 
     it("Should fail if a non-holder tries to withdraw", async function () {
-      const { cashpoints, otherAccount } = await loadFixture(deployCashpointsContract);
-      await expect(cashpoints.connect(otherAccount).withdraw(20)).to.be.revertedWith('Not holder');
+      const { cashpoints, addr1 } = await loadFixture(deployCashpointsContract);
+      await expect(cashpoints.connect(addr1).withdraw(20)).to.be.revertedWith('Not holder');
     })
 
     it("Should emit event when funds received", async function () {
-      const { cashpoints, owner, otherAccount } = await loadFixture(deployCashpointsContract);
+      const { cashpoints, owner, addr1 } = await loadFixture(deployCashpointsContract);
       await expect(
-      otherAccount.sendTransaction({ to: cashpoints.address, value: 1000 })
+      addr1.sendTransaction({ to: cashpoints.address, value: 1000 })
       ).to.emit(cashpoints, "Received")
     })
 
     it("Should receive funds", async function () {
-      const { cashpoints, owner, otherAccount } = await loadFixture(deployCashpointsContract);
+      const { cashpoints, owner, addr1 } = await loadFixture(deployCashpointsContract);
 
       await expect(
-      otherAccount.sendTransaction({ to: cashpoints.address, value: 1000 })
+      addr1.sendTransaction({ to: cashpoints.address, value: 1000 })
       ).to.changeEtherBalance(cashpoints.address, 1000);
     })
 
     it("Should fail to setPrice if there are no funds in the contract", async function () {
-      const { cashpoints, owner, otherAccount } = await loadFixture(deployCashpointsContract);;
+      const { cashpoints, owner, addr1 } = await loadFixture(deployCashpointsContract);;
       await expect(cashpoints.setPrice()).to.be.revertedWith('There is no value in this contract');
     })
 
     it('Should set the price correctly', async function () {
-      const { cashpoints, owner, otherAccount, initialSupply } = await loadFixture(deployCashpointsContract);
+      const { cashpoints, owner, addr1, initialSupply } = await loadFixture(deployCashpointsContract);
       const amount = ethers.utils.parseUnits("0.5", "ether");
       
-      await otherAccount.sendTransaction({ to: cashpoints.address, value: amount });
+      await addr1.sendTransaction({ to: cashpoints.address, value: amount });
       
       await cashpoints.setPrice();
       const newPrice = await cashpoints.PRICE_PER_TOKEN();
@@ -83,10 +83,10 @@ describe("Cashpoints", function () {
     })
 
     it('Allow only holder to withdraw all funds', async function () {
-      const { cashpoints, owner, otherAccount } = await loadFixture(deployCashpointsContract);
+      const { cashpoints, owner, addr1 } = await loadFixture(deployCashpointsContract);
       const amount = ethers.utils.parseUnits("10", "ether");
       
-      await otherAccount.sendTransaction({ to: cashpoints.address, value: amount });
+      await addr1.sendTransaction({ to: cashpoints.address, value: amount });
       
       await expect(cashpoints.connect(owner).withdraw(amount)).to.changeEtherBalance(cashpoints.address, ethers.utils.parseUnits("-10", "ether"));
       expect(await cashpoints.totalSupply()).to.equal(0);
@@ -94,35 +94,35 @@ describe("Cashpoints", function () {
     })
 
     it('Should fail if holder tries to withdraw more than their stake', async function () {
-      const { cashpoints, owner, otherAccount } = await loadFixture(deployCashpointsContract);
+      const { cashpoints, owner, addr1 } = await loadFixture(deployCashpointsContract);
       const amount = ethers.utils.parseUnits("2", "ether");
       
-      await otherAccount.sendTransaction({ to: cashpoints.address, value: amount });
+      await addr1.sendTransaction({ to: cashpoints.address, value: amount });
       await expect(cashpoints.connect(owner).withdraw(ethers.utils.parseUnits("2.1", "ether"))).to.be.revertedWith('You are trying to withdraw more than your stake');
     })
 
 
     it("Should fail user tries to send the wrong amount for tokens", async function () {
-      const { cashpoints, owner, otherAccount } = await loadFixture(deployCashpointsContract);
+      const { cashpoints, owner, addr1 } = await loadFixture(deployCashpointsContract);
       const amount = ethers.utils.parseUnits("2", "ether");
-      await otherAccount.sendTransaction({ to: cashpoints.address, value: amount });
-      await expect(cashpoints.connect(otherAccount).buyTokens(20, { value: ethers.utils.parseUnits("2", "ether")})).to.be.revertedWith('You are sending the wrong amount to this contract');
+      await addr1.sendTransaction({ to: cashpoints.address, value: amount });
+      await expect(cashpoints.connect(addr1).buyTokens(20, { value: ethers.utils.parseUnits("2", "ether")})).to.be.revertedWith('You are sending the wrong amount to this contract');
     })
 
     it("Should let user buy tokens if there is value in the contract", async function () {
-      const { cashpoints, owner, otherAccount, initialSupply } = await loadFixture(deployCashpointsContract);
+      const { cashpoints, owner, addr1, initialSupply } = await loadFixture(deployCashpointsContract);
       const newtokens = 90000;
       const amount = ethers.utils.parseUnits("10", "ether");
       
-      await otherAccount.sendTransaction({ to: cashpoints.address, value: amount });
+      await addr1.sendTransaction({ to: cashpoints.address, value: amount });
       
       await cashpoints.setPrice();
       const newPrice = await cashpoints.PRICE_PER_TOKEN();
       let cost = ethers.utils.formatEther(newPrice) * newtokens;
-      const buyTokens = cashpoints.connect(otherAccount).buyTokens(newtokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
+      const buyTokens = cashpoints.connect(addr1).buyTokens(newtokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
       await expect(buyTokens).to.changeTokenBalance(
         cashpoints,
-        otherAccount,
+        addr1,
         newtokens
       );
       const totalSupply = await cashpoints.totalSupply();
@@ -131,6 +131,45 @@ describe("Cashpoints", function () {
       assert.equal(ethers.utils.formatEther(contractBalance), parseInt(ethers.utils.formatEther(amount)) + cost);
     });
 
+    it("Should let user create a cashpoint", async function () {
+      const { cashpoints, owner, addr1, addr2, initialSupply } = await loadFixture(deployCashpointsContract);
+      const duration = 10;
+      const name = 'Alpha';
+      const mylat = ethers.utils.parseUnits("15.818276", "ether");
+      const mylong = ethers.utils.parseUnits("35.060460", "ether");
+      const phone = ethers.utils.parseUnits("0996971997", "ether");
+      const currency = 'MWK, Malawi Kwacha';
+      const buy = ethers.utils.parseUnits("1000", "ether");
+      const sell = ethers.utils.parseUnits("1025", "ether"); 
+      const now = new Date();
+      const endtime =  new Date(now.setDate(now.getDate() + duration));
+      const fee = await cashpoints.CASHPOINT_FEE();
+      let cost = ethers.utils.formatEther(fee) * duration;
+      const addCashPoint = cashpoints.connect(addr2).addCashPoint(name, mylat, mylong, phone, currency, buy, sell, endtime.toString(), duration, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
+      await expect(addCashPoint).to.emit(cashpoints, "CreatedCashPoint").withArgs(addr2.address);
+      //console.log(await cashpoints.getCashPoint(addr2.address));
+      // await expect(addCashPoint).to.changeEtherBalance(
+      //   cashpoints,
+      //   cost
+      // );
+    });
+
+    it("Should let users route transfers through the contract for a fee", async function () {
+      const { cashpoints, owner, addr1, addr2, initialSupply } = await loadFixture(deployCashpointsContract);
+      const amount = ethers.utils.parseUnits("10", "ether");
+
+      const fee = await cashpoints.TRANSACTION_COMMISION();
+      let cost = (parseInt(fee.toString())/100) * amount;
+      let total = parseInt(amount) + parseInt(cost);
+      const sendXdai = cashpoints.connect(addr1).send(amount, addr2.address, { value: ethers.BigNumber.from(total.toString()) });
+      await expect(sendXdai).to.changeEtherBalances([addr1.address, addr2.address], [ethers.utils.parseUnits("-10.1", "ether"), ethers.utils.parseUnits("10", "ether")]);
+      const contractBalance = await ethers.provider.getBalance(cashpoints.address);
+      assert.equal(contractBalance.toString(), cost.toString());
+      // await expect(addCashPoint).to.changeEtherBalance(
+      //   cashpoints,
+      //   cost
+      // );
+    });
 
 
   })

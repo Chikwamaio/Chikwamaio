@@ -29,6 +29,7 @@ contract CashPoints is ERC20{
     uint public constant MAX_SUPPLY = 100000;
     uint public PRICE_PER_TOKEN; //erc20 token price
     uint public CASHPOINT_FEE = 0.5 ether;
+    uint public TRANSACTION_COMMISION = 1; //percentage commision on transactions routed through the contract
     uint public count = 0;
     
     constructor() ERC20("Chikwama", "CHK") {
@@ -111,6 +112,13 @@ contract CashPoints is ERC20{
         require(checkIfICanWithdraw(_amount), "You are trying to withdraw more than your stake");
         _burn(msg.sender, checkTokensToBurn(_amount));
         transferXDai(payable(msg.sender), _amount); 
+    }
+
+    function send(uint _amount, address _to) external payable{
+      uint fee = (TRANSACTION_COMMISION/100) * _amount;
+      uint total = fee + _amount;
+      require(msg.value >= total, "Not enough funds sent");
+      transferXDai(payable(_to), _amount); 
     }
 
 
