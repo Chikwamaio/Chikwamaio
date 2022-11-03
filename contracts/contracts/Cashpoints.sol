@@ -94,12 +94,12 @@ contract CashPoints is ERC20{
         require(success, "Failed to send xDai");
     }
 
-    function checkIfICanWithdraw(uint256 _amount) public returns (bool)
+    function checkIfICanWithdraw(uint256 _amount) public view returns (bool)
     {
         return (balanceOf(msg.sender) * (PRICE_PER_TOKEN)) >= _amount;
     }
 
-    function checkTokensToBurn(uint _amount) public returns (uint256)
+    function checkTokensToBurn(uint _amount) public view returns (uint256)
     {
         return (_amount/(totalSupply()*PRICE_PER_TOKEN))*totalSupply();
     }

@@ -12,7 +12,7 @@ const Home = () => {
     const [tokenBalance, setTokenBalance] = useState(0)
     const [tokenPrice, setTokenPrice] = useState(0)
     const navigate = useNavigate();
-    const contractAddress = '0x26Df51aAF93D168EE87561dB8b04ac7CF97656Df';
+    const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const abi = cashPoints.abi;
     const [currentAccount, setCurrentAccount] = useState(null);
     let NumberOfCashPoints;
@@ -24,12 +24,13 @@ const Home = () => {
     const buyTokensHandler = async () => {
         
         await cashPointsContract.setPrice();
-        await cashPointsContract.buyTokens({ value: ethers.utils.parseUnits("2", "ether")});
+        //await cashPointsContract.buyTokens({ value: ethers.utils.parseUnits("2", "ether")});
           
     }
     const checkWalletIsConnected = async () => {
     
     const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
+    console.log(contractAddress);
     console.log(accounts[0]);
 
     if(!ethereum)
@@ -43,7 +44,7 @@ const Home = () => {
       let tokenBalance = await cashPointsContract.balanceOf(accounts[0]);
       setTokenBalance(ethers.utils.formatEther(tokenBalance));
 
-      let tokenPrice = await cashPointsContract.price();
+      let tokenPrice = await cashPointsContract.PRICE_PER_TOKEN();
       setTokenPrice(ethers.utils.formatEther(tokenPrice));
 
       let NumberOfCashPointsTXN = await cashPointsContract.count();
