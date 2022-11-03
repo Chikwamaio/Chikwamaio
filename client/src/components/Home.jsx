@@ -1,10 +1,12 @@
 import NavBar from './NavBar'
 import Footer from './Footer'
+import BuyTokens from './BuyTokens'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import { ethers } from 'ethers';
 import { useNavigate } from "react-router-dom";
+
 
 const Home = () => {
     const [count, setCount] = useState(0)
@@ -22,11 +24,23 @@ const Home = () => {
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
 
     const buyTokensHandler = async () => {
-        
+      provider.getBalance(contractAddress).then(async (balance)=> {
+      
+        if(balance == 0){
+
+          alert('No value in contract');
+          return;
+        }
+
         await cashPointsContract.setPrice();
-        //await cashPointsContract.buyTokens({ value: ethers.utils.parseUnits("2", "ether")});
-          
-    }
+        const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
+        let cost = ethers.utils.formatEther(newPrice) * newtokens;
+        const buyTokens = cashPointsContract.buyTokens(newtokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
+        
+      });
+        
+  }
+  
     const checkWalletIsConnected = async () => {
     
     const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
@@ -36,13 +50,13 @@ const Home = () => {
     if(!ethereum)
     {
       alert('Please install metamask');
+      return;
     }
-    else if(ethereum)
-    {
+
       console.log('wallet connected');
 
       let tokenBalance = await cashPointsContract.balanceOf(accounts[0]);
-      setTokenBalance(ethers.utils.formatEther(tokenBalance));
+      setTokenBalance(tokenBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
       let tokenPrice = await cashPointsContract.PRICE_PER_TOKEN();
       setTokenPrice(ethers.utils.formatEther(tokenPrice));
@@ -57,7 +71,7 @@ const Home = () => {
         setRevenue(balanceInDai);
         console.log(`balance: ${balanceInDai} xDai`)
        })
-    }
+
    }
 
    const goToCashPoints = async () => {
@@ -78,6 +92,7 @@ const Home = () => {
       <h2 className='text-2xl md:text-4xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
       <h1 className='text-3xl md:text-6xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
       <p className='text-xl py-12'>Send, Receive, Buy and Sell digital dollars, anywhere.</p>
+      
       <div className='text-lg  float-left text-yellow-400 md:text-2xl lg:text-3xl py-2 px-4 md:py-4 md:px-10 lg:py-6 lg:px-12 bg-slate-800 bg-opacity-20 w-fit mx-auto mb-4 rounded-full'>
       US$ {revenue} Contract Balance
       </div>
@@ -89,9 +104,8 @@ const Home = () => {
       </div>
       <div className='text-lg float-left text-yellow-400 md:text-2xl lg:text-3xl py-2 px-4 md:py-4 md:px-10 lg:py-6 lg:px-12 bg-slate-800 bg-opacity-20 w-fit mx-auto mb-8 rounded-full'>
       {tokenBalance} CHK   Token Balance</div>
-      <button onClick={buyTokensHandler} className="text-white text-xl float-right bg-fuchsia-700 mx-20 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
-            Buy
-          </button>
+      
+      <BuyTokens onClick = {buyTokensHandler}></BuyTokens>
       </main>
       <Footer/>
     </div>

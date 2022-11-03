@@ -51,10 +51,10 @@ const NavBar = () => {
         />
         <span>Chikwama</span>
       </a>
-      <nav className="flex flex-row justify-center items-center list-none px-6">
+      <nav className="flex flex-row justify-center items-center list-none px-6 overflow-x-clip">
         <li className="cursor-pointer mr-3 hover:text-fuchsia-700">Pricing</li>
         <li className="cursor-pointer mr-3 hover:text-fuchsia-700">Docs</li>
-        <li className="cursor-pointer mr-3 hover:text-fuchsia-700">{connectWalletButton()}</li>
+        <li className="cursor-pointer mr-3 hover:text-fuchsia-700 content-center">{connectWalletButton()}</li>
       </nav>
       </header>
       </>
