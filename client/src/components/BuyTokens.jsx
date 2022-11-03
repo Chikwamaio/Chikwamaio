@@ -10,10 +10,14 @@ import { Fab } from '@mui/material';
 
 export default function FormDialog( {onClick} ) {
   const [open, setOpen] = React.useState(false);
+  const [buy_tokens, setTokens] = React.useState('');
 
-  
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  const handleBuy = () => {
+    onClick(buy_tokens); 
   };
 
   const handleClose = () => {
@@ -34,16 +38,20 @@ export default function FormDialog( {onClick} ) {
           <TextField
             autoFocus
             margin="dense"
+            value = {buy_tokens}
             id="name"
             label="Number of tokens"
             type="email"
             fullWidth
             variant="filled"
+            onChange={(e) => {
+                setTokens(e.target.value);
+              }}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={onClick}>BUY</Button>
+          <Button onClick={handleBuy}>BUY</Button>
         </DialogActions>
       </Dialog>
     </div>

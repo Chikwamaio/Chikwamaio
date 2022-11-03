@@ -23,7 +23,7 @@ const Home = () => {
     const signer = provider.getSigner();
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
 
-    const buyTokensHandler = async () => {
+    const buyTokensHandler = async (tokens) => {
       provider.getBalance(contractAddress).then(async (balance)=> {
       
         if(balance == 0){
@@ -32,11 +32,13 @@ const Home = () => {
           return;
         }
 
-        await cashPointsContract.setPrice();
-        const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
-        let cost = ethers.utils.formatEther(newPrice) * newtokens;
-        const buyTokens = cashPointsContract.buyTokens(newtokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
-        
+        if(tokens % 1 == 0 && tokens > 0)
+        {
+          await cashPointsContract.setPrice();
+          const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
+          let cost = ethers.utils.formatEther(newPrice) * tokens;
+          const buyTokens = cashPointsContract.buyTokens(tokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
+        }
       });
         
   }
@@ -105,7 +107,7 @@ const Home = () => {
       <div className='text-lg float-left text-yellow-400 md:text-2xl lg:text-3xl py-2 px-4 md:py-4 md:px-10 lg:py-6 lg:px-12 bg-slate-800 bg-opacity-20 w-fit mx-auto mb-8 rounded-full'>
       {tokenBalance} CHK   Token Balance</div>
       
-      <BuyTokens onClick = {buyTokensHandler}></BuyTokens>
+      <BuyTokens onClick={buyTokensHandler}></BuyTokens>
       </main>
       <Footer/>
     </div>
