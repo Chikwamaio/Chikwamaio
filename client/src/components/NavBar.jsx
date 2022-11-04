@@ -39,10 +39,12 @@ const connectWalletButton = () =>
         )
 }
 
+
 const NavBar = () => {
+
     return(
         <>
-        <header className="flex flex-row items-center justify-between drop-shadow-md py-2 px-5 bg-white">
+        <header className="flex flex-row items-center justify-between drop-shadow-md py-2 px-5 bg-white min-w-fit">
         <a href="/Home" className="flex flex-row justify-center items-center cursor-pointer uppercase">
         <img
           className="w-6 h-6 object-contain cursor-pointer"

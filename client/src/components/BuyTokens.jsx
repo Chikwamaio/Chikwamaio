@@ -6,7 +6,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Fab } from '@mui/material';
 
 export default function FormDialog( {onClick} ) {
   const [open, setOpen] = React.useState(false);
@@ -26,9 +25,9 @@ export default function FormDialog( {onClick} ) {
 
   return (
     <div>
-      <Fab variant="extended" onClick={handleClickOpen} className="text-white overflow-auto text-xl flex-grow float-right bg-fuchsia-700 mx-20 px-6 drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
+      <button className="text-white bg-fuchsia-700 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring" onClick={handleClickOpen} >
             Buy Tokens
-          </Fab>
+          </button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Buy Tokens</DialogTitle>
         <DialogContent>
