@@ -7,6 +7,9 @@ import { ethers } from 'ethers';
 import { useNavigate } from "react-router-dom";
 import Snackbar from '@mui/material/Snackbar'
 import Fade from '@mui/material/Fade';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import CalculateIcon from '@mui/icons-material/Calculate';
 
 
 const Home = () => {
@@ -33,7 +36,8 @@ const Home = () => {
 
     const buyTokensHandler = async (tokens) => {
       provider.getBalance(contractAddress).then(async (balance)=> {
-      
+        const network = (await provider.getNetwork()).chainId;
+
         if(balance == 0){
 
           setState({
@@ -41,11 +45,11 @@ const Home = () => {
             Transition: Fade,
           });
 
-          setErrorMessage('We are unable to fulfill your buy request at this moment because, there is no value in the contract');
+          setErrorMessage('We are unable to fulfill your buy request at this time because, there is no value in the contract');
           return;
         }
 
-        if(tokens % 1 == 0 && tokens > 0)
+        if(tokens % 1 == 0 && tokens > 0 && network == 100)
         {
           await cashPointsContract.setPrice();
           const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
@@ -115,28 +119,28 @@ const Home = () => {
   return (
     <div className='container mx-auto text-slate-500'>
     <NavBar walletAddress={walletAddress}/>
-      <main className='flex flex-grow p-2 min-h-max'>
-      <div className='basis-1/2'>
-      <h2 className='text-2xl md:text-4xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
+      <main className='flex flex-grow p-6 min-h-max '>
+      <div className='basis-1/2 pr-4'>
+      <h2 className='md:text-4xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
       <h1 className='text-3xl md:text-6xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
       <p className='text-xl py-12'>Send, Receive, Buy and Sell digital dollars, anywhere.</p>
+      
+      </div>
+      <div className='basis-1/2 grid grid-cols-1 align-center ml-4'>
+      <h4 className='text-xl text-slate-700 lg:text-2xl uppercase align-center'> DAO Metrics:</h4>
+      <div className='bg-white w-fit mx-auto mb-4 float-right m-4 p-2 border-2 border-gray-300 h-24 w-36'>
+      <CalculateIcon></CalculateIcon><p className='text-xl text-yellow-400 text-center'>US$ {tokenPrice} </p> <p className='text-center'>Current Price</p>
+      </div>
+      <div className='bg-white w-fit mx-auto mb-4 float-right p-2 border-2 border-gray-300 h-24 w-36'>
+      <PieChartIcon></PieChartIcon><p className='text-xl text-yellow-400 text-center'>{tokenBalance} CHK</p> <p className='text-center'>Token Balance</p></div>
+      <div className='bg-white w-fit mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-36'>
+      <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-center'>US$ {revenue}</p> <p className='text-center'>Contract Balance</p>
+      </div>
       <BuyTokens onClick={buyTokensHandler}></BuyTokens>
-      </div>
-      <div className='basis-1/2 grid gap-2 grid-cols-2'>
-      
-      <div className='bg-slate-800 bg-opacity-20 w-fit mx-auto mb-4 rounded-xl float-right'>
-      <p className='text-xl text-yellow-400 text-center'>US${tokenPrice} </p> <p className='text-center'>Current Price</p>
-      
-      </div>
-      <div className='bg-slate-800 bg-opacity-20 w-fit mx-auto mb-4 rounded-xl float-right'>
-      <p className='text-xl text-yellow-400 text-center'>{tokenBalance}CHK</p> <p className='text-center'>Token Balance</p></div>
-      <div className='bg-slate-800  bg-opacity-20 w-fit mx-auto mb-4 rounded-xl float-right'>
-      <p className='text-xl text-yellow-400 text-center'>US${revenue}</p> <p className='text-center'>Contract Balance</p>
-      </div>
       </div>
       <Snackbar 
       anchorOrigin={{
-        vertical: 'bottom',
+        vertical: 'top',
         horizontal: 'center',
       }}
       open={state.open}
