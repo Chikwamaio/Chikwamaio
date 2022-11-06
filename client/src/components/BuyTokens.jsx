@@ -25,7 +25,7 @@ export default function FormDialog( {onClick} ) {
 
   return (
     <div>
-      <button className="text-white bg-fuchsia-700 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring" onClick={handleClickOpen} >
+      <button className="text-white bg-fuchsia-700 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring float-right font mr-6" onClick={handleClickOpen} >
             Buy Tokens
           </button>
       <Dialog open={open} onClose={handleClose}>

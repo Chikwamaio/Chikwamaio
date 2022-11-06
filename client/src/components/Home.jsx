@@ -38,6 +38,16 @@ const Home = () => {
       provider.getBalance(contractAddress).then(async (balance)=> {
         const network = (await provider.getNetwork()).chainId;
 
+        if(network != 100)
+        {
+          setState({
+            open: true,
+            Transition: Fade,
+          });
+          setErrorMessage('You are connected to the wrong blockchain, please connect to the Gnosis chain');
+          return;
+        }
+
         if(balance == 0){
 
           setState({
@@ -45,11 +55,13 @@ const Home = () => {
             Transition: Fade,
           });
 
-          setErrorMessage('We are unable to fulfill your buy request at this time because, there is no value in the contract');
+          setErrorMessage('We are unable to fulfill your buy request at this time, because there is no value in the contract');
           return;
         }
 
-        if(tokens % 1 == 0 && tokens > 0 && network == 100)
+        
+
+        if(tokens % 1 == 0 && tokens > 0 )
         {
           await cashPointsContract.setPrice();
           const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
@@ -68,7 +80,7 @@ const Home = () => {
 
   
     const checkWalletIsConnected = async () => {
-    
+      const network =(await provider.getNetwork()).chainId;
     const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
     console.log(contractAddress);
     setWalletAddress(accounts[0]);
@@ -83,6 +95,12 @@ const Home = () => {
       setErrorMessage('Please install the metaamask wallet extension');
       return;
     }
+
+    if(network != 100)
+        {
+          setErrorMessage('You are connected to the wrong blockchain, please connect to the Gnosis chain');
+          return;
+        }
 
       console.log('wallet connected');
 
@@ -123,16 +141,16 @@ const Home = () => {
       <div className='basis-1/2 pr-4'>
       <h2 className='md:text-4xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
       <h1 className='text-3xl md:text-6xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
-      <p className='text-xl py-12'>Send, Receive, Buy and Sell digital dollars, anywhere.</p>
+      <p className='text-xl py-12'>Send, receive, buy and sell digital dollars, anywhere!</p>
       
       </div>
       <div className='basis-1/2 grid grid-cols-1 align-center ml-4'>
-      <h4 className='text-xl text-slate-700 lg:text-2xl uppercase align-center'> DAO Metrics:</h4>
+      <h4 className='text-xl text-slate-700 lg:text-2xl uppercase text-center'> DAO Metrics</h4>
       <div className='bg-white w-fit mx-auto mb-4 float-right m-4 p-2 border-2 border-gray-300 h-24 w-36'>
       <CalculateIcon></CalculateIcon><p className='text-xl text-yellow-400 text-center'>US$ {tokenPrice} </p> <p className='text-center'>Current Price</p>
       </div>
       <div className='bg-white w-fit mx-auto mb-4 float-right p-2 border-2 border-gray-300 h-24 w-36'>
-      <PieChartIcon></PieChartIcon><p className='text-xl text-yellow-400 text-center'>{tokenBalance} CHK</p> <p className='text-center'>Token Balance</p></div>
+      <PieChartIcon></PieChartIcon><p className='text-xl text-yellow-400 text-center'>{tokenBalance} CHK</p> <p className='text-center'>Your Balance</p></div>
       <div className='bg-white w-fit mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-36'>
       <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-center'>US$ {revenue}</p> <p className='text-center'>Contract Balance</p>
       </div>

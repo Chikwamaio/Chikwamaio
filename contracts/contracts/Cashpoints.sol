@@ -23,6 +23,7 @@ contract CashPoints is ERC20{
     mapping (address=>CashPoint) public cashpoints;
     mapping(uint=>address) public keys;
     event CreatedCashPoint(address cashpoint);
+    event UpdatedCashPoint(address cashpoint);
     event Received(address, uint);
      //add the keyword payable to the state variable
     address payable public Owner;
@@ -39,6 +40,7 @@ contract CashPoints is ERC20{
 
     
     receive() external payable {
+        setPrice();
         emit Received(msg.sender, msg.value);
     }
 
@@ -52,6 +54,7 @@ contract CashPoints is ERC20{
         require(_amount * PRICE_PER_TOKEN == msg.value, "You are sending the wrong amount to this contract");
         require(totalSupply() + _amount <= MAX_SUPPLY, "Max supply reached");
         _mint(msg.sender, _amount);
+        setPrice();
     }
 
     
@@ -62,13 +65,18 @@ contract CashPoints is ERC20{
             cashpoints[msg.sender] = CashPoint(name, mylat, mylong, phone, currency, buy, sell, endtime, true);
             count++;
             keys[count]=msg.sender;
+            setPrice();
             emit CreatedCashPoint(msg.sender);
         
     }
 
-    function updateCashPoint(string memory name, int mylat, int mylong, string memory phone, string memory currency, uint buy, uint sell, string memory endtime) external payable {
+    function updateCashPoint(string memory name, int mylat, int mylong, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable {
+      uint fee = duration * CASHPOINT_FEE;
+      require(msg.value == fee, "Please pay the recommended fee");
       require(cashpoints[msg.sender]._isCashPoint, "not a cashpoint");
             cashpoints[msg.sender] = CashPoint(name, mylat, mylong, phone, currency, buy, sell, endtime, true);
+            setPrice();
+            emit UpdatedCashPoint(msg.sender);
         
     }
 
@@ -111,14 +119,15 @@ contract CashPoints is ERC20{
         require(address(this).balance > 0, "There is no value in this contract");
         require(checkIfICanWithdraw(_amount), "You are trying to withdraw more than your stake");
         _burn(msg.sender, checkTokensToBurn(_amount));
-        transferXDai(payable(msg.sender), _amount); 
+        transferXDai(payable(msg.sender), _amount);
     }
 
     function send(uint _amount, address _to) external payable{
       uint fee = (TRANSACTION_COMMISION/100) * _amount;
       uint total = fee + _amount;
       require(msg.value >= total, "Not enough funds sent");
-      transferXDai(payable(_to), _amount); 
+      transferXDai(payable(_to), _amount);
+      setPrice(); 
     }
 
 

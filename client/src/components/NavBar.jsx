@@ -34,7 +34,15 @@ const connectWalletButton = () =>
 {
         return (
           <button onClick={connectWalletHandler} className="text-white bg-fuchsia-700 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
-            Connect Wallet
+            Connect
+          </button>
+        )
+}
+const sendButton = () => 
+{
+        return (
+          <button onClick={connectWalletHandler} className="text-white bg-fuchsia-700 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
+            Send
           </button>
         )
 }
@@ -54,10 +62,11 @@ const NavBar = () => {
         <span>Chikwama</span>
       </a>
       <nav className="flex flex-row justify-center items-center list-none px-6 overflow-x-clip">
-        <li className="cursor-pointer mr-3 hover:text-fuchsia-700">Pricing</li>
-        <li className="cursor-pointer mr-3 hover:text-fuchsia-700">Docs</li>
+        <li className="cursor-pointer mr-3 hover:text-fuchsia-700">Cashpoints</li>
+        <li className="cursor-pointer mr-3 hover:text-fuchsia-700 content-center">{sendButton()}</li>
         <li className="cursor-pointer mr-3 hover:text-fuchsia-700 content-center">{connectWalletButton()}</li>
       </nav>
+      
       </header>
       </>
     );

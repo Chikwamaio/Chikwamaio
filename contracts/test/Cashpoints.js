@@ -131,7 +131,9 @@ describe("Cashpoints", function () {
       assert.equal(ethers.utils.formatEther(contractBalance), parseInt(ethers.utils.formatEther(amount)) + cost);
     });
 
-    it("Should let user create a cashpoint", async function () {
+    
+    
+    it("Should let user update a cashpoint", async function () {
       const { cashpoints, owner, addr1, addr2, initialSupply } = await loadFixture(deployCashpointsContract);
       const duration = 10;
       const name = 'Alpha';
@@ -147,6 +149,9 @@ describe("Cashpoints", function () {
       let cost = ethers.utils.formatEther(fee) * duration;
       const addCashPoint = cashpoints.connect(addr2).addCashPoint(name, mylat, mylong, phone, currency, buy, sell, endtime.toString(), duration, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
       await expect(addCashPoint).to.emit(cashpoints, "CreatedCashPoint").withArgs(addr2.address);
+      const newEndTime =  new Date(endtime.setDate(endtime.getDate() + duration));
+      const updateCashPoint = cashpoints.connect(addr2).updateCashPoint(name, mylat, mylong, phone, currency, buy, sell, newEndTime.toString(), duration, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
+      await expect(updateCashPoint).to.emit(cashpoints, "UpdatedCashPoint").withArgs(addr2.address);
       //console.log(await cashpoints.getCashPoint(addr2.address));
       // await expect(addCashPoint).to.changeEtherBalance(
       //   cashpoints,
