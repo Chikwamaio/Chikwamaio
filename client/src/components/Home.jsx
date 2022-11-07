@@ -1,6 +1,7 @@
 import NavBar from './NavBar'
 import Footer from './Footer'
 import BuyTokens from './BuyTokens'
+import SelectModal from './SelectModal'
 import { useState, useEffect} from 'react';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import { ethers } from 'ethers';
@@ -14,6 +15,7 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 
 const Home = () => {
     const [count, setCount] = useState(0)
+    const [openSelect, setOpenSelect] = useState(false);
     const [walletAddress, setWalletAddress] = useState('')
     const [revenue, setRevenue] = useState(0)
     const [tokenBalance, setTokenBalance] = useState(0)
@@ -71,6 +73,12 @@ const Home = () => {
       });
         
   }
+  const handleOpenSelect = () => {
+    setOpenSelect(true);
+  };
+  const closeSelectHandler = () => {
+    setOpenSelect(false);
+  };
   const handleClose = () => {
     setState({
       ...state,
@@ -142,10 +150,12 @@ const Home = () => {
       <h2 className='md:text-4xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
       <h1 className='text-3xl md:text-6xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
       <p className='text-xl py-12'>Send, receive, buy and sell digital dollars, anywhere!</p>
-      
+      <button onClick={handleOpenSelect} className="text-white bg-fuchsia-700 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
+            Use it!
+          </button>
       </div>
-      <div className='basis-1/2 grid grid-cols-1 align-center ml-4'>
-      <h4 className='text-xl text-slate-700 lg:text-2xl uppercase text-center'> DAO Metrics</h4>
+      <div className='basis-1/2 grid grid-cols-1 align-center ml-8'>
+      <h4 className='text-xl text-slate-700 lg:text-2xl uppercase text-left'> DAO Metrics:</h4>
       <div className='bg-white w-fit mx-auto mb-4 float-right m-4 p-2 border-2 border-gray-300 h-24 w-36'>
       <CalculateIcon></CalculateIcon><p className='text-xl text-yellow-400 text-center'>US$ {tokenPrice} </p> <p className='text-center'>Current Price</p>
       </div>
@@ -154,7 +164,10 @@ const Home = () => {
       <div className='bg-white w-fit mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-36'>
       <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-center'>US$ {revenue}</p> <p className='text-center'>Contract Balance</p>
       </div>
-      <BuyTokens onClick={buyTokensHandler}></BuyTokens>
+      <div className='align-center'>
+      <button className='w-24 hover:text-fuchsia-700'> Learn more...</button>
+      </div>
+      <SelectModal openSelect={openSelect} closeSelect={closeSelectHandler} openBuy={goToCashPoints}></SelectModal>
       </div>
       <Snackbar 
       anchorOrigin={{
