@@ -143,25 +143,25 @@ const Home = () => {
   }, [])
 
   return (
-    <div className='container mx-auto text-slate-500'>
+    <div className='container w-full h-screen text-slate-500'>
     <NavBar walletAddress={walletAddress}/>
-      <main className='flex flex-grow p-6 min-h-max '>
+      <main className='flex flex-grow w-full p-6 m-6 min-h-max'>
       <div className='basis-1/2 pr-4'>
       <h2 className='md:text-4xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
       <h1 className='text-3xl md:text-6xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
       <p className='text-xl py-12'>Send, receive, buy and sell digital dollars, anywhere!</p>
-      <button onClick={handleOpenSelect} className="text-white bg-fuchsia-700 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
+      <button onClick={handleOpenSelect} className="text-white bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
             Use it!
           </button>
       </div>
-      <div className='basis-1/2 grid grid-cols-1 align-center ml-8'>
+      <div className='basis-1/2 grid grid-cols-1 align-center'>
       <h4 className='text-xl text-slate-700 lg:text-2xl uppercase text-left'> DAO Metrics:</h4>
-      <div className='bg-white w-fit mx-auto mb-4 float-right m-4 p-2 border-2 border-gray-300 h-24 w-36'>
+      <div className='bg-white mx-auto mb-4 float-right m-4 p-2 border-2 border-gray-300 h-24 w-36'>
       <CalculateIcon></CalculateIcon><p className='text-xl text-yellow-400 text-center'>US$ {tokenPrice} </p> <p className='text-center'>Current Price</p>
       </div>
-      <div className='bg-white w-fit mx-auto mb-4 float-right p-2 border-2 border-gray-300 h-24 w-36'>
+      <div className='bg-white mx-auto mb-4 float-right p-2 border-2 border-gray-300 h-24 w-36'>
       <PieChartIcon></PieChartIcon><p className='text-xl text-yellow-400 text-center'>{tokenBalance} CHK</p> <p className='text-center'>Your Balance</p></div>
-      <div className='bg-white w-fit mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-36'>
+      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-36'>
       <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-center'>US$ {revenue}</p> <p className='text-center'>Contract Balance</p>
       </div>
       <div className='align-center'>
