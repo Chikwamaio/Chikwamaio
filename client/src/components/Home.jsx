@@ -1,6 +1,5 @@
 import NavBar from './NavBar'
 import Footer from './Footer'
-import BuyTokens from './BuyTokens'
 import SelectModal from './SelectModal'
 import { useState, useEffect} from 'react';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
@@ -37,43 +36,7 @@ const Home = () => {
 
     const [errorMessage, setErrorMessage] = useState('');
 
-    const buyTokensHandler = async (tokens) => {
-      provider.getBalance(contractAddress).then(async (balance)=> {
-        const network = (await provider.getNetwork()).chainId;
-
-        if(network != 100)
-        {
-          setState({
-            open: true,
-            Transition: Fade,
-          });
-          setErrorMessage('You are connected to the wrong blockchain, please connect to the Gnosis chain');
-          return;
-        }
-
-        if(balance == 0){
-
-          setState({
-            open: true,
-            Transition: Fade,
-          });
-
-          setErrorMessage('We are unable to fulfill your buy request at this time, because there is no value in the contract');
-          return;
-        }
-
-        
-
-        if(tokens % 1 == 0 && tokens > 0 )
-        {
-          await cashPointsContract.setPrice();
-          const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
-          let cost = ethers.utils.formatEther(newPrice) * tokens;
-          const buyTokens = cashPointsContract.buyTokens(tokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
-        }
-      });
-        
-  }
+    
   const handleOpenSelect = () => {
     setOpenSelect(true);
   };
