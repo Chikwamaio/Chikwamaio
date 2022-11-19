@@ -73,7 +73,7 @@ const CashPoints = () => {
         <NavBar/>
         <main className=' text-black container mx-auto px-6 pt-16 flex-1 text-left'>
             <h1 className='text-2xl text-slate-800 py-8' >Cash points:</h1>
-        <table class="table-auto">
+        <table className="table-auto">
   <thead>
     <tr className='bg-slate-800 text-white' >
       <th>Name</th>

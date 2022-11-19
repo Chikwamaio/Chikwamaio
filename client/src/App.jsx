@@ -7,6 +7,7 @@ import './App.css';
 
 import Home from './components/Home';
 import CashPoints from './components/CashPoints';
+import Dao from './components/Dao';
 
 
 function App() {
@@ -16,6 +17,8 @@ function App() {
         <Route path='/Home' element={<Home />}>
         </Route>
         <Route path='/CashPoints' element={<CashPoints />}>
+        </Route>
+        <Route path='/Dao' element={<Dao />}>
         </Route>
           <Route path='/'  element={<Home />}>
           </Route>

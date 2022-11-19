@@ -34,6 +34,7 @@ const Home = () => {
       Transition: Fade,
     });
 
+
     const [errorMessage, setErrorMessage] = useState('');
 
     const buyTokensHandler = async (tokens) => {
@@ -76,7 +77,11 @@ const Home = () => {
   const handleOpenSelect = () => {
     setOpenSelect(true);
   };
-  const closeSelectHandler = () => {
+
+  const handleGotodao = () => {
+    navigate('/dao');
+  };
+  const handleCloseSelect = () => {
     setOpenSelect(false);
   };
   const handleClose = () => {
@@ -145,10 +150,10 @@ const Home = () => {
   return (
     <div className='container w-full h-screen text-slate-500'>
     <NavBar walletAddress={walletAddress}/>
-      <main className='flex flex-grow w-full p-6 m-6 min-h-max'>
+      <main className='flex flex-grow w-full md:pt-24 pt-24 min-h-max'>
       <div className='basis-1/2 pr-4'>
-      <h2 className='md:text-4xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
-      <h1 className='text-3xl md:text-6xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
+      <h2 className='md:text-3xl text-3xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
+      <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
       <p className='text-xl py-12'>Send, receive, buy and sell digital dollars, anywhere!</p>
       <button onClick={handleOpenSelect} className="text-white bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
             Use it!
@@ -165,9 +170,9 @@ const Home = () => {
       <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-center'>US$ {revenue}</p> <p className='text-center'>Contract Balance</p>
       </div>
       <div className='align-center'>
-      <button className='w-24 hover:text-fuchsia-700'> Learn more...</button>
+      <button className='w-24 hover:text-fuchsia-700' onClick={handleGotodao}> Learn more...</button>
       </div>
-      <SelectModal openSelect={openSelect} closeSelect={closeSelectHandler} openBuy={goToCashPoints}></SelectModal>
+      <SelectModal open={openSelect} close={handleCloseSelect}></SelectModal>
       </div>
       <Snackbar 
       anchorOrigin={{
@@ -183,7 +188,7 @@ const Home = () => {
         
         </Snackbar>
       </main>
-      <Footer/>
+      <Footer className/>
     </div>
   )
 }

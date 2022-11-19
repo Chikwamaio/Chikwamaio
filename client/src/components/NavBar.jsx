@@ -50,13 +50,13 @@ const NavBar = () => {
     return(
         <>
         
-        <div className="bg-white shadow-md fixed top-0 left-0 w-full">
+        <div className="bg-white shadow-md md:pl-12 md:pr-12 fixed top-0 left-0 w-full">
           <div className="md:flex items-center justify-between bg-white py-4 md:px-2 px-2">
             <div>
          <a href="/Home" className="cursor-pointer uppercase">
          <span className="mr-1 pt-2">
         <img
-          className="h-10 inline"
+          className="h-10  inline"
           src={chikwamaLogo}
           alt="Chikwama Logo"
         />
