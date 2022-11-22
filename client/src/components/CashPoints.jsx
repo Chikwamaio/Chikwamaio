@@ -16,6 +16,7 @@ const CashPoints = () => {
     const signer = provider.getSigner();
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
+    const [walletAddress, setWalletAddress] = useState('')
 
     const createCashPointHandler = async () => {
         
@@ -32,7 +33,8 @@ const CashPoints = () => {
         }
         else if(ethereum)
         {
-          console.log('wallet connected');
+          const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
+          setWalletAddress(accounts[0]);
     
           let NumberOfCashPointsTXN = await cashPointsContract.count();
           let count = NumberOfCashPointsTXN.toNumber();
@@ -70,7 +72,7 @@ const CashPoints = () => {
 
     return(
         <><div className='min-h-screen flex flex-col text-slate-500'>
-        <NavBar/>
+        <NavBar walletAddress={walletAddress}/>
         <main className=' text-black container mx-auto px-6 pt-16 flex-1 text-left'>
             <h1 className='text-2xl text-slate-800 py-8' >Cash points:</h1>
         <table className="table-auto">

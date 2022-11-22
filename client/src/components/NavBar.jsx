@@ -39,9 +39,10 @@ const connectWalletHandler = async () =>
 
 
 
-const NavBar = () => {
+const NavBar = ({walletAddress}) => {
   let [menuOpen, setMenuOpen] = useState(false);
-
+  const address = walletAddress;
+  console.log(address);
   const handleOpenMenu = () =>
   {
     setMenuOpen(!menuOpen);
@@ -71,8 +72,8 @@ const NavBar = () => {
         <ul className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static bg-white md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 md:pt-0 pt-6 transition-all duration-500 ease-in ${menuOpen ? 'top-20 opacity-100':'top-[-490] md:opacity-100 opacity-0'} `}>
         <li className="cursor-pointer md:mt-0 mt-2 mr-3 hover:text-fuchsia-700"><a href='/cashpoints'>Cashpoints</a></li>
         <li className="cursor-pointer md:mt-0 mt-2 mr-3 hover:text-fuchsia-700"><a href='/dao'>DAO</a></li>
-        <button onClick={connectWalletHandler} className="text-white md:mt-0 mt-4 bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
-            Connect
+        <button onClick={connectWalletHandler} className="text-white md:mt-0 mt-4 bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring ${}">
+            {address.length > 0? address.slice(0,10)+'...': "Connect"}
         </button>
         </ul>
         </div>

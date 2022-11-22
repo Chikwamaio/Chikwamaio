@@ -16,6 +16,7 @@ const Dao = () => {
     const signer = provider.getSigner();
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
+    const [walletAddress, setWalletAddress] = useState('')
     const [openBuyModal, setOpenBuyModal] = useState(false);
     const [state, setState] = useState({
         open: false,
@@ -69,14 +70,19 @@ const Dao = () => {
         });
           
     }
+
+    const checkWalletIsConnected = async () => {
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
+      setWalletAddress(accounts[0]);
+    }
     
        useEffect(() => {
-    
+        checkWalletIsConnected();
       }, [])
 
     return(
         <><div className='min-h-screen flex flex-col text-slate-500'>
-        <NavBar/>
+        <NavBar walletAddress={walletAddress}/>
         <main className=' text-black container mx-auto px-6 pt-16 flex-1 text-left'>
             <button onClick={handleOpen} className="text-white bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">Buy DAO Tokens</button>
         <BuyTokens open={openBuyModal} buyTokens={buyTokensHandler} close={handleCloseBuyModal}></BuyTokens>
