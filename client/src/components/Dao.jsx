@@ -31,11 +31,11 @@ const Dao = () => {
     });
   };
 
-   const  handleOpen = () => { setOpenBuyModal(true); };
-   const handleCloseBuyModal = () => { setOpenBuyModal(false); };
-    const buyTokensHandler = async (tokens) => {
-        provider.getBalance(contractAddress).then(async (balance)=> {
-          const network = (await provider.getNetwork()).chainId;
+  const  handleOpen = () => { setOpenBuyModal(true); };
+  const handleCloseBuyModal = () => { setOpenBuyModal(false); };
+  const buyTokensHandler = async (tokens) => {
+        const balance = await provider.getBalance(contractAddress);
+        const network = (await provider.getNetwork()).chainId;
   
           if(network != 100)
           {
@@ -67,7 +67,7 @@ const Dao = () => {
             let cost = ethers.utils.formatEther(newPrice) * tokens;
             const buyTokens = cashPointsContract.buyTokens(tokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
           }
-        });
+        
           
     }
 

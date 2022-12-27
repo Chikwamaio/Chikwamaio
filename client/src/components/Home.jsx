@@ -14,7 +14,7 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 
 const Home = () => {
     const [count, setCount] = useState(0)
-    const [openSend, setOpenSelect] = useState(false);
+    const [openSend, setOpenSend] = useState(false);
     const [walletAddress, setWalletAddress] = useState('')
     const [revenue, setRevenue] = useState(0)
     const [tokenBalance, setTokenBalance] = useState(0)
@@ -39,14 +39,14 @@ const Home = () => {
 
     
   const handleOpenSelect = () => {
-    setOpenSelect(true);
+    setOpenSend(true);
   };
 
   const handleGotodao = () => {
     navigate('/dao');
   };
   const closeSend = () => {
-    setOpenSelect(false);
+    setOpenSend(false);
   };
   const handleClose = () => {
     setState({
@@ -54,6 +54,21 @@ const Home = () => {
       open: false,
     });
   };
+
+  const sendMoneyHandler =  async (toAddress, amount) => {
+
+    const balance = await provider.getBalance(currentAccount);
+    const amountEther = ethers.utils.parseUnits(amount, "ether");
+    console.log(amountEther, balance);
+    if(balance< amountEther) {
+      setState({
+        open: true,
+        Transition: Fade,
+      });
+      setErrorMessage(`You have less than $${amount} in your wallet ${currentAccount}`);
+    }
+
+  }
 
   
     const checkWalletIsConnected = async () => {
@@ -79,6 +94,8 @@ const Home = () => {
         }
 
       let tokenBalance = await cashPointsContract.balanceOf(accounts[0]);
+
+      setCurrentAccount(accounts[0])
       setTokenBalance(tokenBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
       let tokenPrice = await cashPointsContract.PRICE_PER_TOKEN();
@@ -132,7 +149,7 @@ const Home = () => {
       <div className='align-center'>
       <button className='w-24 hover:text-fuchsia-700' onClick={handleGotodao}> Learn more...</button>
       </div>
-      <SendMoney open={openSend} close={closeSend}></SendMoney>
+      <SendMoney open={openSend} close={closeSend} send={sendMoneyHandler}></SendMoney>
       </div>
       <Snackbar 
       anchorOrigin={{
