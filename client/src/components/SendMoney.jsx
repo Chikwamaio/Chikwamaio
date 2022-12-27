@@ -7,19 +7,40 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import { useNavigate } from 'react-router-dom';
+import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
+import { ethers } from 'ethers';
 
 
 export default function SendMoney({open, close, send}) {
 
   const [amount, setAmount] = React.useState('');
   const [toAddress, setToAddress] = React.useState('');
+  const [feeAmount, setFee] = React.useState('');
+
+  const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+  const abi = cashPoints.abi;
+
+  const { ethereum } = window;
+  const provider = new ethers.providers.Web3Provider(ethereum);
+  const signer = provider.getSigner();
+  const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
 
   const handleClose = () => {
     close();
   };
 
   const handleSend = () => {
-    send(toAddress,amount);
+    send(toAddress,amount, feeAmount);
+  }
+
+
+  const getCostHandler = async (amount) => {
+
+    const fee = await cashPointsContract.TRANSACTION_COMMISION();
+    let cost = ethers.utils.parseUnits(((parseInt(fee.toString())/100) * amount).toString(),"ether");
+   
+    setFee(ethers.utils.formatEther(cost));
+
   }
 
   return (
@@ -52,11 +73,16 @@ export default function SendMoney({open, close, send}) {
             type="email"
             fullWidth
             variant="filled"
-            onChange={(e) => {
-              setAmount(e.target.value);
+            onChange={async(e) => {
+              const amount = e.target.value;
+              setAmount(amount);
+              await getCostHandler(amount);
             }}
             
           />
+          
+          <DialogContentText>
+           Fee: ${feeAmount}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

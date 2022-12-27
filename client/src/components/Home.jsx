@@ -55,17 +55,20 @@ const Home = () => {
     });
   };
 
-  const sendMoneyHandler =  async (toAddress, amount) => {
+
+
+  const sendMoneyHandler =  async (toAddress, amount, fee) => {
 
     const balance = await provider.getBalance(currentAccount);
     const amountEther = ethers.utils.parseUnits(amount, "ether");
-    console.log(amountEther, balance);
-    if(balance< amountEther) {
+    const feeEther = ethers.utils.parseUnits(fee, "ether");
+    const totalCost = (amountEther.add(feeEther));
+    if(balance< totalCost) {
       setState({
         open: true,
         Transition: Fade,
       });
-      setErrorMessage(`You have less than $${amount} in your wallet ${currentAccount}`);
+      setErrorMessage(`You have less than $${ethers.utils.formatEther(totalCost)} in your wallet ${currentAccount}`);
     }
 
   }
