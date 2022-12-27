@@ -1,6 +1,6 @@
 import NavBar from './NavBar'
 import Footer from './Footer'
-import SelectModal from './SelectModal'
+import SendMoney from './SendMoney'
 import { useState, useEffect} from 'react';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import { ethers } from 'ethers';
@@ -14,7 +14,7 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 
 const Home = () => {
     const [count, setCount] = useState(0)
-    const [openSelect, setOpenSelect] = useState(false);
+    const [openSend, setOpenSelect] = useState(false);
     const [walletAddress, setWalletAddress] = useState('')
     const [revenue, setRevenue] = useState(0)
     const [tokenBalance, setTokenBalance] = useState(0)
@@ -45,7 +45,7 @@ const Home = () => {
   const handleGotodao = () => {
     navigate('/dao');
   };
-  const handleCloseSelect = () => {
+  const closeSend = () => {
     setOpenSelect(false);
   };
   const handleClose = () => {
@@ -132,7 +132,7 @@ const Home = () => {
       <div className='align-center'>
       <button className='w-24 hover:text-fuchsia-700' onClick={handleGotodao}> Learn more...</button>
       </div>
-      <SelectModal open={openSelect} close={handleCloseSelect}></SelectModal>
+      <SendMoney open={openSend} close={closeSend}></SendMoney>
       </div>
       <Snackbar 
       anchorOrigin={{
