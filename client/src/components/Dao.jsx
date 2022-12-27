@@ -62,7 +62,6 @@ const Dao = () => {
   
           if(tokens % 1 == 0 && tokens > 0 )
           {
-            await cashPointsContract.setPrice();
             const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
             let cost = ethers.utils.formatEther(newPrice) * tokens;
             const buyTokens = cashPointsContract.buyTokens(tokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
