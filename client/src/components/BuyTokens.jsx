@@ -1,16 +1,29 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import { useNavigate } from 'react-router-dom';
+import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
+import { ethers } from 'ethers';
 
 
 export default function FormDialog( {buyTokens, open, close} ) {
   
   const [tokensToBuy, setTokens] = React.useState('');
+  const [value, setValue] = React.useState('');
+
+  const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+  const abi = cashPoints.abi;
+
+  const { ethereum } = window;
+  const provider = new ethers.providers.Web3Provider(ethereum);
+  const signer = provider.getSigner();
+  const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
 
   const handleBuy = () => {
     buyTokens(tokensToBuy); 
@@ -19,6 +32,14 @@ export default function FormDialog( {buyTokens, open, close} ) {
   const handleClose = () => {
     close();
   };
+
+  const getPriceHandler = async () => {
+
+    const tokenPrice = await cashPointsContract.PRICE_PER_TOKEN();
+    const value = ethers.utils.formatEther(tokenPrice)*tokensToBuy;
+    setValue(value);
+
+  }
 
   return (
     <div>
@@ -37,10 +58,15 @@ export default function FormDialog( {buyTokens, open, close} ) {
             type="number"
             fullWidth
             variant="filled"
-            onChange={(e) => {
-                setTokens(e.target.value);
+            onChange={async(e) => {
+                const tokens =  e.target.value;
+                setTokens(tokens);
+                await getPriceHandler();
               }}
           />
+          <DialogContentText>
+            Value: $ {value}
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
