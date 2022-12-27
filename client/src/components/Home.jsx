@@ -59,7 +59,6 @@ const Home = () => {
     const checkWalletIsConnected = async () => {
       const network =(await provider.getNetwork()).chainId;
     const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
-    console.log(contractAddress);
     setWalletAddress(accounts[0]);
 
     if(!ethereum)
@@ -79,8 +78,6 @@ const Home = () => {
           return;
         }
 
-      console.log('wallet connected');
-
       let tokenBalance = await cashPointsContract.balanceOf(accounts[0]);
       setTokenBalance(tokenBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
@@ -95,7 +92,6 @@ const Home = () => {
         // convert a currency unit from wei to ether
         const balanceInDai = ethers.utils.formatEther(balance);
         setRevenue(balanceInDai.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-        console.log(`balance: ${balanceInDai} xDai`)
        })
 
    }
@@ -126,12 +122,12 @@ const Home = () => {
       <div className='basis-1/2 grid grid-cols-1 align-center'>
       <h4 className='text-xl text-slate-700 lg:text-2xl uppercase text-left'> DAO Metrics:</h4>
       <div className='bg-white mx-auto mb-4 float-right m-4 p-2 border-2 border-gray-300 h-24 w-36'>
-      <CalculateIcon></CalculateIcon><p className='text-xl text-yellow-400 text-center'>US$ {tokenPrice} </p> <p className='text-center'>Current Price</p>
+      <CalculateIcon></CalculateIcon><p className='text-xl text-yellow-400 text-left'>US$ {tokenPrice} </p> <p className='text-left'>Current Price</p>
       </div>
       <div className='bg-white mx-auto mb-4 float-right p-2 border-2 border-gray-300 h-24 w-36'>
-      <PieChartIcon></PieChartIcon><p className='text-xl text-yellow-400 text-center'>{tokenBalance} CHK</p> <p className='text-center'>Your Balance</p></div>
+      <PieChartIcon></PieChartIcon><p className='text-xl text-yellow-400 text-left'>{tokenBalance} CHK</p> <p className='text-left'>Your Balance</p></div>
       <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-36'>
-      <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-center'>US$ {revenue}</p> <p className='text-center'>Contract Balance</p>
+      <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-left'>US$ {revenue}</p> <p className='text-left'>Contract Balance</p>
       </div>
       <div className='align-center'>
       <button className='w-24 hover:text-fuchsia-700' onClick={handleGotodao}> Learn more...</button>

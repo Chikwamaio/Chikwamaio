@@ -32,6 +32,7 @@ contract CashPoints is ERC20{
     uint public CASHPOINT_FEE = 0.5 ether;
     uint public TRANSACTION_COMMISION = 1; //percentage commision on transactions routed through the contract
     uint public count = 0;
+    bool public lock = false;
     
     constructor() ERC20("Chikwama", "CHK") {
         Owner = payable(msg.sender);
@@ -50,12 +51,16 @@ contract CashPoints is ERC20{
        PRICE_PER_TOKEN = (address(this).balance/totalSupply());
     }
 
+
     function buyTokens(uint _amount) external payable {
-        require(_amount * PRICE_PER_TOKEN == msg.value, "You are sending the wrong amount to this contract");
-        require(totalSupply() + _amount <= MAX_SUPPLY, "Max supply reached");
-        _mint(msg.sender, _amount);
-        setPrice();
-    }
+    require(!lock, "Reentrancy lock is active");
+    lock = true;
+    require(_amount * PRICE_PER_TOKEN == msg.value, "You are sending the wrong amount to this contract");
+    require(totalSupply() + _amount <= MAX_SUPPLY, "Max supply reached");
+    _mint(msg.sender, _amount);
+    setPrice();
+    lock = false;
+}
 
     
     function addCashPoint(string memory name, int mylat, int mylong, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable {

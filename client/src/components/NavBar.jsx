@@ -42,7 +42,6 @@ const connectWalletHandler = async () =>
 const NavBar = ({walletAddress}) => {
   let [menuOpen, setMenuOpen] = useState(false);
   const address = walletAddress;
-  console.log(address);
   const handleOpenMenu = () =>
   {
     setMenuOpen(!menuOpen);
@@ -51,7 +50,7 @@ const NavBar = ({walletAddress}) => {
     return(
         <>
         
-        <div className="bg-white shadow-md md:pl-12 md:pr-12 fixed top-0 left-0 w-full">
+        <div className="bg-white shadow-md md:pl-24 md:pr-24 fixed top-0 left-0 w-full">
           <div className="md:flex items-center justify-between bg-white py-4 md:px-2 px-2">
             <div>
          <a href="/Home" className="cursor-pointer uppercase">
@@ -73,7 +72,7 @@ const NavBar = ({walletAddress}) => {
         <li className="cursor-pointer md:mt-0 mt-2 mr-3 hover:text-fuchsia-700"><a href='/cashpoints'>Cashpoints</a></li>
         <li className="cursor-pointer md:mt-0 mt-2 mr-3 hover:text-fuchsia-700"><a href='/dao'>DAO</a></li>
         <button onClick={connectWalletHandler} className="text-white md:mt-0 mt-4 bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring ${}">
-            {address.length > 0? address.slice(0,10)+'...': "Connect"}
+        {address.length > 0?  address.slice(0,10)+'...': "Connect"}
         </button>
         </ul>
         </div>

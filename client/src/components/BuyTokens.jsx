@@ -26,7 +26,7 @@ export default function FormDialog( {buyTokens, open, close} ) {
         <DialogTitle>Buy Tokens</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            You can buy a stake in Chikwama. Chikwama(CHK) tokens entitle you to a stake in the protocols revenues.
+            You can buy a stake in Chikwama. Chikwama(CHK) tokens entitle you to a stake in the DAO's revenues.
           </DialogContentText>
           <TextField
             autoFocus
