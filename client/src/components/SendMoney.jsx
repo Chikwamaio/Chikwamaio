@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -13,9 +14,9 @@ import { ethers } from 'ethers';
 
 export default function SendMoney({open, close, send}) {
 
-  const [amount, setAmount] = React.useState('');
-  const [toAddress, setToAddress] = React.useState('');
-  const [feeAmount, setFee] = React.useState('');
+  const [amount, setAmount] = useState('');
+  const [toAddress, setToAddress] = useState('');
+  const [feeAmount, setFee] = useState('');
 
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
   const abi = cashPoints.abi;
@@ -43,6 +44,7 @@ export default function SendMoney({open, close, send}) {
 
   }
 
+
   return (
     <Dialog onClose={close} open={open}>
       <DialogTitle>Send Money</DialogTitle>
@@ -56,7 +58,7 @@ export default function SendMoney({open, close, send}) {
             value={toAddress}
             id="name"
             label="Receiver address"
-            type="email"
+            type="text"
             fullWidth
             variant="filled"
             onChange={(e) => {
@@ -70,7 +72,7 @@ export default function SendMoney({open, close, send}) {
             value={amount}
             id="name"
             label="Amount"
-            type="email"
+            type="number"
             fullWidth
             variant="filled"
             onChange={async(e) => {

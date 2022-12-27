@@ -60,6 +60,7 @@ const Home = () => {
   const sendMoneyHandler =  async (toAddress, amount, fee) => {
 
     const balance = await provider.getBalance(currentAccount);
+    const address = toAddress;
     const amountEther = ethers.utils.parseUnits(amount, "ether");
     const feeEther = ethers.utils.parseUnits(fee, "ether");
     const totalCost = (amountEther.add(feeEther));
@@ -70,6 +71,15 @@ const Home = () => {
       });
       setErrorMessage(`You have less than $${ethers.utils.formatEther(totalCost)} in your wallet ${currentAccount}`);
     }
+
+
+    const sendXdai = await cashPointsContract.send(amountEther, toAddress, { value: ethers.BigNumber.from(totalCost.toString()) });
+
+    setState({
+      open: true,
+      Transition: Fade,
+    });
+    setErrorMessage(`${sendXdai.toString()}`);
 
   }
 

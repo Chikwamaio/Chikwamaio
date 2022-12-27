@@ -34,7 +34,7 @@ export default function FormDialog( {buyTokens, open, close} ) {
             value = {tokensToBuy}
             id="name"
             label="Number of tokens"
-            type="email"
+            type="number"
             fullWidth
             variant="filled"
             onChange={(e) => {
