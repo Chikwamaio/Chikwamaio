@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
+import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
@@ -50,14 +51,14 @@ export default function SendMoney({open, close, send}) {
       <DialogTitle>Send Money</DialogTitle>
         <DialogContent>
         <DialogContentText>
-            If the receiver intends to cashout please ensure there is a <a href='/cashpoints'>Chikwama cash point</a> near them.
+            If the receiver intends to cash out please ensure there is a <Link color="inherit" href='/cashpoints'>Chikwama cash point</Link> near them.
           </DialogContentText>
         <TextField
             autoFocus
             margin="dense"
             value={toAddress}
             id="name"
-            label="Receiver address"
+            label="Receiver's address"
             type="text"
             fullWidth
             variant="filled"

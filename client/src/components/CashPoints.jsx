@@ -4,6 +4,10 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import { ethers } from 'ethers';
+import Link from '@mui/material/Link';
+import SearchIcon from '@mui/icons-material/Search';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
 
 
 const CashPoints = () => {
@@ -73,11 +77,18 @@ const CashPoints = () => {
     return(
         <><div className='min-h-screen flex flex-col text-slate-500'>
         <NavBar walletAddress={walletAddress}/>
-        <main className=' text-black container mx-auto px-6 pt-16 flex-1 text-left'>
-            <h1 className='text-2xl text-slate-800 py-8' >Cash points:</h1>
+        <main className=' text-black container mx-auto pt-16 flex-1 text-left'>
+            <h1 className='text-2xl text-slate-800 py-8' >Find a cash point:</h1>
+            
+            <Input className='my-6 clear-left' startAdornment={
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          }/>
+          
         <table className="table-auto">
   <thead>
-    <tr className='bg-slate-800 text-white' >
+    <tr className='bg-slate-800 text-white text-sm text-center' >
       <th>Name</th>
       <th>City</th>
       <th>Phone number</th>
@@ -119,9 +130,8 @@ const CashPoints = () => {
 
   </tbody>
 </table>
-<button onClick={createCashPointHandler} className="text-white text-3xl float-right bg-fuchsia-700 mx-20 py-2 px-5 rounded-xl drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
-            +
-          </button>
++ <Link color="inherit" href='/cashpoints' onClick={createCashPointHandler}>Add a cash point</Link>
+
 </main>
         <Footer/>
         </div>
