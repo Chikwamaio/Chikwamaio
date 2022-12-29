@@ -8,10 +8,12 @@ import Link from '@mui/material/Link';
 import SearchIcon from '@mui/icons-material/Search';
 import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
+import AddCashPoint from './AddCashPoint';
 
 
 const CashPoints = () => {
 
+    const [openCreate, setOpenCreate] = useState(false);
     const [data, getData] = useState([]);
     const [isActive, setIsActive] = useState([]);
     const abi = cashPoints.abi;
@@ -22,10 +24,18 @@ const CashPoints = () => {
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
     const [walletAddress, setWalletAddress] = useState('')
 
+    const handleOpenCreate = () => {
+      setOpenCreate(true);
+    };
+
+    const closeCreate = () => {
+      setOpenCreate(false);
+    };
+
     const createCashPointHandler = async () => {
         
     
-        await cashPointsContract.addCashPoint();
+        //await cashPointsContract.addCashPoint();
           
     }
 
@@ -80,12 +90,12 @@ const CashPoints = () => {
         <main className=' text-black container mx-auto pt-16 flex-1 text-left'>
             <h1 className='text-2xl text-slate-800 py-8' >Find a cash point:</h1>
             
-            <Input className='my-6 clear-left' startAdornment={
+            <Input className='my-6 clear-left' label='Search' startAdornment={
             <InputAdornment position="start">
               <SearchIcon />
             </InputAdornment>
           }/>
-          
+        
         <table className="table-auto">
   <thead>
     <tr className='bg-slate-800 text-white text-sm text-center' >
@@ -130,11 +140,15 @@ const CashPoints = () => {
 
   </tbody>
 </table>
-+ <Link color="inherit" href='/cashpoints' onClick={createCashPointHandler}>Add a cash point</Link>
 
++ <Link color="inherit" component='button' href='/cashpoints' onClick={handleOpenCreate}>Add a cash point</Link>
+<div>
+<AddCashPoint open={openCreate} close={closeCreate} add={createCashPointHandler}></AddCashPoint>
+</div>
 </main>
+
         <Footer/>
-        </div>
+       </div>
         </>);
 }
 

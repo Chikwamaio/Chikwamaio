@@ -38,7 +38,7 @@ const Home = () => {
     const [errorMessage, setErrorMessage] = useState('');
 
     
-  const handleOpenSelect = () => {
+  const handleOpenSend = () => {
     setOpenSend(true);
   };
 
@@ -145,7 +145,7 @@ const Home = () => {
       <h2 className='md:text-3xl text-3xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
       <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
       <p className='text-xl py-12'>Send, receive, buy and sell digital dollars, anywhere!</p>
-      <button onClick={handleOpenSelect} className="text-white bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
+      <button onClick={handleOpenSend} className="text-white bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
             Use it!
           </button>
       </div>
