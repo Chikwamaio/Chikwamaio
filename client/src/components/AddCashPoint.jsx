@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Slider from '@mui/material/Slider';
@@ -15,6 +16,8 @@ import DialogContentText from '@mui/material/DialogContentText';
 import { useNavigate } from 'react-router-dom';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import { ethers } from 'ethers';
+import { useEffect } from 'react';
+import currencies from '../resources/currencies.json';
 
 
 export default function AddCashPoint({open, close, update, add}) {
@@ -49,6 +52,7 @@ export default function AddCashPoint({open, close, update, add}) {
 
   }
 
+
   const marks = [
     {
       value: 0,
@@ -59,6 +63,7 @@ export default function AddCashPoint({open, close, update, add}) {
       label: '365',
     },
   ];
+
 
 
   return (
@@ -94,16 +99,24 @@ export default function AddCashPoint({open, close, update, add}) {
               //await getCostHandler(amount);
             }}
           />
+          <InputLabel id="demo-simple-select-standard-label">Currency:</InputLabel>
            <Select
-          labelId="demo-simple-select-filled-label"
-          id="demo-simple-select-filled"
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          variant="filled"
           value={currency}
-          label='Currency'
-          //onChange={handleChange}
+          label="Currency"
+          onChange={async(e) => {
+            const Currency = e.target.value;
+            setCurrency(Currency);
+            //await getCostHandler(amount);
+          }}
         >
-            <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
+            {currencies.map(({cc,symbol, name}, index) => (
+            <MenuItem key={index} value={name}>
+              {cc} - {name}
+            </MenuItem>
+          ))}
     </Select>
           <TextField
             autoFocus
@@ -135,9 +148,7 @@ export default function AddCashPoint({open, close, update, add}) {
               //await getCostHandler(amount);
             }}
           />
-          <Typography style={{padding: 10, color:'grey'}} id="input-slider">
-        Duration(Days)
-      </Typography>
+          <InputLabel>Duration(Days):</InputLabel>
          <Slider sx={{ width: 260 }} defaultValue={30} step={1} marks={marks} min={0} max={365} valueLabelDisplay="auto"/>
           <DialogContentText>
            Fee: $</DialogContentText>
