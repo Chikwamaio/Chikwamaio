@@ -14,6 +14,7 @@ import AddCashPoint from './AddCashPoint';
 const CashPoints = () => {
 
     const [openCreate, setOpenCreate] = useState(false);
+    const [isCashPoint, setIsCashPoint] = useState(false);
     const [data, getData] = useState([]);
     const [isActive, setIsActive] = useState([]);
     const abi = cashPoints.abi;
@@ -24,7 +25,10 @@ const CashPoints = () => {
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
     const [walletAddress, setWalletAddress] = useState('')
 
-    const handleOpenCreate = () => {
+    const handleOpenCreate = async() => {
+      const cp = await cashPointsContract.getCashPoint(walletAddress);
+
+      setIsCashPoint(cp._isCashPoint);
       setOpenCreate(true);
     };
 
@@ -38,6 +42,12 @@ const CashPoints = () => {
         //await cashPointsContract.addCashPoint();
           
     }
+
+ 
+    
+     
+        
+ 
 
     const getCashPoints = async () => {
     
@@ -143,7 +153,7 @@ const CashPoints = () => {
 
 + <Link color="inherit" component='button' href='/cashpoints' onClick={handleOpenCreate}>Add a cash point</Link>
 <div>
-<AddCashPoint open={openCreate} close={closeCreate} add={createCashPointHandler}></AddCashPoint>
+<AddCashPoint open={openCreate} close={closeCreate} update={isCashPoint} add={createCashPointHandler}></AddCashPoint>
 </div>
 </main>
 

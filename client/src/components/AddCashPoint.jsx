@@ -39,6 +39,7 @@ export default function AddCashPoint({open, close, update, add}) {
   };
 
   const handleAdd = () => {
+    console.log(update);
     //send(toAddress,amount, feeAmount);
   }
 
@@ -68,10 +69,10 @@ export default function AddCashPoint({open, close, update, add}) {
 
   return (
     <Dialog onClose={close} open={open}>
-      <DialogTitle>Add a cash point</DialogTitle>
+      <DialogTitle>{update?'Update a Cashpoint':'Add a Cashpoint'}</DialogTitle>
         <DialogContent>
         <DialogContentText>
-        You are about to create a cash point at this location.</DialogContentText>
+        {update?'You are about to update your cash point details(The cash points location will be your current location).':'You are about to create a cash point at this location.'}</DialogContentText>
         <TextField
             autoFocus
             margin="dense"
@@ -155,7 +156,7 @@ export default function AddCashPoint({open, close, update, add}) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleAdd}>Add</Button>
+          <Button onClick={handleAdd}>{update?'Update':'Add'}</Button>
         </DialogActions>
     </Dialog>
   );
