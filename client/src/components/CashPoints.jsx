@@ -36,9 +36,9 @@ const CashPoints = () => {
       setOpenCreate(false);
     };
 
-    const createCashPointHandler = async () => {
+    const createCashPointHandler = async (cashPointName, phoneNumber, currency, buyRate, sellRate, duration, fee) => {
         
-    
+      console.table(cashPointName, phoneNumber, currency, buyRate, sellRate, duration, fee);
         //await cashPointsContract.addCashPoint();
           
     }

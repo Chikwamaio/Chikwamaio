@@ -24,7 +24,12 @@ export default function AddCashPoint({open, close, update, add}) {
 
  
   const [feeAmount, setFee] = useState('');
-  const [currency, setCurrency] = useState('Currency');
+  const [currency, setCurrency] = useState('');
+  const [duration, setDuration] = useState('');
+  const [cashPointName, setCashPointName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [buyRate, setBuyRate] = useState('');
+  const [sellRate, setSellRate] = useState('');
 
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
   const abi = cashPoints.abi;
@@ -39,15 +44,14 @@ export default function AddCashPoint({open, close, update, add}) {
   };
 
   const handleAdd = () => {
-    console.log(update);
-    //send(toAddress,amount, feeAmount);
+    add(cashPointName,phoneNumber,currency, buyRate, sellRate, duration, feeAmount);
   }
 
 
-  const getCostHandler = async (amount) => {
+  const getCostHandler = async (Duration) => {
 
     const fee = await cashPointsContract.CASHPOINT_FEE();
-    let cost = ethers.utils.parseUnits(((parseInt(fee.toString())) * amount).toString(),"ether");
+    let cost = ((parseInt(fee.toString())) * Duration).toString();
    
     setFee(ethers.utils.formatEther(cost));
 
@@ -76,28 +80,27 @@ export default function AddCashPoint({open, close, update, add}) {
         <TextField
             autoFocus
             margin="dense"
+            value={cashPointName}
             id="name"
             label="Cash point name"
             type="text"
             fullWidth
             variant="filled"
             onChange={(e) => {
-              
+              setCashPointName(e.target.value);
             }}
           />
           <TextField
             autoFocus
             margin="dense"
-            //value={amount}
+            value={phoneNumber}
             id="phone"
             label="Phone Number"
             type="number"
             fullWidth
             variant="filled"
-            onChange={async(e) => {
-              //const amount = e.target.value;
-              //setAmount(amount);
-              //await getCostHandler(amount);
+            onChange={async(e) => {  
+              setPhoneNumber(e.target.value);
             }}
           />
           <InputLabel id="demo-simple-select-standard-label">Currency:</InputLabel>
@@ -108,9 +111,7 @@ export default function AddCashPoint({open, close, update, add}) {
           value={currency}
           label="Currency"
           onChange={async(e) => {
-            const Currency = e.target.value;
-            setCurrency(Currency);
-            //await getCostHandler(amount);
+            setCurrency(e.target.value);
           }}
         >
             {currencies.map(({cc,symbol, name}, index) => (
@@ -122,37 +123,46 @@ export default function AddCashPoint({open, close, update, add}) {
           <TextField
             autoFocus
             margin="dense"
-            //value={amount}
+            value={buyRate}
             id="buyRate"
             label="Buy rate"
             type="number"
             fullWidth
             variant="filled"
             onChange={async(e) => {
-              //const amount = e.target.value;
-              //setAmount(amount);
-              //await getCostHandler(amount);
+              setBuyRate(e.target.value);
             }}
           />
           <TextField
             autoFocus
             margin="dense"
-            //value={amount}
+            value={sellRate}
             id="sellRate"
             label="Sell rate"
             type="number"
             fullWidth
             variant="filled"
             onChange={async(e) => {
-              //const amount = e.target.value;
-              //setAmount(amount);
-              //await getCostHandler(amount);
+              setSellRate(e.target.value);
             }}
           />
           <InputLabel>Duration(Days):</InputLabel>
-         <Slider sx={{ width: 260 }} defaultValue={30} step={1} marks={marks} min={0} max={365} valueLabelDisplay="auto"/>
+         <Slider 
+         sx={{ width: 260 }} 
+         defaultValue={30} 
+         step={1} 
+         marks={marks} 
+         min={0} 
+         max={365} 
+         valueLabelDisplay="auto"
+         value={duration} onChange={async(e) => {
+          const Duration = e.target.value;
+          setDuration(Duration);
+          await getCostHandler(Duration);
+        }}
+         />
           <DialogContentText>
-           Fee: $</DialogContentText>
+           Fee: ${feeAmount}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
