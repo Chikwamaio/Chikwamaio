@@ -133,7 +133,7 @@ describe("Cashpoints", function () {
 
     
     
-    it("Should let user update a cashpoint", async function () {
+    it("Should let user create and update a cashpoint", async function () {
       const { cashpoints, owner, addr1, addr2, initialSupply } = await loadFixture(deployCashpointsContract);
       const duration = 10;
       const name = 'Alpha';

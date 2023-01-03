@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
@@ -16,13 +16,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import { useNavigate } from 'react-router-dom';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import { ethers } from 'ethers';
-import { useEffect } from 'react';
 import currencies from '../resources/currencies.json';
 
 
 export default function AddCashPoint({open, close, update, add}) {
 
- 
+  const[latitude, setLatitude]= useState('');
+  const [longitude, setLongitude]= useState('');
+  const [accuracy, setAccuracy]= useState('');
   const [feeAmount, setFee] = useState('');
   const [currency, setCurrency] = useState('');
   const [duration, setDuration] = useState('');
@@ -44,7 +45,9 @@ export default function AddCashPoint({open, close, update, add}) {
   };
 
   const handleAdd = () => {
-    add(cashPointName,phoneNumber,currency, buyRate, sellRate, duration, feeAmount);
+    
+    add(cashPointName,phoneNumber,currency, buyRate, sellRate, duration, feeAmount, latitude, longitude);
+
   }
 
 
@@ -70,13 +73,22 @@ export default function AddCashPoint({open, close, update, add}) {
   ];
 
 
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        setAccuracy(parseInt(position.coords.accuracy))
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      })
+    };
+  }, [])
 
   return (
     <Dialog onClose={close} open={open}>
       <DialogTitle>{update?'Update a Cashpoint':'Add a Cashpoint'}</DialogTitle>
         <DialogContent>
         <DialogContentText>
-        {update?'You are about to update your cash point details(The cash points location will be your current location).':'You are about to create a cash point at this location.'}</DialogContentText>
+        {update?`You are about to update your cash point details(The cash points location will be your current location accurate to ${accuracy}) metres.`:`You are about to create a cash point at this location accurate to ${accuracy} metres.`}</DialogContentText>
         <TextField
             autoFocus
             margin="dense"
