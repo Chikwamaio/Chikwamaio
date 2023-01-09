@@ -98,7 +98,7 @@ const Dao = () => {
         <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama DAO</h1>
         <p>A DAO or decentralised autonomous organisation is a member-owned community without centralized leadership. Created because said members share a common goal. The rules that govern a DAO are encoded as a <Link href='https://github.com/Chikwama-io/ChikwamaWebsite/blob/master/contracts/contracts/Cashpoints.sol'>computer program.</Link></p>
         <br></br>
-        <p>The chikwama DAO was created to catalyse the creation of a global network of blockchain based digital dollar cashpoints. The original members believe that would be cash point operators can be incentivised to operate cash points by allowing them to <Link onClick={handleOpen}>buy a stake in the DAO</Link> and <Link>liquidate</Link> their stake in a permissionless manner. </p>
+        <p>The chikwama DAO was created to catalyse the creation of a global network of blockchain based digital dollar cashpoints. The original members believe that would be cash point operators can be incentivised to operate cash points by allowing them to <Link onClick={handleOpen}>own a stake in the DAO</Link> and <Link>liquidate</Link> their stake in a permissionless manner. </p>
         {loading&&<CircularProgress sx={{
               position: 'absolute',
               top: 250,
