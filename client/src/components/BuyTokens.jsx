@@ -10,13 +10,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import { useNavigate } from 'react-router-dom';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import { ethers } from 'ethers';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 export default function FormDialog( {buyTokens, open, close} ) {
   
   const [tokensToBuy, setTokens] = React.useState('');
   const [value, setValue] = React.useState('');
-
+  const [loading, setLoading] = useState(false);
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
   const abi = cashPoints.abi;
 
@@ -34,10 +35,11 @@ export default function FormDialog( {buyTokens, open, close} ) {
   };
 
   const getPriceHandler = async () => {
-
+    setLoading(true);
     const tokenPrice = await cashPointsContract.PRICE_PER_TOKEN();
     const value = ethers.utils.formatEther(tokenPrice)*tokensToBuy;
     setValue(value);
+    setLoading(false);
 
   }
 
@@ -49,6 +51,12 @@ export default function FormDialog( {buyTokens, open, close} ) {
           <DialogContentText>
             You can buy a stake in Chikwama. Chikwama(CHK) tokens entitle you to a stake in the DAO's revenues.
           </DialogContentText>
+          {loading&&<CircularProgress sx={{
+              position: 'absolute',
+              top: 160,
+              left: 120,
+              zIndex: 1,
+            }} size={68} color="secondary" />}
           <TextField
             autoFocus
             margin="dense"
@@ -70,7 +78,7 @@ export default function FormDialog( {buyTokens, open, close} ) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleBuy}>BUY</Button>
+          <Button disabled={loading} onClick={handleBuy}>BUY</Button>
         </DialogActions>
       </Dialog>
     </div>

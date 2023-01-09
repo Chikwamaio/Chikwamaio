@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import { ethers } from 'ethers';
 import currencies from '../resources/currencies.json';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 export default function AddCashPoint({open, close, update, add}) {
@@ -31,6 +32,7 @@ export default function AddCashPoint({open, close, update, add}) {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [buyRate, setBuyRate] = useState('');
   const [sellRate, setSellRate] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
   const abi = cashPoints.abi;
@@ -52,11 +54,12 @@ export default function AddCashPoint({open, close, update, add}) {
 
 
   const getCostHandler = async (Duration) => {
-
+    setLoading(true);
     const fee = await cashPointsContract.CASHPOINT_FEE();
     let cost = ((parseInt(fee.toString())) * Duration).toString();
    
     setFee(ethers.utils.formatEther(cost));
+    setLoading(false);
 
   }
 
@@ -115,6 +118,12 @@ export default function AddCashPoint({open, close, update, add}) {
               setPhoneNumber(e.target.value);
             }}
           />
+          {loading&&<CircularProgress sx={{
+              position: 'absolute',
+              top: 220,
+              left: 120,
+              zIndex: 1,
+            }} size={68} color="secondary" />}
           <InputLabel id="demo-simple-select-standard-label">Currency:</InputLabel>
            <Select
           labelId="demo-simple-select-standard-label"
@@ -178,7 +187,7 @@ export default function AddCashPoint({open, close, update, add}) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleAdd}>{update?'Update':'Add'}</Button>
+          <Button disabled={loading} onClick={handleAdd}>{update?'Update':'Add'}</Button>
         </DialogActions>
     </Dialog>
   );

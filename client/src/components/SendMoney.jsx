@@ -11,6 +11,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import { useNavigate } from 'react-router-dom';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import { ethers } from 'ethers';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 export default function SendMoney({open, close, send}) {
@@ -18,7 +19,7 @@ export default function SendMoney({open, close, send}) {
   const [amount, setAmount] = useState('');
   const [toAddress, setToAddress] = useState('');
   const [feeAmount, setFee] = useState('');
-
+  const [loading, setLoading] = useState(false);
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
   const abi = cashPoints.abi;
 
@@ -37,11 +38,12 @@ export default function SendMoney({open, close, send}) {
 
 
   const getCostHandler = async (amount) => {
-
+    setLoading(true);
     const fee = await cashPointsContract.TRANSACTION_COMMISION();
     let cost = ethers.utils.parseUnits(((parseInt(fee.toString())/100) * amount).toString(),"ether");
    
     setFee(ethers.utils.formatEther(cost));
+    setLoading(false);
 
   }
 
@@ -67,6 +69,12 @@ export default function SendMoney({open, close, send}) {
             }}
             
           />
+          {loading&&<CircularProgress sx={{
+              position: 'absolute',
+              top: 160,
+              left: 120,
+              zIndex: 1,
+            }} size={68} color="secondary" />}
           <TextField
             autoFocus
             margin="dense"
@@ -89,7 +97,7 @@ export default function SendMoney({open, close, send}) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSend}>Send</Button>
+          <Button disabled={loading} onClick={handleSend}>Send</Button>
         </DialogActions>
     </Dialog>
   );
