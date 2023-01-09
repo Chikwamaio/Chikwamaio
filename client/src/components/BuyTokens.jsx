@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -13,9 +13,9 @@ import { ethers } from 'ethers';
 import CircularProgress from '@mui/material/CircularProgress';
 
 
-export default function FormDialog( {buyTokens, open, close} ) {
+export default function FormDialog( {buyTokens, open, close, available} ) {
   
-  const [tokensToBuy, setTokens] = React.useState('');
+  const [tokensToBuy, setTokens] = useState('');
   const [value, setValue] = React.useState('');
   const [loading, setLoading] = useState(false);
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
@@ -43,13 +43,18 @@ export default function FormDialog( {buyTokens, open, close} ) {
 
   }
 
+
+  useEffect(() => {
+    
+  }, [])
+
   return (
     <div>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Buy Tokens</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            You can buy a stake in Chikwama. Chikwama(CHK) tokens entitle you to a stake in the DAO's revenues.
+            You can buy a stake in Chikwama. Chikwama(CHK) tokens entitle you to a stake in the DAO's revenues. There are currently {available} CHK tokens available. 
           </DialogContentText>
           {loading&&<CircularProgress sx={{
               position: 'absolute',

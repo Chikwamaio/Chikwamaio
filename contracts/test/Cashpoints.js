@@ -90,6 +90,8 @@ describe("Cashpoints", function () {
       
       await expect(cashpoints.connect(owner).withdraw(amount)).to.changeEtherBalance(cashpoints.address, ethers.utils.parseUnits("-10", "ether"));
       expect(await cashpoints.totalSupply()).to.equal(0);
+      const availabletokens = await cashpoints.AVAILABLE_TOKENS();
+      assert.equal(availabletokens, 100000);
 
     })
 
@@ -111,7 +113,7 @@ describe("Cashpoints", function () {
 
     it("Should let user buy tokens if there is value in the contract", async function () {
       const { cashpoints, owner, addr1, initialSupply } = await loadFixture(deployCashpointsContract);
-      const newtokens = 90000;
+      const newtokens = 18000;
       const amount = ethers.utils.parseUnits("10", "ether");
       
       await addr1.sendTransaction({ to: cashpoints.address, value: amount });
@@ -127,8 +129,10 @@ describe("Cashpoints", function () {
       );
       const totalSupply = await cashpoints.totalSupply();
       const contractBalance = await ethers.provider.getBalance(cashpoints.address);
+      const availabletokens = await cashpoints.AVAILABLE_TOKENS();
       assert.equal( totalSupply, initialSupply + newtokens);
       assert.equal(ethers.utils.formatEther(contractBalance), parseInt(ethers.utils.formatEther(amount)) + cost);
+      assert.equal(availabletokens, 90000-newtokens);
     });
 
     

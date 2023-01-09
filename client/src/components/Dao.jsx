@@ -6,10 +6,14 @@ import BuyTokens from './BuyTokens'
 import { ethers } from 'ethers';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import Fade from '@mui/material/Fade';
-import Snackbar from '@mui/material/Snackbar'
+import Snackbar from '@mui/material/Snackbar';
+import Link from '@mui/material/Link';
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const Dao = () => {
 
+  const [loading, setLoading] = useState(false);
     const { ethereum } = window;
     const abi = cashPoints.abi;
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -18,6 +22,7 @@ const Dao = () => {
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
     const [walletAddress, setWalletAddress] = useState('')
     const [openBuyModal, setOpenBuyModal] = useState(false);
+    const [availableTokens, setAvailableTokens] = useState('');
     const [state, setState] = useState({
         open: false,
         Transition: Fade,
@@ -31,7 +36,14 @@ const Dao = () => {
     });
   };
 
-  const  handleOpen = () => { setOpenBuyModal(true); };
+  const  handleOpen = async() => { 
+    setLoading(true);
+    const tokens = (await cashPointsContract.AVAILABLE_TOKENS()).toString();
+    setAvailableTokens(tokens);
+    setLoading(false);
+    setOpenBuyModal(true); 
+  
+  };
   const handleCloseBuyModal = () => { setOpenBuyModal(false); };
   const buyTokensHandler = async (tokens) => {
         const balance = await provider.getBalance(contractAddress);
@@ -83,8 +95,17 @@ const Dao = () => {
         <><div className='min-h-screen flex flex-col text-slate-500'>
         <NavBar walletAddress={walletAddress}/>
         <main className=' text-black container mx-auto px-6 pt-16 flex-1 text-left'>
-            <button onClick={handleOpen} className="text-white bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">Buy DAO Tokens</button>
-        <BuyTokens open={openBuyModal} buyTokens={buyTokensHandler} close={handleCloseBuyModal}></BuyTokens>
+        <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama DAO</h1>
+        <p>A DAO or decentralised autonomous organisation is a member-owned community without centralized leadership. Created because said members share a common goal. The rules that govern a DAO are encoded as a <Link href='https://github.com/Chikwama-io/ChikwamaWebsite/blob/master/contracts/contracts/Cashpoints.sol'>computer program.</Link></p>
+        <br></br>
+        <p>The chikwama DAO was created to catalyse the creation of a global network of blockchain based digital dollar cashpoints. The original members believe that would be cash point operators can be incentivised to operate cash points by allowing them to <Link onClick={handleOpen}>buy a stake in the DAO</Link> and <Link>liquidate</Link> their stake in a permissionless manner. </p>
+        {loading&&<CircularProgress sx={{
+              position: 'absolute',
+              top: 250,
+              left: 120,
+              zIndex: 1,
+            }} size={68} color="secondary" />}
+        <BuyTokens open={openBuyModal} buyTokens={buyTokensHandler} close={handleCloseBuyModal} available={availableTokens}></BuyTokens>
         </main>
         <Snackbar 
       anchorOrigin={{

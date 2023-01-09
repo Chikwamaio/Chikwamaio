@@ -28,6 +28,7 @@ contract CashPoints is ERC20{
      //add the keyword payable to the state variable
     address payable public Owner;
     uint public constant MAX_SUPPLY = 100000;
+    uint public AVAILABLE_TOKENS;
     uint public PRICE_PER_TOKEN; //erc20 token price
     uint public CASHPOINT_FEE = 0.5 ether;
     uint public TRANSACTION_COMMISION = 1; //percentage commision on transactions routed through the contract
@@ -37,6 +38,7 @@ contract CashPoints is ERC20{
     constructor() ERC20("Chikwama", "CHK") {
         Owner = payable(msg.sender);
         _mint(Owner, 10000); 
+        AVAILABLE_TOKENS = 90000;
     }
 
     
@@ -59,6 +61,7 @@ contract CashPoints is ERC20{
     require(totalSupply() + _amount <= MAX_SUPPLY, "Max supply reached");
     _mint(msg.sender, _amount);
     setPrice();
+    AVAILABLE_TOKENS -= _amount;
     lock = false;
 }
 
@@ -112,9 +115,11 @@ contract CashPoints is ERC20{
         return (balanceOf(msg.sender) * (PRICE_PER_TOKEN)) >= _amount;
     }
 
-    function checkTokensToBurn(uint _amount) public view returns (uint256)
+    function checkTokensToBurn(uint _amount) public returns (uint256)
     {
-        return (_amount/(totalSupply()*PRICE_PER_TOKEN))*totalSupply();
+        uint tokens = (_amount/(totalSupply()*PRICE_PER_TOKEN))*totalSupply();
+        AVAILABLE_TOKENS += tokens;
+        return tokens;
     }
     
 
