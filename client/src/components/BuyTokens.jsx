@@ -34,10 +34,10 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
     close();
   };
 
-  const getPriceHandler = async () => {
+  const getPriceHandler = async (tokens) => {
     setLoading(true);
-    const tokenPrice = await cashPointsContract.PRICE_PER_TOKEN();
-    const value = ethers.utils.formatEther(tokenPrice)*tokensToBuy;
+    const tokenPrice = ethers.utils.formatEther(await cashPointsContract.PRICE_PER_TOKEN());
+    let value = (tokens*tokenPrice).toString();
     setValue(value);
     setLoading(false);
 
@@ -54,7 +54,7 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
         <DialogTitle>Buy Tokens</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            You can buy a stake in Chikwama. Chikwama(CHK) tokens entitle you to a stake in the DAO's revenues. There are currently {available} CHK tokens available. 
+            You can buy a stake in Chikwama. Chikwama(CHK) tokens entitle you to a stake in the DAO's revenues. There are currently {available} CHK tokens available out of the total 100,000. 
           </DialogContentText>
           {loading&&<CircularProgress sx={{
               position: 'absolute',
@@ -72,9 +72,9 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
             fullWidth
             variant="filled"
             onChange={async(e) => {
-                const tokens =  e.target.value;
+              const tokens = e.target.value
                 setTokens(tokens);
-                await getPriceHandler();
+                await getPriceHandler(tokens);
               }}
           />
           <DialogContentText>
