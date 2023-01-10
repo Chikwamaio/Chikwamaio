@@ -27,7 +27,8 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
   const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
 
   const handleBuy = () => {
-    buyTokens(tokensToBuy); 
+    buyTokens(tokensToBuy);
+    console.log(tokensToBuy)
   };
 
   const handleClose = () => {

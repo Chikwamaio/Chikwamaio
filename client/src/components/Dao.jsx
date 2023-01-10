@@ -72,12 +72,31 @@ const Dao = () => {
   
           
   
-          if(tokens % 1 == 0 && tokens > 0 )
+          if(tokens % 1 != 0 )
           {
-            const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
-            let cost = ethers.utils.formatEther(newPrice) * tokens;
-            const buyTokens = cashPointsContract.buyTokens(tokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
+            setState({
+              open: true,
+              Transition: Fade,
+            });
+  
+            setErrorMessage('Tokens are non divisible please enter an integer value');
+            return;
           }
+
+          if(tokens == 0 )
+          {
+            setState({
+              open: true,
+              Transition: Fade,
+            });
+  
+            setErrorMessage(`You cannot buy ${tokens} CHK`);
+            return;
+          }
+
+          const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
+          let cost = ethers.utils.formatEther(newPrice) * tokens;
+          const buyTokens = cashPointsContract.buyTokens(tokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
         
           
     }
