@@ -97,7 +97,7 @@ export default function SendMoney({open, close, send}) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button disabled={loading} onClick={handleSend}>Send</Button>
+          <Button disabled={!amount || !toAddress} onClick={handleSend}>Send</Button>
         </DialogActions>
     </Dialog>
   );

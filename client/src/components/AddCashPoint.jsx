@@ -136,7 +136,7 @@ export default function AddCashPoint({open, close, update, add}) {
           }}
         >
             {currencies.map(({cc,symbol, name}, index) => (
-            <MenuItem key={index} value={name}>
+            <MenuItem key={index} value={`${symbol} - ${name}`}>
               {cc} - {name}
             </MenuItem>
           ))}
@@ -187,7 +187,7 @@ export default function AddCashPoint({open, close, update, add}) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button disabled={loading} onClick={handleAdd}>{update?'Update':'Add'}</Button>
+          <Button disabled={ !sellRate || !buyRate && !currency || !phoneNumber || !cashPointName } onClick={handleAdd}>{update?'Update':'Add'}</Button>
         </DialogActions>
     </Dialog>
   );

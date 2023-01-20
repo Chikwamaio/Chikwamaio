@@ -35,6 +35,7 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
     close();
   };
 
+
   const getPriceHandler = async (tokens) => {
     setLoading(true);
     const tokenPrice = ethers.utils.formatEther(await cashPointsContract.PRICE_PER_TOKEN());
@@ -64,6 +65,7 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
               zIndex: 1,
             }} size={68} color="secondary" />}
           <TextField
+          required
             autoFocus
             margin="dense"
             value = {tokensToBuy}
@@ -84,7 +86,7 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button disabled={loading} onClick={handleBuy}>BUY</Button>
+          <Button disabled={!tokensToBuy} onClick={handleBuy}>BUY</Button>
         </DialogActions>
       </Dialog>
     </div>
