@@ -10,7 +10,13 @@ import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import AddCashPoint from './AddCashPoint';
 import Fade from '@mui/material/Fade';
-import { getChipUtilityClass } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import CardContent from '@mui/material/CardContent';
+import CardActions from '@mui/material/CardActions';
+import { Typography } from '@mui/material';
+import { padding } from '@mui/system';
 
 
 const CashPoints = () => {
@@ -141,49 +147,29 @@ const CashPoints = () => {
               <SearchIcon />
             </InputAdornment>
           }/>
-        
-        <table className="table-auto">
-  <thead>
-    <tr className='bg-slate-800 text-white text-sm text-center' >
-      <th>Name</th>
-      <th>City</th>
-      <th>Phone number</th>
-      <th>Currency</th>
-      <th>Buy</th>
-      <th>Sell</th>
-      <th>Active until</th>
-    </tr>
-  </thead>
-  <tbody>
-  {data?.map((items,i) =>(
-    <tr className={isActive[i]?'bg-green-800 bg-opacity-20 text-left mx-3': 'bg-yellow-600 bg-opacity-20 text-left mx-3'} key={i}>
-    <td >
-        {items._name.toString()}
-    </td>
-    <td >
-      {items.city}
-    </td>
-    <td >
-      {items._phoneNumber.toString()}
-    </td>
-    <td >
-      {items._currency.toString()}
-    </td>
-    <td >
-      {(items._buy).toString()}
-    </td>
-    <td >
-      {(items._sell).toString()}
-    </td>
-    <td >
-      {items._endTime.toString()}
-    </td>
-    </tr>
-   
-   ))}
+{data?.map((items,i) =>(
+<Card sx={{ maxWidth: 345, margin:'5px'}}>
+  <CardHeader title={items._name}></CardHeader>
+      <CardContent>
+        <Typography>
+        Location: {(items.city)}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+        Currency: {(items._currency)}
+        </Typography>
 
-  </tbody>
-</table>
+        <Typography>
+        Buy: {(items._buy).toString()}
+        Sell: {(items._sell).toString()}
+        </Typography>
+        <Typography>
+        Phone number: {(items._phoneNumber).toString()}
+        </Typography>
+      </CardContent>
+      <CardActions disableSpacing>
+      </CardActions>
+    </Card>
+ ))}
 
 + <Link color="inherit" component='button' href='/cashpoints' onClick={handleOpenCreate}>Add a cash point</Link>
 <div>
@@ -191,7 +177,6 @@ const CashPoints = () => {
 </div>
 </main>
 
-        <Footer/>
        </div>
         </>);
 }
