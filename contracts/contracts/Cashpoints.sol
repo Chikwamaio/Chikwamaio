@@ -10,8 +10,7 @@ contract CashPoints is ERC20{
 
     struct CashPoint {
         string _name; //short Name
-        int _latitude;
-        int _longitude;
+        string city;
         string _phoneNumber;
 	    string _currency;
         uint _buy; //local currency to usd buy rate
@@ -66,11 +65,11 @@ contract CashPoints is ERC20{
 }
 
     
-    function addCashPoint(string memory name, int mylat, int mylong, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable {
+    function addCashPoint(string memory name, string memory city, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable {
       uint fee = duration * CASHPOINT_FEE;
       require(msg.value == fee, "Please pay the recommended fee");
       require(!cashpoints[msg.sender]._isCashPoint, "already a cashpoint");
-            cashpoints[msg.sender] = CashPoint(name, mylat, mylong, phone, currency, buy, sell, endtime, true);
+            cashpoints[msg.sender] = CashPoint(name, city, phone, currency, buy, sell, endtime, true);
             count++;
             keys[count]=msg.sender;
             setPrice();
@@ -78,11 +77,11 @@ contract CashPoints is ERC20{
         
     }
 
-    function updateCashPoint(string memory name, int mylat, int mylong, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable {
+    function updateCashPoint(string memory name, string memory city, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable {
       uint fee = duration * CASHPOINT_FEE;
       require(msg.value == fee, "Please pay the recommended fee");
       require(cashpoints[msg.sender]._isCashPoint, "not a cashpoint");
-            cashpoints[msg.sender] = CashPoint(name, mylat, mylong, phone, currency, buy, sell, endtime, true);
+            cashpoints[msg.sender] = CashPoint(name, city, phone, currency, buy, sell, endtime, true);
             setPrice();
             emit UpdatedCashPoint(msg.sender);
         
@@ -110,28 +109,28 @@ contract CashPoints is ERC20{
         require(success, "Failed to send xDai");
     }
 
-    function checkIfICanWithdraw(uint256 _amount) public view returns (bool)
+    function checkIfICanWithdraw(uint256 _tokens) public view returns (bool)
     {
-        return (balanceOf(msg.sender) * (PRICE_PER_TOKEN)) >= _amount;
+        return balanceOf(msg.sender) >= _tokens;
     }
 
-    function checkTokensToBurn(uint _amount) public returns (uint256)
+    function checkAmountToTransfer(uint _tokens) public view returns (uint256)
     {
-        uint tokens = (_amount/(totalSupply()*PRICE_PER_TOKEN))*totalSupply();
-        AVAILABLE_TOKENS += tokens;
-        return tokens;
+        uint amount = _tokens*PRICE_PER_TOKEN;
+        return amount;
     }
     
 
     //holders can withdraw from the contract because payable was added to the state variable above
-    function withdraw (uint _amount) public onlyHolder {
+    function withdraw (uint _tokens) public onlyHolder {
         setPrice();
         require(address(this).balance > 0, "There is no value in this contract");
-        require(checkIfICanWithdraw(_amount), "You are trying to withdraw more than your stake");
-        _burn(msg.sender, checkTokensToBurn(_amount));
-        transferXDai(payable(msg.sender), _amount);
+        require(checkIfICanWithdraw(_tokens), "You are trying to withdraw more than your stake");
+        _burn(msg.sender, _tokens);
+        AVAILABLE_TOKENS += _tokens;
+        transferXDai(payable(msg.sender), checkAmountToTransfer(_tokens));
     }
-
+    
     function send(uint _amount, address _to) external payable{
       uint fee = (TRANSACTION_COMMISION/100) * _amount;
       uint total = fee + _amount;

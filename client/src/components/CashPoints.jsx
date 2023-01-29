@@ -9,6 +9,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
 import AddCashPoint from './AddCashPoint';
+import Fade from '@mui/material/Fade';
+import { getChipUtilityClass } from '@mui/material';
 
 
 const CashPoints = () => {
@@ -17,6 +19,7 @@ const CashPoints = () => {
     const [isCashPoint, setIsCashPoint] = useState(false);
     const [data, getData] = useState([]);
     const [isActive, setIsActive] = useState([]);
+    const [cities, setCities] = useState([]);
     const abi = cashPoints.abi;
     const { ethereum } = window;
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -24,6 +27,19 @@ const CashPoints = () => {
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
     const [walletAddress, setWalletAddress] = useState('')
+
+    const [state, setState] = useState({
+      open: false,
+      Transition: Fade,
+    });
+ const [errorMessage, setErrorMessage] = useState('');
+
+ const handleClose = () => {
+  setState({
+    ...state,
+    open: false,
+  });
+};
 
     const handleOpenCreate = async() => {
       const cp = await cashPointsContract.getCashPoint(walletAddress);
@@ -38,8 +54,30 @@ const CashPoints = () => {
 
     const createCashPointHandler = async (cashPointName, phoneNumber, currency, buyRate, sellRate, duration, fee, lat, long) => {
         
-      console.table(cashPointName, phoneNumber, currency, buyRate, sellRate, duration, fee, lat, long);
-        //await cashPointsContract.addCashPoint();
+      if(isCashPoint){
+        console.table(cashPointName, phoneNumber, currency, buyRate, sellRate, duration, fee, lat, long);
+      }
+      
+      const now = new Date();
+      const endtime =  new Date(now.setDate(now.getDate() + duration));
+      
+      const mylat = (ethers.utils.parseUnits(lat.toString(), "ether"));
+      const mylong = ethers.utils.parseUnits(long.toString(), "ether");
+      let response = new Array();
+      let city;
+      const res = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${myLat}&lon=${myLong}&apiKey=${import.meta.env.VITE_GEOAPIFY_KEY}`);
+      response = await res.json();
+      city = response.features[0].properties.city;
+
+      const cost = ethers.utils.parseUnits(fee, "ether");
+
+      const addCashPoint = await cashPointsContract.addCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, endtime.toString(), duration, { value: cost});
+      
+      setState({
+        open: true,
+        Transition: Fade,
+      });
+      setErrorMessage('You have successfully added a cash point ' + addCashPoint);
           
     }
 
@@ -68,9 +106,9 @@ const CashPoints = () => {
           {
             let CashPointAddress = await cashPointsContract.keys(i);
 
-            let getCashPoint = await cashPointsContract.getCashPoint(CashPointAddress);
+            let CashPoint = await cashPointsContract.getCashPoint(CashPointAddress);
             let now = new Date();
-            let cpDate = new Date(getCashPoint._endTime);
+            let cpDate = new Date(CashPoint._endTime);
             if(cpDate >= now)
             {
                 active.push(true);
@@ -80,13 +118,15 @@ const CashPoints = () => {
                 active.push(false);
             }
 
-            cashPoints.push(getCashPoint);
+            cashPoints.push(CashPoint);
+
             
             
           }
 
           setIsActive(active);
           getData(cashPoints);
+          setCities(Cities);
         }
        }
     
@@ -127,7 +167,7 @@ const CashPoints = () => {
       </a>
     </td>
     <td >
-      Some City
+      {cities[i]}
     </td>
     <td >
       {items._phoneNumber.toString()}
@@ -136,10 +176,10 @@ const CashPoints = () => {
       {items._currency.toString()}
     </td>
     <td >
-      {ethers.utils.formatEther(items._buy)}
+      {(items._buy).toString()}
     </td>
     <td >
-      {ethers.utils.formatEther(items._sell)}
+      {(items._sell).toString()}
     </td>
     <td >
       {items._endTime.toString()}

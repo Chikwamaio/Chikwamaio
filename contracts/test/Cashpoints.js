@@ -84,11 +84,12 @@ describe("Cashpoints", function () {
 
     it('Allow only holder to withdraw all funds', async function () {
       const { cashpoints, owner, addr1 } = await loadFixture(deployCashpointsContract);
-      const amount = ethers.utils.parseUnits("10", "ether");
+      const tokens = 10000;
       
-      await addr1.sendTransaction({ to: cashpoints.address, value: amount });
-      
-      await expect(cashpoints.connect(owner).withdraw(amount)).to.changeEtherBalance(cashpoints.address, ethers.utils.parseUnits("-10", "ether"));
+      await addr1.sendTransaction({ to: cashpoints.address, value: 10000 });
+      const contractBalance = await ethers.provider.getBalance(cashpoints.address);
+
+      await expect(cashpoints.connect(owner).withdraw(tokens)).to.changeEtherBalance(cashpoints.address, -contractBalance);
       expect(await cashpoints.totalSupply()).to.equal(0);
       const availabletokens = await cashpoints.AVAILABLE_TOKENS();
       assert.equal(availabletokens, 100000);
@@ -144,8 +145,7 @@ describe("Cashpoints", function () {
       await addr1.sendTransaction({ to: cashpoints.address, value: amount });
       const duration = 10;
       const name = 'Alpha';
-      const mylat = ethers.utils.parseUnits("15.818276", "ether");
-      const mylong = ethers.utils.parseUnits("35.060460", "ether");
+      const city = 'blantyre'
       const phone = ethers.utils.parseUnits("0996971997", "ether");
       const currency = 'MWK, Malawi Kwacha';
       const buy = ethers.utils.parseUnits("1000", "ether");
@@ -154,10 +154,10 @@ describe("Cashpoints", function () {
       const endtime =  new Date(now.setDate(now.getDate() + duration));
       const fee = await cashpoints.CASHPOINT_FEE();
       let cost = ethers.utils.formatEther(fee) * duration;
-      const addCashPoint = cashpoints.connect(addr2).addCashPoint(name, mylat, mylong, phone, currency, buy, sell, endtime.toString(), duration, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
+      const addCashPoint = cashpoints.connect(addr2).addCashPoint(name, city, phone, currency, buy, sell, endtime.toString(), duration, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
       await expect(addCashPoint).to.emit(cashpoints, "CreatedCashPoint").withArgs(addr2.address);
       const newEndTime =  new Date(endtime.setDate(endtime.getDate() + duration));
-      const updateCashPoint = cashpoints.connect(addr2).updateCashPoint(name, mylat, mylong, phone, currency, buy, sell, newEndTime.toString(), 0, { value: ethers.utils.parseUnits((0).toString(), "ether")});
+      const updateCashPoint = cashpoints.connect(addr2).updateCashPoint(name, city, phone, currency, buy, sell, newEndTime.toString(), 0, { value: ethers.utils.parseUnits((0).toString(), "ether")});
       await expect(updateCashPoint).to.emit(cashpoints, "UpdatedCashPoint").withArgs(addr2.address);
       //console.log(await cashpoints.getCashPoint(addr2.address));
       // await expect(addCashPoint).to.changeEtherBalance(

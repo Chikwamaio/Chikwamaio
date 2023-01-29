@@ -111,7 +111,7 @@ export default function AddCashPoint({open, close, update, add}) {
             value={phoneNumber}
             id="phone"
             label="Phone Number"
-            type="number"
+            type="tel"
             fullWidth
             variant="filled"
             onChange={async(e) => {  
