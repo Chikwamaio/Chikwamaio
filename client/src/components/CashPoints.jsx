@@ -59,21 +59,27 @@ const CashPoints = () => {
 
     const createCashPointHandler = async (cashPointName, phoneNumber, currency, buyRate, sellRate, duration, fee, lat, long) => {
         
-      if(isCashPoint){
-        console.table(cashPointName, phoneNumber, currency, buyRate, sellRate, duration, fee, lat, long);
-      }
-      
+
       const now = new Date();
       const endtime =  new Date(now.setDate(now.getDate() + duration));
-      
       let response = new Array();
       let city;
+
       const res = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=${import.meta.env.VITE_GEOAPIFY_KEY}`);
       response = await res.json();
       city = response.features[0].properties.city + ',' + response.features[0].properties.country;
 
       const cost = ethers.utils.parseUnits(fee, "ether");
 
+
+      if(isCashPoint){  
+        const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, endtime.toString(), duration, { value: cost});
+        return;
+      }
+      
+      
+      
+      
       const addCashPoint = await cashPointsContract.addCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, endtime.toString(), duration, { value: cost});
       
       setState({
@@ -164,6 +170,9 @@ const CashPoints = () => {
         </Typography>
         <Typography>
         Phone number: {(items._phoneNumber).toString()}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+        Valid Until: {(items._endTime)}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
