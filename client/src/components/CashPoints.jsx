@@ -19,7 +19,6 @@ const CashPoints = () => {
     const [isCashPoint, setIsCashPoint] = useState(false);
     const [data, getData] = useState([]);
     const [isActive, setIsActive] = useState([]);
-    const [cities, setCities] = useState([]);
     const abi = cashPoints.abi;
     const { ethereum } = window;
     const provider = new ethers.providers.Web3Provider(ethereum);
@@ -61,13 +60,11 @@ const CashPoints = () => {
       const now = new Date();
       const endtime =  new Date(now.setDate(now.getDate() + duration));
       
-      const mylat = (ethers.utils.parseUnits(lat.toString(), "ether"));
-      const mylong = ethers.utils.parseUnits(long.toString(), "ether");
       let response = new Array();
       let city;
-      const res = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${myLat}&lon=${myLong}&apiKey=${import.meta.env.VITE_GEOAPIFY_KEY}`);
+      const res = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=${import.meta.env.VITE_GEOAPIFY_KEY}`);
       response = await res.json();
-      city = response.features[0].properties.city;
+      city = response.features[0].properties.city + ',' + response.features[0].properties.country;
 
       const cost = ethers.utils.parseUnits(fee, "ether");
 
@@ -126,7 +123,6 @@ const CashPoints = () => {
 
           setIsActive(active);
           getData(cashPoints);
-          setCities(Cities);
         }
        }
     
@@ -162,12 +158,10 @@ const CashPoints = () => {
   {data?.map((items,i) =>(
     <tr className={isActive[i]?'bg-green-800 bg-opacity-20 text-left mx-3': 'bg-yellow-600 bg-opacity-20 text-left mx-3'} key={i}>
     <td >
-        <a className='mx-3 underline-offset-2 hover:opacity-20 duration-150' href={"https://www.google.com/maps?q="+ethers.utils.formatEther(items._latitude)+","+ethers.utils.formatEther(items._longitude)}>
-      {items._name.toString()}
-      </a>
+        {items._name.toString()}
     </td>
     <td >
-      {cities[i]}
+      {items.city}
     </td>
     <td >
       {items._phoneNumber.toString()}
