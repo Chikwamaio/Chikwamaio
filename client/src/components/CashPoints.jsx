@@ -73,7 +73,11 @@ const CashPoints = () => {
 
 
       if(isCashPoint){  
-        const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, endtime.toString(), duration, { value: cost});
+
+        let CashPoint = await cashPointsContract.getCashPoint(walletAddress);
+        const currentEndtime = new Date(Date.parse(CashPoint._endTime));
+        const newEndtime = new Date(currentEndtime.setDate(currentEndtime.getDate() + duration));
+        const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, newEndtime.toString(), duration, { value: cost});
         return;
       }
       
