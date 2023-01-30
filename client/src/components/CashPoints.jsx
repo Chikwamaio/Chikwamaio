@@ -17,6 +17,8 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import { Typography } from '@mui/material';
 import { padding } from '@mui/system';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 
 const CashPoints = () => {
@@ -158,25 +160,26 @@ const CashPoints = () => {
             </InputAdornment>
           }/>
 {data?.map((items,i) =>(
-<Card sx={{ maxWidth: 345, margin:'5px'}}>
+<Card sx={{ maxWidth: 345, margin:'5px'}} key={i}>
   <CardHeader title={items._name}></CardHeader>
       <CardContent>
-        <Typography>
-        Location: {(items.city)}
+        <Typography >
+        <LocationOnIcon/> {(items.city)}
         </Typography>
         <Typography variant="body2" color="text.secondary">
         Currency: {(items._currency)}
         </Typography>
 
-        <Typography>
+        <Typography variant="body2">
         Buy: {(items._buy).toString()}
         Sell: {(items._sell).toString()}
         </Typography>
-        <Typography>
-        Phone number: {(items._phoneNumber).toString()}
-        </Typography>
         <Typography variant="body2" color="text.secondary">
         Valid Until: {(items._endTime)}
+        </Typography>
+
+        <Typography variant="body2">
+        <PhoneIcon/> {(items._phoneNumber).toString()}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>

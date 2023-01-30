@@ -27,7 +27,7 @@ export default function AddCashPoint({open, close, update, add}) {
   const [accuracy, setAccuracy]= useState('');
   const [feeAmount, setFee] = useState('');
   const [currency, setCurrency] = useState('');
-  const [duration, setDuration] = useState('');
+  const [duration, setDuration] = useState(0);
   const [cashPointName, setCashPointName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [buyRate, setBuyRate] = useState('');
