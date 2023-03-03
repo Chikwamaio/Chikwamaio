@@ -69,17 +69,28 @@ const CashPoints = () => {
 
       const res = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=${import.meta.env.VITE_GEOAPIFY_KEY}`);
       response = await res.json();
-      city = response.features[0].properties.city + ',' + response.features[0].properties.country;
+      console.log(response);
+      city = response.features[0].properties.state + ',' + response.features[0].properties.country;
 
       const cost = ethers.utils.parseUnits(fee, "ether");
 
 
       if(isCashPoint){  
 
-        let CashPoint = await cashPointsContract.getCashPoint(walletAddress);
+        const CashPoint = await cashPointsContract.getCashPoint(walletAddress);
         const currentEndtime = new Date(Date.parse(CashPoint._endTime));
-        const newEndtime = new Date(currentEndtime.setDate(currentEndtime.getDate() + duration));
+        console.log("chain end:"+currentEndtime);
+        const now = new Date()
+        console.log("now:"+now)
+        const IsActive = currentEndtime > now;
+        const newEndtime = IsActive ? new Date(currentEndtime.setDate(currentEndtime.getDate() + duration)) : new Date(now.setDate(now.getDate() + duration));
+        console.log("new:"+newEndtime)
+        if(city){
         const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, newEndtime.toString(), duration, { value: cost});
+        return;  
+      }
+
+      console.log('failed to access your location');
         return;
       }
       
@@ -160,6 +171,7 @@ const CashPoints = () => {
             </InputAdornment>
           }/>
 {data?.map((items,i) =>(
+  isActive[i] &&(
 <Card sx={{ maxWidth: 345, margin:'5px'}} key={i}>
   <CardHeader title={items._name}></CardHeader>
       <CardContent>
@@ -184,7 +196,7 @@ const CashPoints = () => {
       </CardContent>
       <CardActions disableSpacing>
       </CardActions>
-    </Card>
+    </Card>)
  ))}
 
 + <Link color="inherit" component='button' href='/cashpoints' onClick={handleOpenCreate}>Add a cash point</Link>
