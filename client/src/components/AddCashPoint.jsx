@@ -91,7 +91,7 @@ export default function AddCashPoint({open, close, update, add}) {
       <DialogTitle>{update?'Update a Cashpoint':'Add a Cashpoint'}</DialogTitle>
         <DialogContent>
         <DialogContentText>
-        {update?`You are about to update your cash point details(The cash points location will be your current location accurate to ${accuracy}) metres.`:`You are about to create a cash point at this location accurate to ${accuracy} metres.`}</DialogContentText>
+        {update?`You are about to update your cash point details(The cash points location will be your current location accurate to ${accuracy} metres).`:`You are about to create a cash point at this location accurate to ${accuracy} metres.`}</DialogContentText>
         <TextField
             autoFocus
             margin="dense"

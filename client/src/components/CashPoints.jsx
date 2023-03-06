@@ -67,7 +67,12 @@ const CashPoints = () => {
       let response = new Array();
       let city;
 
-      const res = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=${import.meta.env.VITE_GEOAPIFY_KEY}`);
+
+      var requestOptions = {
+        method: 'GET',
+      };
+
+      const res = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=${import.meta.env.VITE_GEOAPIFY_KEY}`, requestOptions);
       response = await res.json();
       console.log(response);
       city = response.features[0].properties.state + ',' + response.features[0].properties.country;
@@ -87,6 +92,7 @@ const CashPoints = () => {
         console.log("new:"+newEndtime)
         if(city){
         const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, newEndtime.toString(), duration, { value: cost});
+        console.log(updateCashPoint);
         return;  
       }
 
