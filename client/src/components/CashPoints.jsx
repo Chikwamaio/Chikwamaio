@@ -132,8 +132,9 @@ const CashPoints = () => {
     
           let NumberOfCashPointsTXN = await cashPointsContract.count();
           let count = NumberOfCashPointsTXN.toNumber();
-          let cashPoints = new Array(count);
-          let active = new Array(count);
+          
+          let cashPoints = [];
+          let active = [];
           for(let i = 1; i <= count; i++)
           {
             let CashPointAddress = await cashPointsContract.keys(i);
