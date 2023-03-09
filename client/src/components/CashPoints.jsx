@@ -71,12 +71,9 @@ const CashPoints = () => {
       var requestOptions = {
         method: 'GET',
       };
-
-      const res = await fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${long}&apiKey=${import.meta.env.VITE_GEOAPIFY_KEY}`, requestOptions);
+      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`, requestOptions);
       response = await res.json();
-      console.log(response);
-      city = response.features[0].properties.state + ',' + response.features[0].properties.country;
-
+      city = response.results[0].address_components[2].long_name + ', ' + response.results[0].address_components[5].long_name;
       const cost = ethers.utils.parseUnits(fee, "ether");
 
 
@@ -84,12 +81,9 @@ const CashPoints = () => {
 
         const CashPoint = await cashPointsContract.getCashPoint(walletAddress);
         const currentEndtime = new Date(Date.parse(CashPoint._endTime));
-        console.log("chain end:"+currentEndtime);
         const now = new Date()
-        console.log("now:"+now)
         const IsActive = currentEndtime > now;
         const newEndtime = IsActive ? new Date(currentEndtime.setDate(currentEndtime.getDate() + duration)) : new Date(now.setDate(now.getDate() + duration));
-        console.log("new:"+newEndtime)
         if(city){
         const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, newEndtime.toString(), duration, { value: cost});
         console.log(updateCashPoint);
