@@ -12,6 +12,7 @@ import PieChartIcon from '@mui/icons-material/PieChart';
 import CalculateIcon from '@mui/icons-material/Calculate';
 
 
+
 const Home = () => {
     const [count, setCount] = useState(0)
     const [openSend, setOpenSend] = useState(false);
@@ -33,8 +34,6 @@ const Home = () => {
       Transition: Fade,
     });
 
-
-
     const [errorMessage, setErrorMessage] = useState('');
 
     
@@ -54,7 +53,6 @@ const Home = () => {
       open: false,
     });
   };
-
 
 
   const sendMoneyHandler =  async (toAddress, amount, fee) => {
@@ -106,15 +104,15 @@ const Home = () => {
           return;
         }
 
-      let tokenBalance = await cashPointsContract.balanceOf(accounts[0]);
+      const TokenBalance = await cashPointsContract.balanceOf(accounts[0]);
 
       setCurrentAccount(accounts[0])
-      setTokenBalance(tokenBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+      setTokenBalance(TokenBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
-      let tokenPrice = await cashPointsContract.PRICE_PER_TOKEN();
-      setTokenPrice(ethers.utils.formatEther(tokenPrice));
+      const TokenPrice = await cashPointsContract.PRICE_PER_TOKEN();
+      setTokenPrice(ethers.utils.formatEther(TokenPrice.toNumber()));
 
-      let NumberOfCashPointsTXN = await cashPointsContract.count();
+      const NumberOfCashPointsTXN = await cashPointsContract.count();
       NumberOfCashPoints = NumberOfCashPointsTXN.toNumber();
       setCount(NumberOfCashPoints);
 
@@ -135,15 +133,19 @@ const Home = () => {
 
   useEffect(() => {
     checkWalletIsConnected();
+
+    
   }, [])
 
   return (
+    
     <div className='container w-full h-screen text-slate-500'>
     <NavBar walletAddress={walletAddress}/>
       <main className='flex flex-grow w-full md:pt-24 pt-24 min-h-max'>
       <div className='basis-1/2 pr-4'>
       <h2 className='md:text-3xl text-3xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
       <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
+      
       <p className='text-xl py-12'>Send, receive, buy and sell digital dollars, anywhere!</p>
       <button onClick={handleOpenSend} className="text-white bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
             Use it!
@@ -151,12 +153,12 @@ const Home = () => {
       </div>
       <div className='basis-1/2 grid grid-cols-1 align-center'>
       <h4 className='text-xl text-slate-700 lg:text-2xl uppercase text-left'> DAO Metrics:</h4>
-      <div className='bg-white mx-auto mb-4 float-right m-4 p-2 border-2 border-gray-300 h-24 w-36'>
+      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40'>
       <CalculateIcon></CalculateIcon><p className='text-xl text-yellow-400 text-left'>US$ {tokenPrice} </p> <p className='text-left'>Current Price</p>
       </div>
-      <div className='bg-white mx-auto mb-4 float-right p-2 border-2 border-gray-300 h-24 w-36'>
+      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40'>
       <PieChartIcon></PieChartIcon><p className='text-xl text-yellow-400 text-left'>{tokenBalance} CHK</p> <p className='text-left'>Your Balance</p></div>
-      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-36'>
+      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40'>
       <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-left'>US$ {revenue}</p> <p className='text-left'>Contract Balance</p>
       </div>
       <div className='align-center'>
