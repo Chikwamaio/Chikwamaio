@@ -73,7 +73,7 @@ const CashPoints = () => {
       };
       const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`, requestOptions);
       response = await res.json();
-      city = response.results[0].address_components[2].long_name + ', ' + response.results[0].address_components[5].long_name;
+      city = response.results[0].address_components[2].long_name + ', ' + response.results[0].address_components[4].long_name;
       const cost = ethers.utils.parseUnits(fee, "ether");
 
 
@@ -85,8 +85,8 @@ const CashPoints = () => {
         const IsActive = currentEndtime > now;
         const newEndtime = IsActive ? new Date(currentEndtime.setDate(currentEndtime.getDate() + duration)) : new Date(now.setDate(now.getDate() + duration));
         if(city){
-        const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, newEndtime.toString(), duration, { value: cost});
-        console.log(updateCashPoint);
+        const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, newEndtime.toString(), duration, { value: cost, gasLimit: 90000,});
+
         return;  
       }
 
