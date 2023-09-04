@@ -43,6 +43,9 @@ jobs:
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v3
+        with:
+          # Upload dist repository
+          path: './client'
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
