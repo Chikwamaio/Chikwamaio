@@ -30,12 +30,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          path: './client'
       - name: Install dependencies
         working-directory: './client'
         run: npm install
       - name: Build
+        working-directory: './client'
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v3
