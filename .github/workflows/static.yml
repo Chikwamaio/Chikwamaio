@@ -17,6 +17,12 @@ jobs:
       - name: Install dependencies
         run: cd client && npm install
 
+      - name: Debugging
+        run: |
+          ls -R  # List all files and directories in the current directory
+          pwd    # Print the current working directory
+          # Add more commands to inspect the environment and file paths
+      
       - name: Build project
         run: cd client && npm run build
 
