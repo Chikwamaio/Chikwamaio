@@ -183,6 +183,25 @@ describe("Cashpoints", function () {
       // );
     });
 
+    it("Should fail when selfdestruct is called by the owner when thecontract balance is not zero", async function () {
+      const { cashpoints, owner } = await loadFixture(deployCashpointsContract);
+    
+      // Send some initial value to the contract
+      await owner.sendTransaction({ to: cashpoints.address, value: ethers.utils.parseEther("1") });
+    
+      await expect(cashpoints.selfDestruct()).to.be.revertedWith("Contract balance must be 0 for selfdestruct");
+    });
+
+    it("Should selfdestruct when called by the owner with zero contract balance", async function () {
+      const { cashpoints, owner } = await loadFixture(deployCashpointsContract);
+    
+
+      await expect(cashpoints.selfDestruct()).to.not.be.reverted;
+    });
+    
+
+    
+
 
   })
 });
