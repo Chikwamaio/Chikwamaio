@@ -137,12 +137,5 @@ contract CashPoints is ERC20 {
       setPrice(); 
     }
 
-    function selfDestruct() external onlyOwner {
-        require(address(this).balance == 0, "Contract balance must be 0 for selfdestruct");
-        selfdestruct(Owner);
-    }
-
-
-
    
 }
