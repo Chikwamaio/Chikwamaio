@@ -7,10 +7,10 @@
 const hre = require("hardhat");
 
 async function main() {
-  const CashPoints = await hre.ethers.getContractFactory("CashPoints");
-  const cashpoints = await CashPoints.deploy();
 
-  await cashpoints.deployed();
+  const cashpoints = await hre.ethers.deployContract("CashPoints");
+
+  await cashpoints.waitForDeployment();
 
   console.log(
     `Cash points contract deployed to ${cashpoints.address}`
