@@ -18,7 +18,7 @@ const LandingPage = () => {
             <div className="py-4">
                 <p className='py-4 text-slate-700'>How it Works:</p>
                 <iframe
-                    width="560"
+                    width="320"
                     height="315"
                     src="https://www.youtube.com/embed/P__KTNLBWLc?si=5bEb7hAI99uBfj1X"
                     title="YouTube video player"
