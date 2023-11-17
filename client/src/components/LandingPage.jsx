@@ -10,7 +10,7 @@ const LandingPage = () => {
     }, []);
 
     return (
-        <div>
+        <div className="md:px-20 lg:px-32 xl:px-40">
             <h2 className='md:text-3xl text-3xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
             <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
 
@@ -18,7 +18,7 @@ const LandingPage = () => {
             <div className="py-4">
                 <p className='py-4 text-slate-700'>How it Works:</p>
                 <iframe
-                    width="320"
+                    width="100%"
                     height="315"
                     src="https://www.youtube.com/embed/P__KTNLBWLc?si=5bEb7hAI99uBfj1X"
                     title="YouTube video player"
