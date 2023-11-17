@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import RoomIcon from '@mui/icons-material/Room';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import LockIcon from '@mui/icons-material/Lock';
 
 const LandingPage = () => {
     const { ethereum } = window;
@@ -30,8 +33,18 @@ const LandingPage = () => {
 
             <p className='py-4 text-slate-700'>Why use Chikwama?</p>
             <ul className='list-disc pl-8'>
-                <li className='text-slate-700'>Find Cashpoints: Locate nearby cashpoints where you can convert xDai to local currency effortlessly.</li>
-                <li className='text-slate-700'>Nominal Fee: Chikwama charges a nominal fee of 1% for providing the cashpoint conversion service.</li>
+                <li className='text-slate-700 flex items-center py-2'>
+                    <RoomIcon className="mr-2 text-yellow-400" />
+                    Find Cashpoints: Locate nearby cashpoints where you can convert xDai to local currency effortlessly.
+                </li>
+                <li className='text-slate-700 flex items-center py-2'>
+                    <LockIcon className="mr-2 text-yellow-400" />
+                    Self-Custodial: Chikwama ensures that you have control over your funds, providing a self-custodial experience.
+                </li>
+                <li className='text-slate-700 flex items-center py-2'>
+                    <AccountBalanceIcon className="mr-2 text-yellow-400" />
+                    Nominal Fee: Chikwama charges a nominal fee of 1% for providing the cashpoint conversion service.
+                </li>
             </ul>
 
             <p className='py-4 text-slate-700'>
