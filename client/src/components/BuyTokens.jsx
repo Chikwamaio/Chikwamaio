@@ -1,16 +1,15 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import DialogTitle from '@mui/material/DialogTitle';
+import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import { useNavigate } from 'react-router-dom';
-import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
+import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
 import { ethers } from 'ethers';
-import CircularProgress from '@mui/material/CircularProgress';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 
 
 export default function FormDialog( {buyTokens, open, close, available} ) {
@@ -20,7 +19,6 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
   const [loading, setLoading] = useState(false);
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
   const abi = cashPoints.abi;
-
   const { ethereum } = window;
   const provider = new ethers.providers.Web3Provider(ethereum);
   const signer = provider.getSigner();
