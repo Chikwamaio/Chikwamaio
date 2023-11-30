@@ -1,23 +1,20 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import Slider from '@mui/material/Slider';
-import DialogTitle from '@mui/material/DialogTitle';
+import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import { useNavigate } from 'react-router-dom';
-import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
+import DialogTitle from '@mui/material/DialogTitle';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Slider from '@mui/material/Slider';
+import TextField from '@mui/material/TextField';
 import { ethers } from 'ethers';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import currencies from '../resources/currencies.json';
-import CircularProgress from '@mui/material/CircularProgress';
 
 
 export default function AddCashPoint({open, close, update, add}) {
@@ -47,7 +44,7 @@ export default function AddCashPoint({open, close, update, add}) {
   };
 
   const handleAdd = () => {
-    
+    handleClose();
     add(cashPointName,phoneNumber,currency, buyRate, sellRate, duration, feeAmount, latitude, longitude);
 
   }
