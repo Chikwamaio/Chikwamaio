@@ -1,15 +1,15 @@
-import NavBar from './NavBar'
-import Footer from './Footer'
-import SendMoney from './SendMoney'
-import { useState, useEffect} from 'react';
-import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
-import { ethers } from 'ethers';
-import { useNavigate } from "react-router-dom";
-import Snackbar from '@mui/material/Snackbar'
-import Fade from '@mui/material/Fade';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import PieChartIcon from '@mui/icons-material/PieChart';
 import CalculateIcon from '@mui/icons-material/Calculate';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import Fade from '@mui/material/Fade';
+import Snackbar from '@mui/material/Snackbar';
+import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
+import Footer from './Footer';
+import NavBar from './NavBar';
+import SendMoney from './SendMoney';
 
 
 
@@ -100,8 +100,16 @@ const Home = () => {
 
     if(network != 100)
         {
+          try {
+            await ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: '0x64' }], // xDai Chain ID
+            });
+        } catch (error) {
           setErrorMessage('You are connected to the wrong blockchain, please connect to the Gnosis chain');
           return;
+        }
+          
         }
 
       const TokenBalance = await cashPointsContract.balanceOf(accounts[0]);
