@@ -8,3 +8,11 @@ body {
   background-position: top center;
   background-attachment: scroll;
 }
+
+.metric-container {
+  transition: transform 0.3s ease-in-out;
+}
+
+.metric-container:hover {
+  transform: scale(1.1);
+}

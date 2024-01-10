@@ -162,12 +162,12 @@ const Home = () => {
       </div>
       <div className='basis-1/2 grid grid-cols-1 align-center'>
       <h4 className='text-xl text-slate-700 lg:text-2xl uppercase text-left'> DAO Metrics:</h4>
-      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40'>
+      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40 metric-container'>
       <CalculateIcon></CalculateIcon><p className='text-xl text-yellow-400 text-left'>US$ {tokenPrice} </p> <p className='text-left'>Current Price</p>
      </div>
-      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40'>
+      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40 metric-container'>
       <PieChartIcon></PieChartIcon><p className='text-xl text-yellow-400 text-left'>{tokenBalance} CHK</p> <p className='text-left'>Your Balance</p></div>
-      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40'>
+      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40 metric-container'>
       <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-left'>US$ {revenue}</p> <p className='text-left'>Contract Balance</p>
       </div>
       <div className='align-center'>
