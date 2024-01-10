@@ -6,7 +6,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import cashPoints from '../artifacts/contracts/CashPoints.sol/CashPoints.json';
+import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import Footer from './Footer';
 import NavBar from './NavBar';
 import SendMoney from './SendMoney';

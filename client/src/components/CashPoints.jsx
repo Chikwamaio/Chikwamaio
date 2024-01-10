@@ -12,7 +12,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import cashPoints from '../artifacts/contracts/CashPoints.sol/CashPoints.json';
+import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import AddCashPoint from './AddCashPoint';
 import NavBar from './NavBar';
 
