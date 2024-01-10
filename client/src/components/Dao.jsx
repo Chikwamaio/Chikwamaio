@@ -4,7 +4,7 @@ import Link from '@mui/material/Link';
 import Snackbar from '@mui/material/Snackbar';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import cashPoints from '../artifacts/contracts/CashPoints.sol/Cashpoints';
+import cashPoints from '../artifacts/contracts/CashPoints.sol/CashPoints.json';
 import BuyTokens from './BuyTokens';
 import Footer from './Footer';
 import NavBar from './NavBar';

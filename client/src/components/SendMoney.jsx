@@ -10,7 +10,7 @@ import TextField from '@mui/material/TextField';
 import { ethers } from 'ethers';
 import * as React from 'react';
 import { useState } from 'react';
-import cashPoints from '../artifacts/contracts/CashPoints.sol/Cashpoints';
+import cashPoints from '../artifacts/contracts/CashPoints.sol/CashPoints.json';
 
 
 export default function SendMoney({open, close, send}) {

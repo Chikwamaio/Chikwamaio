@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
-import chikwamaLogo from '../assets/Icon100.png';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import { ethers } from 'ethers';
+import MenuIcon from '@mui/icons-material/Menu';
+import IconButton from '@mui/material/IconButton';
+import { useState } from 'react';
+import chikwamaLogo from '../assets/Icon100.png';
 
 
 
