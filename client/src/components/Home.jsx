@@ -6,10 +6,11 @@ import Snackbar from '@mui/material/Snackbar';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
+import cashPoints from '../artifacts/contracts/CashPoints.sol/Cashpoints';
 import Footer from './Footer';
 import NavBar from './NavBar';
 import SendMoney from './SendMoney';
+
 
 
 
@@ -163,7 +164,7 @@ const Home = () => {
       <h4 className='text-xl text-slate-700 lg:text-2xl uppercase text-left'> DAO Metrics:</h4>
       <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40'>
       <CalculateIcon></CalculateIcon><p className='text-xl text-yellow-400 text-left'>US$ {tokenPrice} </p> <p className='text-left'>Current Price</p>
-      </div>
+     </div>
       <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40'>
       <PieChartIcon></PieChartIcon><p className='text-xl text-yellow-400 text-left'>{tokenBalance} CHK</p> <p className='text-left'>Your Balance</p></div>
       <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40'>

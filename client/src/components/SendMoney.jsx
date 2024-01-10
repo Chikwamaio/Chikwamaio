@@ -1,17 +1,16 @@
-import * as React from 'react';
-import { useState } from 'react';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import DialogTitle from '@mui/material/DialogTitle';
+import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import { useNavigate } from 'react-router-dom';
-import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
+import DialogTitle from '@mui/material/DialogTitle';
+import Link from '@mui/material/Link';
+import TextField from '@mui/material/TextField';
 import { ethers } from 'ethers';
-import CircularProgress from '@mui/material/CircularProgress';
+import * as React from 'react';
+import { useState } from 'react';
+import cashPoints from '../artifacts/contracts/CashPoints.sol/Cashpoints';
 
 
 export default function SendMoney({open, close, send}) {

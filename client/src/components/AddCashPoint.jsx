@@ -13,7 +13,7 @@ import TextField from '@mui/material/TextField';
 import { ethers } from 'ethers';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
+import cashPoints from '../artifacts/contracts/CashPoints.sol/Cashpoints';
 import currencies from '../resources/currencies.json';
 
 

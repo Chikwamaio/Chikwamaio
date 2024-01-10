@@ -1,14 +1,13 @@
-import NavBar from './NavBar'
-import Footer from './Footer'
-import { useState } from 'react';
-import { useEffect } from 'react';
-import BuyTokens from './BuyTokens'
-import { ethers } from 'ethers';
-import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
-import Fade from '@mui/material/Fade';
-import Snackbar from '@mui/material/Snackbar';
-import Link from '@mui/material/Link';
 import CircularProgress from '@mui/material/CircularProgress';
+import Fade from '@mui/material/Fade';
+import Link from '@mui/material/Link';
+import Snackbar from '@mui/material/Snackbar';
+import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
+import cashPoints from '../artifacts/contracts/CashPoints.sol/Cashpoints';
+import BuyTokens from './BuyTokens';
+import Footer from './Footer';
+import NavBar from './NavBar';
 
 
 const Dao = () => {

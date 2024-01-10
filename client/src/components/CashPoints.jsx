@@ -1,24 +1,20 @@
-import NavBar from './NavBar'
-import Footer from './Footer'
-import { useState } from 'react';
-import { useEffect } from 'react';
-import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
-import { ethers } from 'ethers';
-import Link from '@mui/material/Link';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import PhoneIcon from '@mui/icons-material/Phone';
 import SearchIcon from '@mui/icons-material/Search';
+import { Typography } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Fade from '@mui/material/Fade';
 import Input from '@mui/material/Input';
 import InputAdornment from '@mui/material/InputAdornment';
+import Link from '@mui/material/Link';
+import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
+import cashPoints from '../artifacts/contracts/CashPoints.sol/Cashpoints';
 import AddCashPoint from './AddCashPoint';
-import Fade from '@mui/material/Fade';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import { Typography } from '@mui/material';
-import { padding } from '@mui/system';
-import PhoneIcon from '@mui/icons-material/Phone';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import NavBar from './NavBar';
 
 
 const CashPoints = () => {
