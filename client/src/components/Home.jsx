@@ -102,12 +102,32 @@ const Home = () => {
     if(network != 100)
         {
           try {
-            await ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: '0x64' }], // xDai Chain ID
+            await window.ethereum.request({
+              "method": "wallet_addEthereumChain",
+              "params": [
+                {
+                  "chainId": "0x64",
+                  "chainName": "Gnosis",
+                  "rpcUrls": [
+                    "https://rpc.ankr.com/gnosis"
+                  ],
+                  "iconUrls": [
+                    "https://xdaichain.com/fake/example/url/xdai.svg",
+                    "https://xdaichain.com/fake/example/url/xdai.png"
+                  ],
+                  "nativeCurrency": {
+                    "name": "xDAI",
+                    "symbol": "xDAI",
+                    "decimals": 18
+                  },
+                  "blockExplorerUrls": [
+                    "https://blockscout.com/poa/xdai/"
+                  ]
+                }
+              ]
             });
         } catch (error) {
-          setErrorMessage('You are connected to the wrong blockchain, please connect to the Gnosis chain');
+          setErrorMessage(error);
           return;
         }
           
