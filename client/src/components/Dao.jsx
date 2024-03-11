@@ -8,6 +8,7 @@ import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/Ca
 import BuyTokens from './BuyTokens';
 import Footer from './Footer';
 import NavBar from './NavBar';
+import Withdraw from './Withdraw';
 
 
 const Dao = () => {
@@ -21,6 +22,8 @@ const Dao = () => {
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
     const [walletAddress, setWalletAddress] = useState('')
     const [openBuyModal, setOpenBuyModal] = useState(false);
+    const [openWithdrawModal, setOpenWithdrawModal] = useState(false);
+    const [tokenBalance, setTokenBalance] = useState(0)
     const [availableTokens, setAvailableTokens] = useState('');
     const [state, setState] = useState({
         open: false,
@@ -35,7 +38,7 @@ const Dao = () => {
     });
   };
 
-  const  handleOpen = async() => { 
+  const  handleOpenBuy = async() => { 
     setLoading(true);
     const tokens = (await cashPointsContract.AVAILABLE_TOKENS()).toString();
     setAvailableTokens(tokens);
@@ -43,7 +46,14 @@ const Dao = () => {
     setOpenBuyModal(true); 
   
   };
+
+  const  handleOpenWithdraw = async() => { 
+    setOpenWithdrawModal(true); 
+  
+  };
+
   const handleCloseBuyModal = () => { setOpenBuyModal(false); };
+  const handleCloseWithdrawModal = () => { setOpenWithdrawModal(false); };
   const buyTokensHandler = async (tokens) => {
         const balance = await provider.getBalance(contractAddress);
         const network = (await provider.getNetwork()).chainId;
@@ -100,9 +110,28 @@ const Dao = () => {
           
     }
 
+    const withdrawHandler = (tokens) => {
+
+      if(tokens % 1 != 0 )
+          {
+            setState({
+              open: true,
+              Transition: Fade,
+            });
+  
+            setErrorMessage('Tokens are non divisible please enter an integer value');
+            return;
+          }
+
+
+      const withdraw = cashPointsContract.withdraw(tokens);
+    };
+
     const checkWalletIsConnected = async () => {
       const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
       setWalletAddress(accounts[0]);
+      const balance = await cashPointsContract.balanceOf(accounts[0]);
+      setTokenBalance(balance);
     }
     
        useEffect(() => {
@@ -116,7 +145,7 @@ const Dao = () => {
         <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama DAO</h1>
         <p>A DAO or decentralised autonomous organisation is a member-owned community without centralized leadership. Created because said members share a common goal. The rules that govern a DAO are encoded as a <Link href='https://github.com/Chikwama-io/ChikwamaWebsite/blob/master/contracts/contracts/Cashpoints.sol'>computer program.</Link></p>
         <br></br>
-        <p>The chikwama DAO was created to catalyse the creation of a global network of blockchain based digital dollar cashpoints. The original members believe that would be cash point operators can be incentivised to operate cash points by allowing them to <Link onClick={handleOpen}>own a stake in the DAO</Link> and <Link>liquidate</Link> their stake in a permissionless manner. </p>
+        <p>The chikwama DAO was created to catalyse the creation of a global network of blockchain based digital dollar cashpoints. The original members believe that would be cash point operators can be incentivised to operate cash points by allowing them to <Link onClick={handleOpenBuy}>own a stake in the DAO</Link> and <Link onClick={handleOpenWithdraw}>liquidate</Link> their stake in a permissionless manner. </p>
         {loading&&<CircularProgress sx={{
               position: 'absolute',
               top: 250,
@@ -124,6 +153,7 @@ const Dao = () => {
               zIndex: 1,
             }} size={68} color="secondary" />}
         <BuyTokens open={openBuyModal} buyTokens={buyTokensHandler} close={handleCloseBuyModal} available={availableTokens}></BuyTokens>
+        <Withdraw open={openWithdrawModal} withdraw={withdrawHandler} close={handleCloseWithdrawModal} balance={tokenBalance}></Withdraw>
         </main>
         <Snackbar 
       anchorOrigin={{
