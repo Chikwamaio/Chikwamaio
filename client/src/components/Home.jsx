@@ -139,18 +139,19 @@ const Home = () => {
       setTokenBalance(TokenBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
       const TokenPrice = await cashPointsContract.PRICE_PER_TOKEN();
-      setTokenPrice(ethers.utils.formatEther(TokenPrice.toNumber()));
+      setTokenPrice(parseFloat(ethers.utils.formatEther(TokenPrice.toNumber())).toFixed(4));
+
 
       const NumberOfCashPointsTXN = await cashPointsContract.count();
       NumberOfCashPoints = NumberOfCashPointsTXN.toNumber();
       setCount(NumberOfCashPoints);
 
       provider.getBalance(contractAddress).then((balance) => {
-        // convert a currency unit from wei to ether
-        const balanceInDai = ethers.utils.formatEther(balance);
-        setRevenue(balanceInDai.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-       })
-
+        const balanceInDai = parseFloat(ethers.utils.formatEther(balance)).toFixed(2);
+        const formattedBalance = balanceInDai.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        setRevenue(formattedBalance);
+    });
+    
    }
 
    const goToCashPoints = async () => {
