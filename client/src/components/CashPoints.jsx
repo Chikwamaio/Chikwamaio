@@ -1,7 +1,7 @@
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import SearchIcon from '@mui/icons-material/Search';
-import { Button, Card, CardActions, CardContent, CardHeader, Dialog, DialogActions, DialogContent, DialogTitle, Fade, Input, InputAdornment, Link, TextField, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardHeader, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fade, Input, InputAdornment, Link, TextField, Typography } from '@mui/material';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
@@ -205,6 +205,9 @@ const CashPoints = () => {
                 <Dialog open={openEmailModal} onClose={handleEmailModalClose}>
                     <DialogTitle>Leave your email and location</DialogTitle>
                     <DialogContent>
+                    <DialogContentText>
+                      We will let you know when we have a cashpoint available at your desired location.
+                    </DialogContentText>
                         <TextField
                             autoFocus
                             margin="dense"
