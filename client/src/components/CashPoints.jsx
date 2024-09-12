@@ -86,7 +86,6 @@ const CashPoints = () => {
 
     const handleEmailSubmit = async () => {
         const scriptURL = emailScriptURL; // Replace with actual Google Apps Script Web App URL
-        console.log(scriptURL);
         try {
             const response = await fetch(scriptURL, {
                 method: 'POST',
