@@ -5,6 +5,7 @@ import { Button, Card, CardActions, CardContent, CardHeader, Dialog, DialogActio
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
+import AddCashPoint from './AddCashPoint';
 import NavBar from './NavBar';
 
 const CashPoints = () => {
@@ -19,6 +20,7 @@ const CashPoints = () => {
     // State for the email modal
     const [openEmailModal, setOpenEmailModal] = useState(false);
     const [email, setEmail] = useState('');
+    const [location, setLocation] = useState('');
 
     const abi = cashPoints.abi;
     const { ethereum } = window;
@@ -43,7 +45,48 @@ const CashPoints = () => {
     };
 
     const createCashPointHandler = async (cashPointName, phoneNumber, currency, buyRate, sellRate, duration, fee, lat, long) => {
-        // Logic for creating a cash point...
+      const now = new Date();
+      const endtime =  new Date(now.setDate(now.getDate() + duration));
+      let response = new Array();
+      let city;
+
+
+      var requestOptions = {
+        method: 'GET',
+      };
+      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`, requestOptions);
+      response = await res.json();
+      city = response.results[0].address_components[2].long_name + ', ' + response.results[0].address_components[4].long_name;
+      const cost = ethers.utils.parseUnits(fee, "ether");
+
+
+      if(isCashPoint){  
+
+        const CashPoint = await cashPointsContract.getCashPoint(walletAddress);
+        const currentEndtime = new Date(Date.parse(CashPoint._endTime));
+        const now = new Date()
+        const IsActive = currentEndtime > now;
+        const newEndtime = IsActive ? new Date(currentEndtime.setDate(currentEndtime.getDate() + duration)) : new Date(now.setDate(now.getDate() + duration));
+        if(city){
+        const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, newEndtime.toString(), duration, { value: cost});
+
+        return;  
+      }
+
+      console.log('failed to access your location');
+        return;
+      }
+      
+      
+      
+      
+      const addCashPoint = await cashPointsContract.addCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, endtime.toString(), duration, { value: cost});
+      
+      setState({
+        open: true,
+        Transition: Fade,
+      });
+      setErrorMessage('You have successfully added a cash point ' + addCashPoint);
     };
 
     const getCashPoints = async () => {
@@ -75,7 +118,7 @@ const CashPoints = () => {
         getCashPoints();
     }, []);
 
-    // Modal to capture user email
+    // Modal to capture user email and location
     const handleEmailModalOpen = () => {
         setOpenEmailModal(true);
     };
@@ -85,11 +128,12 @@ const CashPoints = () => {
     };
 
     const handleEmailSubmit = async () => {
-        const scriptURL = emailScriptURL; // Replace with actual Google Apps Script Web App URL
+        const scriptURL = emailScriptURL; 
+        console.log(email,location);
         try {
             const response = await fetch(scriptURL, {
                 method: 'POST',
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ email, location }),
                 headers: { 'Content-Type': 'application/json' }
             });
             const result = await response.json();
@@ -141,19 +185,23 @@ const CashPoints = () => {
                         </Card>
                     )
                 ))}
-                + <Link color="inherit" component='button' onClick={handleOpenCreate}>
-                        Add Cash point
-                    </Link>
 
                 <div className='my-4'>
-                    
+                    + <Link color="inherit" component='button' onClick={handleOpenCreate}>
+                        Add Cash point
+                    </Link>
+                </div>
+                <div>
+                <AddCashPoint open={openCreate} close={closeCreate} update={isCashPoint} add={createCashPointHandler}></AddCashPoint>
+              </div>
+                <div className='my-4'>
                     <Link className='text-fuchsia-700' color="inherit" component='button' onClick={handleEmailModalOpen}>
                         Can’t find a cash point at your desired location?
                     </Link>
                 </div>
 
                 <Dialog open={openEmailModal} onClose={handleEmailModalClose}>
-                    <DialogTitle>Leave your email</DialogTitle>
+                    <DialogTitle>Leave your email and location</DialogTitle>
                     <DialogContent>
                         <TextField
                             autoFocus
@@ -165,6 +213,16 @@ const CashPoints = () => {
                             variant="standard"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <TextField
+                            margin="dense"
+                            id="location"
+                            label="Desired Location"
+                            type="text"
+                            fullWidth
+                            variant="standard"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
                         />
                     </DialogContent>
                     <DialogActions>
