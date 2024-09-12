@@ -133,6 +133,7 @@ const CashPoints = () => {
         try {
             const response = await fetch(scriptURL, {
                 method: 'POST',
+                mode: 'no-cors',
                 body: JSON.stringify({ email, location }),
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -141,6 +142,7 @@ const CashPoints = () => {
             setOpenEmailModal(false);
         } catch (error) {
             console.error('Error submitting email:', error);
+            setOpenEmailModal(false);
         }
     };
 
