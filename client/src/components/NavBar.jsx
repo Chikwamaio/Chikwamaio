@@ -49,7 +49,7 @@ const NavBar = ({walletAddress}) => {
     return(
         <>
         
-        <div className="bg-white shadow-md md:pl-24 md:pr-24 fixed top-0 left-0 w-full">
+        <div className="bg-white shadow-md md:pl-24 md:pr-24 fixed top-0 left-0 w-full z-50">
           <div className="md:flex items-center justify-between bg-white py-4 md:px-2 px-2">
             <div>
          <a href="/Home" className="cursor-pointer uppercase">
