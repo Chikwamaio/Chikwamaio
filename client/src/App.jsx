@@ -1,13 +1,13 @@
 import {
   BrowserRouter,
-  Routes,
   Route,
+  Routes,
 } from "react-router-dom";
 import './App.css';
 
-import Home from './components/Home';
 import CashPoints from './components/CashPoints';
 import Dao from './components/Dao';
+import Home from './components/Home';
 import LandingPage from './components/LandingPage';
 
 
@@ -22,7 +22,7 @@ function App() {
         </Route>
         <Route path='/Dao' element={<Dao />}>
         </Route>
-          <Route path='/'  element={<LandingPage />}>
+          <Route path='*'  element={<LandingPage />}>
           </Route>
           </Routes>
     </BrowserRouter> 
