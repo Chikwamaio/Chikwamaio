@@ -1,16 +1,16 @@
-import { Add } from '@mui/icons-material';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, Fade, Link, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fade, Link, TextField } from '@mui/material';
 import { ethers } from 'ethers';
 import { Feature, Map, View } from 'ol';
 import { Point } from 'ol/geom';
-import { Modify } from 'ol/interaction.js';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import { fromLonLat } from 'ol/proj';
 import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
 import { Icon, Style } from 'ol/style';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import AddCashPoint from './AddCashPoint';
 import NavBar from './NavBar';
@@ -36,77 +36,80 @@ const CashPoints = () => {
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const emailScriptURL = import.meta.env.VITE_GOOGLE_APPS_SCRIPT_WEB_APP_URL;
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
-
+    const [popoverContent, setPopoverContent] = useState({ title: '', body: '' });
+    const [showPopover, setShowPopover] = useState(false);
+    const [popoverPosition, setPopoverPosition] = useState(null);
+    
+    const mapRef = useRef();
+    const popupRef = useRef();
 
     useEffect(() => {
+      const vectorSource = new VectorSource();
       const cities = [
         { name: 'Blantyre, Malawi', coordinates: [34.995, -15.786] },
         { name: 'Lilongwe, Malawi', coordinates: [33.7741, -13.9626] },
-        { name: 'Mzuzu, Malawi', coordinates: [34.0149, -11.4656] },
-        { name: 'Zomba, Malawi', coordinates: [35.308, -15.385] },
-        { name: 'Mangochi, Malawi', coordinates: [34.4686, -14.4781] },
-        { name: 'Kasungu, Malawi', coordinates: [33.4767, -13.035] },
-        { name: 'Salima, Malawi', coordinates: [34.458, -13.7804] },
+        // Add other cities...
       ];
-      const vectorSource = new VectorSource();
-    
+  
       cities.forEach((city) => {
         const cityPoint = new Feature({
           geometry: new Point(fromLonLat(city.coordinates)),
           name: city.name,
         });
-    
-        const pointStyle = new Style({
-          image: new Icon({
-            anchor: [0.5, 1],
-            src: '/icons8-marker-94.png', // Ensure the icon path is correct
-            scale: 0.25,
-          }),
-        });
-    
-        cityPoint.setStyle(pointStyle);
+        cityPoint.setStyle(
+          new Style({
+            image: new Icon({
+              anchor: [0.5, 1],
+              src: '/icons8-marker-94.png',
+              scale: 0.25,
+            }),
+          })
+        );
         vectorSource.addFeature(cityPoint);
       });
-    
+  
       const vectorLayer = new VectorLayer({
         source: vectorSource,
       });
-    
-      // Initialize the map
+  
       const map = new Map({
-        target: 'map',
+        target: mapRef.current,
         layers: [
           new TileLayer({
             source: new OSM(),
           }),
-          vectorLayer, // Add the vector layer with city points
+          vectorLayer,
         ],
         view: new View({
-          center: fromLonLat([25, 5]), // Center the map
+          center: fromLonLat([25, 5]),
           zoom: 3,
         }),
       });
-    
-      // Create a Modify interaction to enable modifying the vector points
-      const modify = new Modify({ source: vectorSource });
-    
-      // Add Modify interaction to the map
-      map.addInteraction(modify);
-    
-      modify.on('modifystart', (evt) => {
-        document.getElementById('map').style.cursor = 'grabbing';
+  
+      // Display popover on feature click
+      map.on('click', (evt) => {
+        const feature = map.forEachFeatureAtPixel(evt.pixel, (f) => f);
+        if (feature) {
+          const coordinates = feature.getGeometry().getCoordinates();
+          setPopoverContent({
+            title: feature.get('name'),
+            body: `Location: ${feature.get('name')}`,
+          });
+          setPopoverPosition({
+            top: evt.pixel[1],
+            left: evt.pixel[0],
+          });
+          setShowPopover(true);
+        } else {
+          setShowPopover(false);
+        }
       });
-    
-      modify.on('modifyend', (evt) => {
-        document.getElementById('map').style.cursor = 'pointer';
-      });
-    
+  
+      // Cleanup on component unmount
       return () => {
-        // Clean up map instance on component unmount
         map.setTarget(null);
       };
     }, []);
-    
 
     const handleClose = () => {
         setState({ ...state, open: false });
@@ -230,18 +233,40 @@ const CashPoints = () => {
 
             <main className='text-black container mx-auto pt-16 flex-1 text-left'>
                 <h1 className='text-2xl text-slate-800'>Find a cash point:</h1>
-                <div id="map" style={{ width: '98%', height: '600px'}}>
-
-                <div className='my-4'>
-                <Fab aria-label="add" className="fixed bottom-5 right-8 bg-fuchsia-700 hover:bg-white" onClick={handleOpenCreate}>
-                    <Add sx={{ color: 'white', '&:hover': { color: 'purple' }}}/>
-                </Fab>
-                </div>
-                <div>
-                <AddCashPoint open={openCreate} close={closeCreate} update={isCashPoint} add={createCashPointHandler}></AddCashPoint>
-              </div>
-                </div>
+                <div id="map" ref={mapRef} style={{ width: '100%', height: '500px' }} />
                 
+                {showPopover && (
+                    <OverlayTrigger
+                      trigger="click"
+                      placement="top"
+                      overlay={
+                        <Popover id="popover-basic"       style={{
+                          position: 'absolute',
+                          top: `${popoverPosition.top}px`,
+                          left: `${popoverPosition.left}px`,
+                          backgroundColor: '#e0f7e9',
+                          color: '#333',
+                          border: '1px solid #28a745',
+                          zIndex: 1000,
+                        }}>
+                          <Popover.Header as="h3">{popoverContent.title}</Popover.Header>
+                          <Popover.Body>{popoverContent.body}</Popover.Body>
+                          <Button>Withdraw</Button>
+                        </Popover>
+                      }
+                      show={showPopover}
+                      target={() => mapRef.current}
+                    >
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: `${popoverPosition.center}px`,
+                          left: `${popoverPosition.left}px`,
+                        }}
+                      />
+                    </OverlayTrigger>
+                )}
+                <AddCashPoint open={openCreate} close={closeCreate} update={isCashPoint} add={createCashPointHandler}></AddCashPoint>
                 <div className='my-4'>
                     <Link className='text-fuchsia-700' color="inherit" component='button' onClick={handleEmailModalOpen}>
                         Can’t find a cash point at your desired location?

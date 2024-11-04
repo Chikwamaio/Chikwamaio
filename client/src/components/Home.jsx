@@ -200,8 +200,8 @@ const Home = () => {
       <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
       
       <p className='text-xl py-12'>Send, receive, buy and sell digital dollars, anywhere!</p>
-      <button onClick={handleOpenSend} className="text-white bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
-            Use it!
+      <button onClick={goToCashPoints} className="text-white bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
+            Find a Cashpoint!
           </button>
       </div>
       <div className='basis-1/2 grid grid-cols-1 align-center'>
