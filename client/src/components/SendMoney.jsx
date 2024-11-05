@@ -5,7 +5,6 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import { ethers } from 'ethers';
 import * as React from 'react';
@@ -13,7 +12,7 @@ import { useState } from 'react';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 
 
-export default function SendMoney({open, close, send}) {
+export default function SendMoney({open, close, send, cashPoint}) {
 
   const [amount, setAmount] = useState('');
   const [toAddress, setToAddress] = useState('');
@@ -26,7 +25,6 @@ export default function SendMoney({open, close, send}) {
   const provider = new ethers.providers.Web3Provider(ethereum);
   const signer = provider.getSigner();
   const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
-
   const handleClose = () => {
     close();
   };
@@ -49,10 +47,10 @@ export default function SendMoney({open, close, send}) {
 
   return (
     <Dialog onClose={close} open={open}>
-      <DialogTitle>Send Money</DialogTitle>
+      <DialogTitle>Withdraw</DialogTitle>
         <DialogContent>
         <DialogContentText>
-            If the receiver intends to cash out please ensure there is a <Link color="inherit" href='/cashpoints'>Chikwama cash point</Link> near them.
+            You are about to withdraw from {cashPoint?.name} cashpoint at the rate 1 DOC to {cashPoint?.buyRate} {cashPoint?.currency} in {cashPoint?.city}.
           </DialogContentText>
         <TextField
             autoFocus
