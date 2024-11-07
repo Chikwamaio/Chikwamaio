@@ -1,6 +1,7 @@
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { Button, Card, CardActions, CardContent, CardHeader, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fade, Link, TextField, Typography } from '@mui/material';
+import Snackbar from '@mui/material/Snackbar';
 import { ethers } from 'ethers';
 import { Feature, Map, View } from 'ol';
 import { Point } from 'ol/geom';
@@ -47,24 +48,15 @@ const CashPoints = () => {
     const closeSend = () => {
       setOpenSend(false);
     };
-    const sendMoneyHandler = async (toAddress, amount, fee) => {
-      // Check if the address is valid
-      if (!ethers.utils.isAddress(toAddress)) {
-        setState({
-          open: true,
-          Transition: Fade,
-        });
-        setErrorMessage("Invalid address. Please check the recipient address.");
-        return;
-      }
+    const sendMoneyHandler = async (amount, fee, gasFee) => {
     
-      const balance = await provider.getBalance(currentAccount);
-      const address = toAddress;
+      const balance = await provider.getBalance(walletAddress);
+      const address = currentCashPoint.address;
       const amountEther = ethers.utils.parseUnits(amount, "ether");
       const feeEther = ethers.utils.parseUnits(fee, "ether");
-      const totalCost = amountEther.add(feeEther);
-    
-      if (balance < totalCost) {
+      const gasFeeEther = ethers.utils.parseUnits(gasFee, "ether");
+      const totalCost = amountEther.add(feeEther).add(gasFeeEther);
+      if (balance.lt(totalCost)) {
         setState({
           open: true,
           Transition: Fade,
@@ -72,7 +64,7 @@ const CashPoints = () => {
         setErrorMessage(
           `You have less than $${ethers.utils.formatEther(
             totalCost
-          )} in your wallet ${currentAccount}`
+          )} in your wallet ${walletAddress}`
         );
         return;
       }
@@ -99,8 +91,8 @@ const CashPoints = () => {
     useEffect(() => {
       const vectorSource = new VectorSource();
       const cps = [
-        { city: 'Blantyre, Malawi', coordinates: [34.995, -15.786], cashPointName: 'Alpha', phoneNumber:'+265 999 999 999', currency:'MWK', buyRate: 1700, sellRate:2000, until: '2025-01-01'},
-        { city: 'Lilongwe, Malawi', coordinates: [33.7741, -13.9626], cashPointName: 'Beta', phoneNumber:'+265 999 999 888', currency:'MWK', buyRate: 1800, sellRate:2000, until: '2025-01-01'},
+        { city: 'Blantyre, Malawi', coordinates: [34.995, -15.786], cashPointName: 'Alpha', address: '0x54910e51713295dE5428470837930a6E35A41967', phoneNumber:'+265 999 999 999', currency:'MWK', buyRate: 1700, sellRate:2000, until: '2025-01-01'},
+        { city: 'Lilongwe, Malawi', coordinates: [33.7741, -13.9626], cashPointName: 'Beta', address: '0x54910e51713295dE5428470837930a6E35A41967', phoneNumber:'+265 999 999 888', currency:'MWK', buyRate: 1800, sellRate:2000, until: '2025-01-01'},
         // Add other cities...
       ];
   
@@ -108,6 +100,7 @@ const CashPoints = () => {
         const CashPoint = new Feature({
           geometry: new Point(fromLonLat(cp.coordinates)),
           name: cp.cashPointName,
+          address: cp.address,
           phoneNumber: cp.phoneNumber,
           currency: cp.currency,
           buyRate: cp.buyRate,
@@ -285,7 +278,19 @@ const CashPoints = () => {
     return (
         <div className='min-h-screen flex flex-col text-slate-500'>
             <NavBar walletAddress={walletAddress} />
-
+            <Snackbar 
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
+      open={state.open}
+        onClose={handleClose}
+        autoHideDuration={3000}
+        TransitionComponent={state.Transition}
+        message={errorMessage}
+        key={state.Transition.name}>
+        
+        </Snackbar>
             <main className='text-black container mx-auto pt-16 flex-1 text-left'>
                 <h1 className='text-2xl text-slate-800'>Find a cash point:</h1>
                 <div id="map" ref={mapRef} style={{ width: '100%', height: '500px' }} />

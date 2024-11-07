@@ -15,8 +15,8 @@ import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/Ca
 export default function SendMoney({open, close, send, cashPoint}) {
 
   const [amount, setAmount] = useState('');
-  const [toAddress, setToAddress] = useState('');
   const [feeAmount, setFee] = useState('');
+  const [gasFee, setGasFee] = useState('');
   const [loading, setLoading] = useState(false);
   const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
   const abi = cashPoints.abi;
@@ -30,7 +30,7 @@ export default function SendMoney({open, close, send, cashPoint}) {
   };
 
   const handleSend = () => {
-    send(toAddress,amount, feeAmount);
+    send(amount, feeAmount, gasFee);
   }
 
 
@@ -39,6 +39,29 @@ export default function SendMoney({open, close, send, cashPoint}) {
     const fee = await cashPointsContract.TRANSACTION_COMMISION();
     let cost = ethers.utils.parseUnits(((parseInt(fee.toString())/100) * amount).toString(),"ether");
    
+  
+    const transaction = {
+      to: cashPoint.address,
+      value: ethers.utils.parseEther(amount),
+    };
+
+    try {
+      // Estimate gas for the transfer
+      const estimatedGas = await provider.estimateGas(transaction);
+      console.log('Estimated Gas:', estimatedGas.toString());
+  
+      // Optionally, you can estimate the gas price
+      const gasPrice = await provider.getGasPrice();
+      console.log('Gas Price:', ethers.utils.formatUnits(gasPrice, 'gwei'), 'gwei');
+  
+      // Calculate total transaction cost (gas fee in ether)
+      const totalGasFee = estimatedGas.mul(gasPrice);
+      setGasFee(ethers.utils.formatEther(totalGasFee));
+    } catch (error) {
+    setGasFee('unable to calculate gas fee');
+    }
+      
+    
     setFee(ethers.utils.formatEther(cost));
     setLoading(false);
 
@@ -51,21 +74,10 @@ export default function SendMoney({open, close, send, cashPoint}) {
         <DialogContent>
         <DialogContentText>
             You are about to withdraw from {cashPoint?.name} cashpoint at the rate 1 DOC to {cashPoint?.buyRate} {cashPoint?.currency} in {cashPoint?.city}.
+
+            Enter the amount you would like to withdraw below
           </DialogContentText>
-        <TextField
-            autoFocus
-            margin="dense"
-            value={toAddress}
-            id="name"
-            label="Receiver's address"
-            type="text"
-            fullWidth
-            variant="filled"
-            onChange={(e) => {
-              setToAddress(e.target.value);
-            }}
-            
-          />
+
           {loading&&<CircularProgress sx={{
               position: 'absolute',
               top: 160,
@@ -91,10 +103,16 @@ export default function SendMoney({open, close, send, cashPoint}) {
           
           <DialogContentText>
            Fee: ${feeAmount}</DialogContentText>
+           <DialogContentText>You will receive: {cashPoint?.currency}{new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount * cashPoint?.buyRate)} </DialogContentText>
+           {gasFee && (
+          <DialogContentText>
+            Estimated Gas Fee: ${gasFee}
+          </DialogContentText>
+        )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button disabled={!amount || !toAddress} onClick={handleSend}>Send</Button>
+          <Button disabled={!amount} onClick={handleSend}>Send</Button>
         </DialogActions>
     </Dialog>
   );
