@@ -1,4 +1,7 @@
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import FastForwardIcon from '@mui/icons-material/FastForward';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import LockIcon from '@mui/icons-material/Lock';
 import RoomIcon from '@mui/icons-material/Room';
@@ -35,7 +38,7 @@ const LandingPage = () => {
         {
             label: "Convert BTC to DOC",
             description: "Go to Sovryn to convert your Bitcoin (BTC) to Dollar on Chain (DOC). Click this box to visit SOVRYN",
-            icon: <AccountBalanceIcon />,
+            icon: <AttachMoneyIcon/>,
             link: "https://sovryn.app/convert?from=BTC&to=DOC"
         },
         {
@@ -104,19 +107,27 @@ const LandingPage = () => {
 
             <p className='py-4 text-slate-700'>Why use Chikwama?</p>
             <ul className='list-disc pl-8'>
-                <li className='text-slate-700 flex items-center py-2'>
-                    <RoomIcon className="mr-2 text-yellow-400" />
-                    Find Cashpoints: Locate nearby cashpoints where you can convert stablecoins, like Dollar on Chain (DOC), to local currency effortlessly.
-                </li>
-                <li className='text-slate-700 flex items-center py-2'>
-                    <LockIcon className="mr-2 text-yellow-400" />
-                    Self-Custodial: Chikwama ensures that you have control over your funds, providing a secure, self-custodial experience.
-                </li>
-                <li className='text-slate-700 flex items-center py-2'>
-                    <AccountBalanceIcon className="mr-2 text-yellow-400" />
-                    Nominal Fee: Chikwama charges a nominal fee of 1% for providing the cashpoint conversion service.
-                </li>
-            </ul>
+    <li className='text-slate-700 flex items-center py-2'>
+        <FastForwardIcon className="mr-2 text-yellow-400" />
+        <p><b>Fast Transactions:</b> Crypto is one of the fastest ways to send money today. Whether you’re sending funds across the globe or across town, your transactions are completed in minutes, not days.</p>
+    </li>
+    <li className='text-slate-700 flex items-center py-2'>
+        <EventAvailableIcon className="mr-2 text-yellow-400" />
+        <p><b>24/7 Availability:</b> Unlike traditional banking services that are restricted to office hours, Chikwama is available anytime. Send money whenever you need it—no waiting for business hours or banking holidays.</p>
+    </li>
+    <li className='text-slate-700 flex items-center py-2'>
+        <RoomIcon className="mr-2 text-yellow-400" />
+        <p><b>Find Cashpoints:</b> Locate nearby cashpoints where you can convert stablecoins, like Dollar on Chain (DOC), to local currency effortlessly.</p>
+    </li>
+    <li className='text-slate-700 flex items-center py-2'>
+        <LockIcon className="mr-2 text-yellow-400" />
+        <p><b>Self-Custodial:</b> Chikwama ensures that you have control over your funds, providing a secure, self-custodial experience.</p>
+    </li>
+    <li className='text-slate-700 flex items-center py-2'>
+        <AttachMoneyIcon className="mr-2 text-yellow-400" />
+        <p><b>Nominal Fee:</b> Chikwama charges a nominal fee of 1% for providing the cashpoint conversion service.</p>
+    </li>
+</ul>
 
             <p className='py-4 text-slate-700'>
                 If you have any questions or need help getting started with Chikwama, please don't hesitate to <a href="mailto:info@chikwama.net" className='text-fuchsia-700'>reach out to us</a>.
