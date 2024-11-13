@@ -4,9 +4,11 @@ import { Button, Card, CardActions, CardContent, CardHeader, Dialog, DialogActio
 import Snackbar from '@mui/material/Snackbar';
 import { ethers } from 'ethers';
 import { Feature, Map, View } from 'ol';
+import { defaults as defaultControls } from 'ol/control';
 import { Point } from 'ol/geom';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
+import 'ol/ol.css';
 import { fromLonLat } from 'ol/proj';
 import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
@@ -136,6 +138,7 @@ const CashPoints = () => {
           center: fromLonLat([25, 5]),
           zoom: 3,
         }),
+        controls: defaultControls(),
       });
   
       // Display popover on feature click

@@ -100,16 +100,30 @@ export default function SendMoney({open, close, send, cashPoint}) {
             }}
             
           />
-          
-          <DialogContentText>
-           Fee: ${feeAmount}</DialogContentText>
-           <DialogContentText>You will receive: {cashPoint?.currency}{new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount * cashPoint?.buyRate)} </DialogContentText>
-           {gasFee && (
-          <DialogContentText>
-            Estimated Gas Fee: ${gasFee}
-          </DialogContentText>
-        )}
+       <div className="bg-slate-500 p-4 w-max text-sm">
+  <div className="flex justify-between text-white">
+    <span className="text-left">Fee:</span>
+    <span className="text-right">${feeAmount}</span>
+  </div>
+  <div className="flex justify-between text-white">
+    <span className="text-left">You will receive:</span>
+    <span className="text-right">
+      {cashPoint?.currency}
+      {new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(amount * cashPoint?.buyRate)}
+    </span>
+  </div>
+  {gasFee && (
+    <div className="flex justify-between text-white">
+      <span className="text-left">Estimated Gas Fee:</span>
+      <span className="text-right">${gasFee}</span>
+    </div>
+  )}
+</div>
         </DialogContent>
+        
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button disabled={!amount} onClick={handleSend}>Send</Button>
