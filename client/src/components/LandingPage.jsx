@@ -1,5 +1,6 @@
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import FastForwardIcon from '@mui/icons-material/FastForward';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
@@ -33,18 +34,18 @@ const LandingPage = () => {
         {
             label: "Buy Bitcoin (BTC)",
             description: "Get some Bitcoin (BTC). If you don’t already own Bitcoin, buy it from any exchange or platform that supports it.",
-            icon: <LockIcon />
+            icon: <AttachMoneyIcon />
         },
         {
             label: "Convert BTC to DOC",
             description: "Go to Sovryn to convert your Bitcoin (BTC) to Dollar on Chain (DOC). Click this box to visit SOVRYN",
-            icon: <AttachMoneyIcon/>,
+            icon: <CurrencyExchangeIcon/>,
             link: "https://sovryn.app/convert?from=BTC&to=DOC"
         },
         {
             label: "Send the Value Home",
-            description: "Once you have DOC, send the equivalent value home through Chikwama, where it will be ready for conversion into local currency.",
-            icon: <LockIcon />
+            description: "Once you have DOC, you can send the value home",
+            icon: <FastForwardIcon />
         },
         {
             label: "Pick a Convenient Cashpoint",
@@ -53,7 +54,7 @@ const LandingPage = () => {
         },
     ];
 
-    return (
+    return (<>
         <div className="md:px-20 bg-slate-100 md:py-12 py-6 px-4 lg:px-32 xl:px-40">
             <h2 className='md:text-3xl text-3xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
             <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
@@ -104,7 +105,8 @@ const LandingPage = () => {
                     ))}
                 </div>
             </div>
-
+            </div>
+<div className='bg-blue-100 md:py-12 py-6 px-4 lg:px-32 xl:px-40 '>
             <p className='py-4 text-slate-700'>Why use Chikwama?</p>
             <ul className='list-disc pl-8'>
     <li className='text-slate-700 flex items-center py-2'>
@@ -130,9 +132,9 @@ const LandingPage = () => {
 </ul>
 
             <p className='py-4 text-slate-700'>
-                If you have any questions or need help getting started with Chikwama, please don't hesitate to <a href="mailto:info@chikwama.net" className='text-fuchsia-700'>reach out to us</a>.
+                If you have any questions or need help getting started with Chikwama, please don't hesitate to <a href="mailto:info@chikwama.net" className='text-[#872A7F]'>reach out to us</a>.
             </p>
-
+            </div>
             {/* Social media links */}
             <div className="flex space-x-4 pt-4">
                 <a href="https://www.linkedin.com/in/chikwama" target="_blank" rel="noopener noreferrer">
@@ -145,7 +147,7 @@ const LandingPage = () => {
                     <YouTubeIcon className="text-red-600" />
                 </a>
             </div>
-        </div>
+            </>
     );
 }
 

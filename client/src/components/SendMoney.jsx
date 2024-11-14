@@ -37,9 +37,9 @@ export default function SendMoney({open, close, send, cashPoint}) {
   const getCostHandler = async (amount) => {
     setLoading(true);
     const fee = await cashPointsContract.TRANSACTION_COMMISION();
-    let cost = ethers.utils.parseUnits(((parseInt(fee.toString())/100) * amount).toString(),"ether");
    
-  
+    const amountInWei = ethers.utils.parseEther(amount.toString());
+    const cost = amountInWei.mul(fee).div(100);
     const transaction = {
       to: cashPoint.address,
       value: ethers.utils.parseEther(amount),
