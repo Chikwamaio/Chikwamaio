@@ -30,7 +30,7 @@ const LandingPage = () => {
             label: "Find a Cashpoint",
             description: "Go to the cash points page and check if there is a nearby cashpoint where you are from. Chikwama offers cashpoints where you can convert your cryptocurrency to local money.",
             icon: <RoomIcon />,
-            image: "../../public/wepik-photo-mode-2022825-154940.png",
+            image: "/wepik-photo-mode-2022825-154940.png",
         },
         {
             label: "Buy Bitcoin (BTC)",
@@ -63,7 +63,7 @@ const LandingPage = () => {
             <meta name="description" content="Chikwama offers a secure, self-custodial way to convert stablecoins like DOC into local currency at cashpoints. Powered by the Rootstock blockchain." />
             <title>Chikwama | Convert Stablecoins to Local Currency with Ease</title>
             
-            <div className="w-full h-64 bg-cover bg-center mb-6" style={{ backgroundImage: "url('../../public/image.webp')" }}>
+            <div className="w-full h-64 bg-cover bg-center mb-6" style={{ backgroundImage: "url('/image.webp')" }}>
                 
             </div>
             <div className="py-4">
