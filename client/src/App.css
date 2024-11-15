@@ -39,3 +39,23 @@
 .read-the-docs {
   color: #888;
 }
+
+.tooltip-container {
+  transform: translateX(-50%);
+  left: 50%;
+  position: absolute;
+  z-index: 1000; /* Ensure it appears above other elements */
+}
+
+.metric-container {
+  position: relative; /* Ensure tooltip positioning is relative to this container */
+  z-index: 1000;
+}
+
+@media (max-width: 640px) {
+  .tooltip-container {
+      transform: none;
+      left: auto;
+      right: 0.5rem; /* Align tooltip with the edge */
+  }
+}

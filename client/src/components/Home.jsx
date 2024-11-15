@@ -1,5 +1,6 @@
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import CalculateIcon from '@mui/icons-material/Calculate';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import PieChartIcon from '@mui/icons-material/PieChart';
 import Fade from '@mui/material/Fade';
 import Snackbar from '@mui/material/Snackbar';
@@ -9,7 +10,6 @@ import { useNavigate } from "react-router-dom";
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import Footer from './Footer';
 import NavBar from './NavBar';
-
 
 
 
@@ -153,20 +153,48 @@ const Home = () => {
           </button>
       </div>
       <div className='basis-1/2 grid grid-cols-1 align-center'>
-      <h4 className='text-xl text-slate-700 lg:text-2xl uppercase text-left'> DAO Metrics:</h4>
-      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40 metric-container'>
-      <CalculateIcon></CalculateIcon><p className='text-xl text-yellow-400 text-left'>US$ {tokenPrice} </p> <p className='text-left'>Current Price</p>
-     </div>
-      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40 metric-container'>
-      <PieChartIcon></PieChartIcon><p className='text-xl text-yellow-400 text-left'>{tokenBalance} CHK</p> <p className='text-left'>Your Balance</p></div>
-      <div className='bg-white mx-auto mb-4  float-right p-2 border-2 border-gray-300 h-24 w-40 metric-container'>
-      <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-left'>US$ {revenue}</p> <p className='text-left'>Contract Balance</p>
-      </div>
-      <div className='align-center'>
-      <button className='w-24 hover:text-[#872A7F] ' onClick={handleGotodao}> Learn more...</button>
-      </div>
-      
-      </div>
+    <h4 className='text-xl text-slate-700 lg:text-2xl uppercase text-left'>DAO Metrics:</h4>
+    
+    <div className='bg-white mx-auto mb-4 float-right p-2 border-2 border-gray-300 h-24 w-40 metric-container relative'>
+        <CalculateIcon />
+        <p className='text-xl text-yellow-400 text-left'>US$ {tokenPrice}</p> 
+        <p className='text-left'>Current Price</p>
+        <div className='absolute top-1 right-1 group'>
+            <span className='text-gray-400 cursor-pointer'><HelpOutlineIcon/></span>
+            <div className='hidden group-hover:block absolute bg-gray-800 text-white text-sm p-2 rounded-lg shadow-md w-40 tooltip-container'>
+                This is the current price of the CHK token in USD.
+            </div>
+        </div>
+    </div>
+    
+    <div className='bg-white mx-auto mb-4 float-right p-2 border-2 border-gray-300 h-24 w-40 metric-container relative'>
+        <PieChartIcon />
+        <p className='text-xl text-yellow-400 text-left'>{tokenBalance} CHK</p> 
+        <p className='text-left'>Your Balance</p>
+        <div className='absolute top-1 right-1 group'>
+            <span className='text-gray-400 cursor-pointer'><HelpOutlineIcon/></span>
+            <div className='hidden group-hover:block absolute bg-gray-800 text-white text-sm p-2 rounded-lg shadow-md w-40 tooltip-container'>
+                This shows your current CHK token balance.
+            </div>
+        </div>
+    </div>
+    
+    <div className='bg-white mx-auto mb-4 float-right p-2 border-2 border-gray-300 h-24 w-40 metric-container relative'>
+        <AccountBalanceIcon />
+        <p className='text-xl text-yellow-400 text-left'>US$ {revenue}</p> 
+        <p className='text-left'>Contract Balance</p>
+        <div className='absolute top-1 right-1 group'>
+            <span className='text-gray-400 cursor-pointer'><HelpOutlineIcon/></span>
+            <div className='hidden group-hover:block absolute bg-gray-800 text-white text-sm p-2 rounded-lg shadow-md w-40 tooltip-container'>
+                This indicates the total funds held in the DAO's smart contract, i.e., Chikwama DAO revenue to date.
+            </div>
+        </div>
+    </div>
+    
+    <div className='align-center'>
+        <button className='w-24 hover:text-[#872A7F]' onClick={handleGotodao}>Learn more...</button>
+    </div>
+</div>
       <Snackbar 
       anchorOrigin={{
         vertical: 'top',
@@ -181,7 +209,7 @@ const Home = () => {
         
         </Snackbar>
       </main>
-      <Footer className/>
+      <Footer />
     </div>
   )
 }

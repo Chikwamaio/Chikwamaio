@@ -3,8 +3,8 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 const Footer = () => {
     return(
         <>
-        <footer className='mx-auto pb-6 flex flex-col md:flex-row md:w-fit w-full absolute bottom-0'>
-        <p className='flex-row'>Built with ❤️ by the Chikwama community</p>
+        <footer className='mx-auto pb-6 flex flex-col md:flex-row md:w-fit w-full fixed bottom-0'>
+        <p className='flex-row'>Built by the Chikwama community</p>
 
         <div>
           <a href='#' className='mr-3 hover:opacity-80 duration-150'>About us</a>|
