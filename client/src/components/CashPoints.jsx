@@ -18,6 +18,7 @@ import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/Ca
 import AddCashPoint from './AddCashPoint';
 import NavBar from './NavBar';
 import SendMoney from './SendMoney';
+import { SocialMediaModal } from './SocialMediaModal';
 
 const CashPoints = () => {
     const [openCreate, setOpenCreate] = useState(false);
@@ -44,6 +45,9 @@ const CashPoints = () => {
     const [openSend, setOpenSend] = useState(false);
     const [currentCashPoint, setCurrentCashPoint]= useState(null);
 
+    const [openSocialModal, setOpenSocialModal] = useState(false);
+    const [shareMessage, setShareMessage] = useState(''); 
+
     const mapRef = useRef();
 
 
@@ -58,6 +62,12 @@ const CashPoints = () => {
       const feeEther = ethers.utils.parseUnits(fee, "ether");
       const gasFeeEther = ethers.utils.parseUnits(gasFee, "ether");
       const totalCost = amountEther.add(feeEther).add(gasFeeEther);
+
+
+      const message = `I just converted my crypto dollars to money I can use here in Blantyre, Malawi, thanks to Chikwama! Check it out at https://chikwama.net or follow @chikwamaio.`;
+      setShareMessage(message);
+      setOpenSocialModal(true);
+
       if (balance.lt(totalCost)) {
         setState({
           open: true,
@@ -281,6 +291,7 @@ const CashPoints = () => {
     return (
         <div className='min-h-screen flex flex-col text-slate-500'>
             <NavBar walletAddress={walletAddress} />
+            
             <Snackbar 
       anchorOrigin={{
         vertical: 'top',
@@ -362,6 +373,11 @@ const CashPoints = () => {
                         <Button onClick={handleEmailSubmit}>Submit</Button>
                     </DialogActions>
                 </Dialog>
+                <SocialMediaModal
+  open={openSocialModal}
+  onClose={() => setOpenSocialModal(false)}
+  message={shareMessage}
+/>
             </main>
         </div>
     );
