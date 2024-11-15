@@ -148,7 +148,7 @@ const Home = () => {
       <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
       
       <p className='text-xl py-12'>Send, receive, buy and sell digital dollars, anywhere!</p>
-      <button onClick={goToCashPoints} className="text-white bg-fuchsia-700 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring">
+      <button onClick={goToCashPoints} className="text-white bg-[#872A7F]  py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-[#872A7F]  hover:border hover:border-[#872A7F]  focus:outline-none focus:ring">
             Find a Cashpoint!
           </button>
       </div>
@@ -163,7 +163,7 @@ const Home = () => {
       <AccountBalanceIcon></AccountBalanceIcon><p className='text-xl text-yellow-400 text-left'>US$ {revenue}</p> <p className='text-left'>Contract Balance</p>
       </div>
       <div className='align-center'>
-      <button className='w-24 hover:text-fuchsia-700' onClick={handleGotodao}> Learn more...</button>
+      <button className='w-24 hover:text-[#872A7F] ' onClick={handleGotodao}> Learn more...</button>
       </div>
       
       </div>

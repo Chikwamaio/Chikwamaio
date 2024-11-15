@@ -324,7 +324,7 @@ const CashPoints = () => {
             )}
                 <AddCashPoint open={openCreate} close={closeCreate} update={isCashPoint} add={createCashPointHandler}></AddCashPoint>
                 <div className='my-4'>
-                    <Link className='text-fuchsia-700' color="inherit" component='button' onClick={handleEmailModalOpen}>
+                    <Link className='text-[#872A7F] ' color="inherit" component='button' onClick={handleEmailModalOpen}>
                         Can’t find a cash point at your desired location?
                     </Link>
                 </div>
