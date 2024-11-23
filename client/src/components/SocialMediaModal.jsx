@@ -21,7 +21,7 @@ export const SocialMediaModal = ({ open, onClose, message }) => (
               )
             }
           >
-            Share on Twitter
+            Share on X
           </Button>
           <Button
             variant="contained"

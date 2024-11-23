@@ -8,10 +8,12 @@ import LockIcon from '@mui/icons-material/Lock';
 import RoomIcon from '@mui/icons-material/Room';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import NavBar from './NavBar';
 
 const LandingPage = () => {
+    const [walletAddress, setWalletAddress] = useState('')
     const { ethereum } = window;
     const navigate = useNavigate();
 
@@ -30,7 +32,7 @@ const LandingPage = () => {
             label: "Find a Cashpoint",
             description: "Go to the cash points page and check if there is a nearby cashpoint where you are from. Chikwama offers cashpoints where you can convert your cryptocurrency to local money.",
             icon: <RoomIcon />,
-            image: "../../public/wepik-photo-mode-2022825-154940.png",
+            image: "/wepik-photo-mode-2022825-154940.png",
         },
         {
             label: "Buy Bitcoin (BTC)",
@@ -56,14 +58,15 @@ const LandingPage = () => {
     ];
 
     return (<>
-
-        <div className="md:px-20 bg-slate-100 md:py-12 py-6 px-4 lg:px-32 xl:px-40">
+ <NavBar walletAddress={walletAddress}/>
+        <div className="md:px-20 bg-slate-200 md:py-12 py-6 px-4 lg:px-32 xl:px-40 " >
+       
         <h2 className='md:text-3xl text-3xl text-slate-700 lg:text-6xl uppercase'> Welcome to</h2>
         <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama</h1>
             <meta name="description" content="Chikwama offers a secure, self-custodial way to convert stablecoins like DOC into local currency at cashpoints. Powered by the Rootstock blockchain." />
             <title>Chikwama | Convert Stablecoins to Local Currency with Ease</title>
             
-            <div className="w-full h-64 bg-cover bg-center mb-6" style={{ backgroundImage: "url('../../public/image.webp')" }}>
+            <div className="w-full h-64 bg-cover bg-center mb-6" style={{ backgroundImage: "url('/image.webp')" }}>
                 {/* Alternative: <img src="/path/to/your/banner-image.jpg" alt="Chikwama Banner" className="w-full h-64 object-cover" /> */}
             </div>
             <div className="py-4">
@@ -118,30 +121,32 @@ const LandingPage = () => {
                 </div>
             </div>
             </div>
-<div className='bg-blue-100 md:py-12 py-6 px-4 lg:px-32 xl:px-40 '>
+            <div
+  className="bg-blue-300 md:py-12 py-6 px-4 lg:px-32 xl:px-40 mt-6"
+>
             <p className='py-4 text-slate-700'>Why use Chikwama?</p>
-            <ul className='list-disc pl-8'>
-    <li className='text-slate-700 flex items-center py-2"'>
-        <FastForwardIcon className="mr-2 text-yellow-400" aria-label="Crypto remittances powered by bitcoin" />
-        <p><b>Fast Transactions:</b> Crypto is one of the fastest ways to send money today. Whether you’re sending funds across the globe or across town, your transactions are completed in minutes, not days.</p>
-    </li>
-    <li className='text-slate-700 flex items-center py-2'>
-        <EventAvailableIcon className="mr-2 text-yellow-400" aria-label="Bitcoin is always available"  />
-        <p><b>24/7 Availability:</b> Unlike traditional banking services that are restricted to office hours, Chikwama is available anytime. Send money whenever you need it—no waiting for business hours or banking holidays.</p>
-    </li>
-    <li className='text-slate-700 flex items-center py-2'>
-        <RoomIcon className="mr-2 text-yellow-400" aria-label="Locate cashpoints/ off ramps for your crypto"  />
-        <p><b>Find Cashpoints:</b> Locate nearby cashpoints where you can convert stablecoins, like Dollar on Chain (DOC), to local currency effortlessly.</p>
-    </li>
-    <li className='text-slate-700 flex items-center py-2'>
-        <LockIcon className="mr-2 text-yellow-400" aria-label="Your funds are always under your control, your keys your crypto" />
-        <p><b>Self-Custodial:</b> Chikwama ensures that you have control over your funds, providing a secure, self-custodial experience.</p>
-    </li>
-    <li className='text-slate-700 flex items-center py-2'>
-        <AttachMoneyIcon className="mr-2 text-yellow-400" aria-label="lowest transaction fees"  />
-        <p><b>Nominal Fee:</b> Chikwama charges a nominal fee of 1% for providing the cashpoint conversion service.</p>
-    </li>
-</ul>
+                            <ul className='list-disc pl-8'>
+                    <li className='text-slate-700 flex items-center py-2"'>
+                        <FastForwardIcon className="mr-2 text-yellow-400" aria-label="Crypto remittances powered by bitcoin" />
+                        <p><b>Fast Transactions:</b> Crypto is one of the fastest ways to send money today. Whether you’re sending funds across the globe or across town, your transactions are completed in minutes, not days.</p>
+                    </li>
+                    <li className='text-slate-700 flex items-center py-2'>
+                        <EventAvailableIcon className="mr-2 text-yellow-400" aria-label="Bitcoin is always available"  />
+                        <p><b>24/7 Availability:</b> Unlike traditional banking services that are restricted to office hours, Chikwama is available anytime. Send money whenever you need it—no waiting for business hours or banking holidays.</p>
+                    </li>
+                    <li className='text-slate-700 flex items-center py-2'>
+                        <RoomIcon className="mr-2 text-yellow-400" aria-label="Locate cashpoints/ off ramps for your crypto"  />
+                        <p><b>Find Cashpoints:</b> Locate nearby cashpoints where you can convert stablecoins, like Dollar on Chain (DOC), to local currency effortlessly.</p>
+                    </li>
+                    <li className='text-slate-700 flex items-center py-2'>
+                        <LockIcon className="mr-2 text-yellow-400" aria-label="Your funds are always under your control, your keys your crypto" />
+                        <p><b>Self-Custodial:</b> Chikwama ensures that you have control over your funds, providing a secure, self-custodial experience.</p>
+                    </li>
+                    <li className='text-slate-700 flex items-center py-2'>
+                        <AttachMoneyIcon className="mr-2 text-yellow-400" aria-label="lowest transaction fees"  />
+                        <p><b>Nominal Fee:</b> Chikwama charges a nominal fee of 1% for providing the cashpoint conversion service.</p>
+                    </li>
+                </ul>
 
             <p className='py-4 text-slate-700'>
                 If you have any questions or need help getting started with Chikwama, please don't hesitate to <a href="mailto:info@chikwama.net" className='text-[#872A7F]'>reach out to us</a>.

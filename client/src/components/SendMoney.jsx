@@ -73,7 +73,7 @@ export default function SendMoney({open, close, send, cashPoint}) {
       <DialogTitle>Withdraw</DialogTitle>
         <DialogContent>
         <DialogContentText>
-            You are about to withdraw from {cashPoint?.name} cashpoint at the rate 1 DOC to {cashPoint?.buyRate} {cashPoint?.currency} in {cashPoint?.city}.
+            You are about to withdraw from <b>{cashPoint?.name} cashpoint</b> at the rate 1 DOC to {cashPoint?.buyRate} {cashPoint?.currency} in {cashPoint?.city}.
 
             Enter the amount you would like to withdraw below
           </DialogContentText>
@@ -122,6 +122,13 @@ export default function SendMoney({open, close, send, cashPoint}) {
     </div>
   )}
 </div>
+<DialogContentText
+      sx={{ marginTop: 2, fontSize: '0.85rem', color: 'gray', textAlign: 'center' }}
+    >
+      <em>
+        Please note: You must physically meet the cashpoint operator at the specified location to complete this withdrawal.
+      </em>
+    </DialogContentText>
         </DialogContent>
         
         <DialogActions>

@@ -20,15 +20,16 @@ const Home = () => {
     const [walletAddress, setWalletAddress] = useState('')
     const [revenue, setRevenue] = useState(0)
     const [tokenBalance, setTokenBalance] = useState(0)
-    const [tokenPrice, setTokenPrice] = useState(0)
+    const [tokenPrice, setTokenPrice] = useState(0);
+    const [isMetaMaskInstalled, setIsMetaMaskInstalled] = useState(true);
     const navigate = useNavigate();
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const abi = cashPoints.abi;
     const [currentAccount, setCurrentAccount] = useState(null);
     let NumberOfCashPoints;
     const { ethereum } = window;
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
+    const provider = ethereum ? new ethers.providers.Web3Provider(ethereum) : null;
+    const signer = provider ? provider.getSigner() : null;
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
     const [state, setState] = useState({
       open: false,
@@ -55,20 +56,14 @@ const Home = () => {
 
   
     const checkWalletIsConnected = async () => {
-      const network =(await provider.getNetwork()).chainId;
+      if(!provider){
+        
+        setIsMetaMaskInstalled(false);
+        return;
+      }
+    const network =(await provider.getNetwork()).chainId;
     const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
     setWalletAddress(accounts[0]);
-
-    if(!ethereum)
-    {
-      setState({
-        open: true,
-        Transition: Fade,
-      });
-
-      setErrorMessage('Please install the metaamask wallet extension');
-      return;
-    }
 
     if(network != 100)
         {
@@ -135,10 +130,30 @@ const Home = () => {
   useEffect(() => {
     checkWalletIsConnected();
 
+
     
   }, [])
 
-  return (
+
+  const renderMetaMaskPrompt = () => (
+    <div className="flex flex-col items-center justify-center h-screen text-center text-slate-500">
+        <h2 className="text-2xl md:text-3xl font-bold text-red-600">Oops! No MetaMask detected!</h2>
+        <p className="mt-4 text-lg">
+            This is a blockchain app. To experience the *Internet of Value*, you'll need MetaMask installed.  
+            <br />
+            Don't worry, it's not as scary as it sounds!
+        </p>
+        <a
+            href="https://metamask.io/download/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 px-4 py-2 bg-[#872A7F] text-white rounded hover:bg-transparent hover:text-[#872A7F] border border-[#872A7F]"
+        >
+            Install MetaMask
+        </a>
+    </div>
+);
+return isMetaMaskInstalled ? (
     
     <div className='container w-full h-screen text-slate-500'>
     <NavBar walletAddress={walletAddress}/>
@@ -211,7 +226,9 @@ const Home = () => {
       </main>
       <Footer />
     </div>
-  )
+  ): (
+    renderMetaMaskPrompt()
+);
 }
 
 export default Home;
