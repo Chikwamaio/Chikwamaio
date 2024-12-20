@@ -122,25 +122,25 @@ const Home = () => {
       return;
     }
 
-    if(network != 100)
+    if(network != 33)
         {
           try {
             await window.ethereum.request({
               "method": "wallet_addEthereumChain",
               "params": [
                 {
-                  "chainId": "0x64",
-                  "chainName": "Gnosis",
+                  "chainId": "0x21",
+                  "chainName": "Rootstock",
                   "rpcUrls": [
-                    "https://rpc.ankr.com/gnosis"
+                    "http://138.68.104.134:4444"
                   ],
                   "iconUrls": [
                     "https://xdaichain.com/fake/example/url/xdai.svg",
                     "https://xdaichain.com/fake/example/url/xdai.png"
                   ],
                   "nativeCurrency": {
-                    "name": "xDAI",
-                    "symbol": "xDAI",
+                    "name": "RBTC",
+                    "symbol": "RBTC",
                     "decimals": 18
                   },
                   "blockExplorerUrls": [
