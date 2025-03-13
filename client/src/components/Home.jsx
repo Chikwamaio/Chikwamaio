@@ -12,11 +12,12 @@ import Footer from './Footer';
 import NavBar from './NavBar';
 import SendMoney from './SendMoney';
 import { use } from 'chai';
-
+import { renderMetaMaskPrompt } from './InstallMetaMask';
 
 
 
 const Home = () => {
+    const [isMetaMaskInstalled, setIsMetaMaskInstalled] = useState(true);
     const [count, setCount] = useState(0)
     const [openSend, setOpenSend] = useState(false);
     const [daiBalance, setDaiBalance] = useState();
@@ -30,8 +31,8 @@ const Home = () => {
     const [currentAccount, setCurrentAccount] = useState(null);
     let NumberOfCashPoints;
     const { ethereum } = window;
-    const provider = new ethers.providers.Web3Provider(ethereum);
-    const signer = provider.getSigner();
+    const provider = ethereum ? new ethers.providers.Web3Provider(ethereum) : null;
+    const signer = provider?.getSigner();
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
     const [state, setState] = useState({
       open: false,
@@ -59,56 +60,16 @@ const Home = () => {
   };
 
 
-  const sendMoneyHandler = async (toAddress, amount, fee) => {
-    if (!ethers.utils.isAddress(toAddress)) {
-      setState({
-        open: true,
-        Transition: Fade,
-      });
-      setErrorMessage("Invalid address. Please check the recipient address.");
-      return;
-    }
   
-    const balance = await provider.getBalance(currentAccount);
-    const address = toAddress;
-    const amountEther = ethers.utils.parseUnits(amount, "ether");
-    const feeEther = ethers.utils.parseUnits(fee, "ether");
-    const totalCost = amountEther.add(feeEther);
-  
-    if (balance < totalCost) {
-      setState({
-        open: true,
-        Transition: Fade,
-      });
-      setErrorMessage(
-        `You have less than $${ethers.utils.formatEther(
-          totalCost
-        )} in your wallet ${currentAccount}`
-      );
-      return;
-    }
-  
-    try {
-      const sendXdai = await cashPointsContract.send(amountEther, address, {
-        value: ethers.BigNumber.from(totalCost.toString()),
-      });
-  
-      setState({
-        open: true,
-        Transition: Fade,
-      });
-      setErrorMessage(`Transaction successful: ${sendXdai.toString()}`);
-    } catch (error) {
-      setState({
-        open: true,
-        Transition: Fade,
-      });
-      setErrorMessage(`Transaction failed: ${error.message}`);
-    }
-  };
-
   
     const checkWalletIsConnected = async () => {
+
+      if(!provider){
+        
+        setIsMetaMaskInstalled(false);
+        return;
+      }
+
       const network =(await provider.getNetwork()).chainId;
     const accounts = await ethereum.request({ method: 'eth_requestAccounts'});
     setWalletAddress(accounts[0]);
@@ -183,9 +144,12 @@ const Home = () => {
     checkWalletIsConnected();
 
     
-  }, [])
+  }, []);
 
-  return (
+
+
+
+  return isMetaMaskInstalled ? (
     
     <div className='w-full h-screen text-slate-500'>
     <NavBar walletAddress={walletAddress} walletBalance={daiBalance}/>
@@ -255,7 +219,9 @@ const Home = () => {
       </main>
       <Footer className/>
     </div>
-  )
+  ): (
+    renderMetaMaskPrompt()
+);
 }
 
 export default Home;

@@ -23,8 +23,8 @@ export default function SendMoney({open, close, send}) {
   const abi = cashPoints.abi;
 
   const { ethereum } = window;
-  const provider = new ethers.providers.Web3Provider(ethereum);
-  const signer = provider.getSigner();
+  const provider = ethereum ? new ethers.providers.Web3Provider(ethereum) : null;
+  const signer = provider?.getSigner();
   const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
 
   const handleClose = () => {

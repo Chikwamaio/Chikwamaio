@@ -9,6 +9,9 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract CashPoints is ERC20 {
     struct CashPoint {
         string _name; //short Name
+        int256 latitude; // latitude coordinate
+        int256 longitude; // longitude coordinate
+        uint accuracy; // accuracy of the location in meters
         string city;
         string _phoneNumber;
         string _currency;
@@ -65,22 +68,22 @@ contract CashPoints is ERC20 {
         AVAILABLE_TOKENS -= _amount;
     }
 
-    function addCashPoint(string memory name, string memory city, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable nonReentrant {
+    function addCashPoint(string memory name, int lat, int long, uint accuracy, string memory city, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable nonReentrant {
         uint fee = duration * CASHPOINT_FEE;
         require(msg.value == fee, "Please pay the recommended fee");
         require(!cashpoints[msg.sender]._isCashPoint, "Already a cashpoint");
-        cashpoints[msg.sender] = CashPoint(name, city, phone, currency, buy, sell, endtime, true);
+        cashpoints[msg.sender] = CashPoint(name, lat, long, accuracy, city, phone, currency, buy, sell, endtime, true);
         count++;
         keys[count] = msg.sender;
         setPrice();
         emit CreatedCashPoint(msg.sender);
     }
 
-    function updateCashPoint(string memory name, string memory city, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable nonReentrant {
+    function updateCashPoint(string memory name,int lat, int long, uint accuracy, string memory city, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable nonReentrant {
         uint fee = duration * CASHPOINT_FEE;
         require(msg.value == fee, "Please pay the recommended fee");
         require(cashpoints[msg.sender]._isCashPoint, "Not a cashpoint");
-        cashpoints[msg.sender] = CashPoint(name, city, phone, currency, buy, sell, endtime, true);
+        cashpoints[msg.sender] = CashPoint(name, lat, long, accuracy, city, phone, currency, buy, sell, endtime, true);
         setPrice();
         emit UpdatedCashPoint(msg.sender);
     }

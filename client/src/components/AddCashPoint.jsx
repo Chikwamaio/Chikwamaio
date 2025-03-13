@@ -35,8 +35,8 @@ export default function AddCashPoint({open, close, update, add}) {
   const abi = cashPoints.abi;
 
   const { ethereum } = window;
-  const provider = new ethers.providers.Web3Provider(ethereum);
-  const signer = provider.getSigner();
+  const provider = ethereum ? new ethers.providers.Web3Provider(ethereum) : null;
+  const signer = provider?.getSigner();
   const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
 
   const handleClose = () => {
@@ -45,7 +45,7 @@ export default function AddCashPoint({open, close, update, add}) {
 
   const handleAdd = () => {
     handleClose();
-    add(cashPointName,phoneNumber,currency, buyRate, sellRate, duration, feeAmount, latitude, longitude);
+    add(cashPointName,phoneNumber,currency, buyRate, sellRate, duration, feeAmount, latitude, longitude, accuracy);
 
   }
 
@@ -54,7 +54,6 @@ export default function AddCashPoint({open, close, update, add}) {
     setLoading(true);
     const fee = await cashPointsContract.CASHPOINT_FEE();
     let cost = ((parseInt(fee.toString())) * Duration).toString();
-   
     setFee(ethers.utils.formatEther(cost));
     setLoading(false);
 
@@ -76,12 +75,13 @@ export default function AddCashPoint({open, close, update, add}) {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
+        console.log(position.coords)
         setAccuracy(parseInt(position.coords.accuracy))
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
       })
     };
-  }, [])
+  })
 
   return (
     <Dialog onClose={close} open={open}>
