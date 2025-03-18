@@ -36,7 +36,7 @@ const CashPoints = () => {
     const [openEmailModal, setOpenEmailModal] = useState(false);
     const [email, setEmail] = useState('');
     const [location, setLocation] = useState('');
-
+    const [username, setUsername] = useState('');
     const abi = cashPoints.abi;
     const { ethereum } = window;
     const provider = ethereum ? new ethers.providers.Web3Provider(ethereum) : null;
@@ -61,15 +61,16 @@ const CashPoints = () => {
     
         cps.forEach((cp, index) => {
 
-          const lat = parseFloat(ethers.utils.formatEther(cp[2] || "0")); 
-          const long = parseFloat(ethers.utils.formatEther(cp[3] || "0"));
-          const buyRate = parseFloat(ethers.utils.formatEther(cp[7] || "0")).toFixed(2);
-          const sellRate = parseFloat(ethers.utils.formatEther(cp[8] || "0")).toFixed(2);
+          const lat = parseFloat(ethers.utils.formatEther(cp[1] || "0")); 
+          const long = parseFloat(ethers.utils.formatEther(cp[2] || "0"));
+          const buyRate = parseFloat(ethers.utils.formatEther(cp._buy)).toFixed(2);
+          const sellRate = parseFloat(ethers.utils.formatEther(cp._sell)).toFixed(2);
+          const accuracy = parseFloat(ethers.utils.formatEther(cp[3] || "0")); 
 
         const coords= [long, lat];
-
           const CashPoint = new Feature({
             geometry: new Point(fromLonLat(coords)),
+            accuracy,
             name: cp[0],
             address: cp.address,
             phoneNumber: cp[5],
@@ -133,6 +134,7 @@ const CashPoints = () => {
                 sellRate: feature.get('sellRate'),
                 until: feature.get('until'),
                 geometry: [longitude, latitude],
+                accuracy: feature.get('accuracy')
             });
             setCardPosition({
               top: evt.pixel[1],
@@ -152,19 +154,17 @@ const CashPoints = () => {
         spans.forEach((span) => {
           span.addEventListener('click', () => {
             const city = span.textContent; 
-            
             const cp = cps.find((cp) => cp.city.split(',')[0].trim() === city);
-            if (cp && cp[2] !== undefined && cp[3] !== undefined)  {
-              const lat = parseFloat(ethers.utils.formatEther(cp[2] || '0')); 
-              const long = parseFloat(ethers.utils.formatEther(cp[3] || '0'));
-
+            if (cp && cp[1] !== undefined && cp[2] !== undefined)  {
+              const lat = parseFloat(ethers.utils.formatEther(cp[1] || '0')); 
+              const long = parseFloat(ethers.utils.formatEther(cp[2] || '0'));
               const coords = [long, lat];
               const location = new Feature({ geometry: new Point(fromLonLat(coords)) });
               const point = location.getGeometry();
               const size = map.getSize();
               const view = map.getView();
+              view.setZoom(12)
               const coordinates = point?.getCoordinates();
-
               if (coordinates && size) {
                 view.centerOn(coordinates, size, [500, 200]);
 
@@ -181,57 +181,58 @@ const CashPoints = () => {
      
     }, [data]);
 
-    const sendMoneyHandler = async (toAddress, amount, fee) => {
-        if (!ethers.utils.isAddress(toAddress)) {
-          setState({
-            open: true,
-            Transition: Fade,
-          });
-          setErrorMessage("Invalid address. Please check the recipient address.");
-          return;
-        }
+    const sendMoneyHandler = async (amount, fee, address, cashout) => {
+      
+      const balance = ethers.utils.parseUnits(daiBalance, "ether");
+      const amountEther = ethers.utils.parseUnits(amount, "ether");
+      const feeEther = ethers.utils.parseUnits(fee, "ether");
+      const totalCost = amountEther.add(feeEther);
 
-
-        const message = `I just converted my crypto dollars to money I can use here in ${currentCashPoint?.city}, thanks to Chikwama! Check it out at https://chikwama.net or follow @chikwamaio.`;
+      
+      const message = `I just converted my crypto dollars to money I can use here in ${currentCashPoint?.city}, thanks to Chikwama! Check it out at https://chikwama.net or follow @chikwamaio.`;
       setShareMessage(message);
       
-        const balance = await provider.getBalance(currentAccount);
-        const address = toAddress;
-        const amountEther = ethers.utils.parseUnits(amount, "ether");
-        const feeEther = ethers.utils.parseUnits(fee, "ether");
-        const totalCost = amountEther.add(feeEther);
-      
-        if (balance < totalCost) {
-          setState({
-            open: true,
-            Transition: Fade,
-          });
-          setErrorMessage(
-            `You have less than $${ethers.utils.formatEther(
-              totalCost
-            )} in your wallet ${currentAccount}`
-          );
-          return;
+
+      if (balance.lt(totalCost)) {
+        setState({
+          open: true,
+          Transition: Fade,
+        });
+        setErrorMessage(
+          `You have less than $${ethers.utils.formatEther(
+            totalCost
+          )} in your wallet ${smartWalletAddress}`
+        );
+        return;
+      }
+    
+      try {
+        const sendXdai = await cashPointsContract.send(amountEther, address, {
+          value: ethers.BigNumber.from(totalCost.toString()),
+        });
+    
+        setState({
+          open: true,
+          Transition: Fade,
+        });
+        setErrorMessage(`Transaction successful: ${JSON.stringify(sendXdai)}`);
+
+        closeSend();
+        closeCashIn();
+        setCurrentCashPoint(null);
+
+        if(cashout){
+          setOpenSocialModal(true);
         }
-      
-        try {
-          const sendXdai = await cashPointsContract.send(amountEther, address, {
-            value: ethers.BigNumber.from(totalCost.toString()),
-          });
-      
-          setState({
-            open: true,
-            Transition: Fade,
-          });
-          setErrorMessage(`Transaction successful: ${sendXdai.toString()}`);
-        } catch (error) {
-          setState({
-            open: true,
-            Transition: Fade,
-          });
-          setErrorMessage(`Transaction failed: ${error.message}`);
-        }
-      };
+      } catch (error) {
+        setState({
+          open: true,
+          Transition: Fade,
+        });
+        setErrorMessage(`Transaction failed: ${error.message}`);
+      }
+    };
+    
     
 
     useEffect(() => {
@@ -242,7 +243,6 @@ const CashPoints = () => {
         const unique = Array.from(new Set(cities)); 
       
         setUniqueCities(unique);
-        console.log("Updated uniqueCities state:", uniqueCities);
       }, [data, isActive]); 
 
 
@@ -276,7 +276,8 @@ const CashPoints = () => {
       const scaledLat= ethers.utils.parseUnits(lat.toString(), "ether");
       const scaledLong = ethers.utils.parseUnits(long.toString(), "ether");
       const scaledAccuracy = ethers.utils.parseUnits(Accuracy.toString(), "ether");
-      console.log(scaledAccuracy, scaledLat, scaledLong)
+      const buy = ethers.utils.parseUnits(buyRate.toString(), "ether");
+      const sell = ethers.utils.parseUnits(sellRate.toString(), "ether");
       let response = new Array();
       let city;
 
@@ -292,10 +293,9 @@ const CashPoints = () => {
       var requestOptions = {
         method: 'GET',
       };
-      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`, requestOptions);
+      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&result_type=administrative_area_level_2&political&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`, requestOptions);
       response = await res.json();
-      console.log(response)
-      city = response.results[0].address_components[2].long_name + ', ' + response.results[0].address_components[4].long_name;
+      city = response.results[0].formatted_address;
       const cost = ethers.utils.parseUnits(fee, "ether");
 
 
@@ -307,13 +307,13 @@ const CashPoints = () => {
         const IsActive = currentEndtime > now;
         const newEndtime = IsActive ? new Date(currentEndtime.setDate(currentEndtime.getDate() + duration)) : new Date(now.setDate(now.getDate() + duration));
         if(city){
-        const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, newEndtime.toString(), duration, { value: cost});
+        const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, scaledLat, scaledLong, scaledAccuracy, city, phoneNumber, currency, buy, sell, newEndtime.toString(), duration, { value: cost});
 
         setState({
             open: true,
             Transition: Fade,
           });
-          setErrorMessage('You have successfully added a cash point ' + updateCashPoint);
+          setErrorMessage('You have successfully added a cash point ' + JSON.stringify(updateCashPoint));
         return;  
       }
 
@@ -324,19 +324,23 @@ const CashPoints = () => {
       
       
       
-      const addCashPoint = await cashPointsContract.addCashPoint(cashPointName, city, phoneNumber, currency, buyRate, sellRate, endtime.toString(), duration, { value: cost});
+      const addCashPoint = await cashPointsContract.addCashPoint(cashPointName,scaledLat, scaledLong, scaledAccuracy, city, phoneNumber, currency, buy, sell, endtime.toString(), duration, { value: cost});
       
       setState({
         open: true,
         Transition: Fade,
       });
-      setErrorMessage('You have successfully added a cash point ' + addCashPoint);
+      setErrorMessage('You have successfully added a cash point ' + JSON.stringify(addCashPoint));
     };
 
     const getCashPoints = async () => {
         let checkIfRegistered;
+
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        setWalletAddress(accounts[0]);
+
         try {
-           checkIfRegistered = await cashPointsContract.cashpoints(walletAddress.toString());
+           checkIfRegistered = await cashPointsContract.cashpoints(accounts[0]);
             setIsCashPoint(checkIfRegistered._isCashPoint);
     
         } catch (error) {
@@ -352,11 +356,6 @@ const CashPoints = () => {
         if (!ethereum) {
             alert('please install metamask');
         } else {
-
-            
-
-            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-            setWalletAddress(accounts[0]);
 
             const DaiBalance = await provider.getBalance(accounts[0])
             setDaiBalance(ethers.utils.formatEther(DaiBalance));
@@ -384,12 +383,36 @@ const CashPoints = () => {
         }
     };
 
-    
 
+    const handleCashIn = async ()=>{
+      setCurrentCashPoint(null);
+      setOpenCashIn(true);
+      const currentcp = data.find(cp => (cp.address).toLowerCase() === walletAddress);
+      const lat = parseFloat(ethers.utils.formatEther(currentcp[1] || "0")); 
+      const long = parseFloat(ethers.utils.formatEther(currentcp[2] || "0"));
+      const accuracy = parseFloat(ethers.utils.formatEther(currentcp[3] || "0")); 
+      const buyRate = parseFloat(ethers.utils.formatEther(currentcp[7] || "0")).toFixed(2);
+      const sellRate = parseFloat(ethers.utils.formatEther(currentcp[8] || "0")).toFixed(2);
+      const coords = [long, lat];
+
+      
+      setCurrentCashPoint({
+        address: currentcp.address,
+        name: currentcp[0],
+        city: currentcp[4],
+        phoneNumber: currentcp[5],
+        currency: currentcp[6],
+        buyRate: Number(buyRate),
+        sellRate: Number(sellRate),
+        until: currentcp[9],
+        geometry: coords,
+        accuracy
+    });
+    }
     useEffect(() => {
         getCashPoints();
-    }, []);
-
+    }, [currentCashPoint, walletAddress]);
+    console.log(data)
     // Modal to capture user email and location
     const handleEmailModalOpen = () => {
         setOpenEmailModal(true);
@@ -399,9 +422,6 @@ const CashPoints = () => {
         setOpenEmailModal(false);
     };
 
-    const handleSocialClose = ()=>{
-
-    };
 
     const handleEmailSubmit = async () => {
         const scriptURL = emailScriptURL; 
@@ -420,6 +440,11 @@ const CashPoints = () => {
             setOpenEmailModal(false);
         }
     };
+
+    useEffect(() => {
+      const result = data.find(item => (item.address).toLowerCase() === walletAddress);
+      if(result) setUsername(result[0]);
+    },[data])
 
     return isMetaMaskInstalled ? (
         <div className='min-h-screen flex flex-col text-slate-500'>
@@ -486,6 +511,7 @@ const CashPoints = () => {
     <Typography>
       <LocationOnIcon />{' '}
         <span style={{ fontFamily: 'Digital-7, monospace' }}>{currentCashPoint.city}</span>
+        <span>(accurate to {currentCashPoint.accuracy} metres)</span>
     </Typography>
     <Typography variant="body2" color="text.secondary">
       <span>Currency:</span>{' '}

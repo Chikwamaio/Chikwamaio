@@ -50,7 +50,12 @@ const NavBar = ({walletAddress, walletBalance}) => {
   
                 {/* Connect button */}
                 <button
-                  onClick={() => console.log(address??"No wallet connected")}
+                  onClick={() =>  {if (address) {
+                    navigator.clipboard.writeText(address)
+                    return;
+                  } 
+                    console.log("No wallet connected");
+                  }}
                   className="text-white w-[180px] truncate md:mt-0 bg-[#872A7F] py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-fuchsia-700 hover:border hover:border-fuchsia-700 focus:outline-none focus:ring"
                 >
                   {<AccountBalanceWalletIcon className='mb-1 mr-2 ml-0'/>} 

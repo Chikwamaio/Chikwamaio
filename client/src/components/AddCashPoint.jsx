@@ -75,7 +75,6 @@ export default function AddCashPoint({open, close, update, add}) {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
-        console.log(position.coords)
         setAccuracy(parseInt(position.coords.accuracy))
         setLatitude(position.coords.latitude);
         setLongitude(position.coords.longitude);
