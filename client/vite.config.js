@@ -9,10 +9,13 @@ export default defineConfig({
       allow: ['..'],
     },
   },
+  optimizeDeps: {
+    include: ['ol'],
+  },
   build: {
     rollupOptions: {
-      external: ['ol']
-    }
-  },
+      external: ['ol'],
+    },
   plugins: [react()],
+  }
 })
