@@ -7,7 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { ethers } from 'ethers';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 
 
