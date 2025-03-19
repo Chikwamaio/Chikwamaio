@@ -174,9 +174,9 @@ const CashPoints = () => {
               view.setZoom(12)
               const coordinates = point?.getCoordinates();
               if (coordinates && size) {
-                view.centerOn(coordinates, size, [500, 200]);
-
-              }
+                const adjustedOffset = [size[0] / 2, size[1] / 2];
+                view.centerOn(coordinates, size, adjustedOffset);
+            }
             } else {
               console.warn(`City "${city}" not found in data.`);
             }
