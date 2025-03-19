@@ -154,7 +154,8 @@ const CashPoints = () => {
         spans.forEach((span) => {
           span.addEventListener('click', () => {
             const city = span.textContent; 
-            const cp = cps.find((cp) => cp.city.split(',')[0].trim() === city);
+            const sortedCps = cps.sort((a, b) => (a._buy.gt(b._buy) ? -1 : 1));
+            const cp = sortedCps.find((cp) => cp.city.split(',')[0].trim() === city);
             if (cp && cp[1] !== undefined && cp[2] !== undefined)  {
               const lat = parseFloat(ethers.utils.formatEther(cp[1] || '0')); 
               const long = parseFloat(ethers.utils.formatEther(cp[2] || '0'));
@@ -241,7 +242,6 @@ const CashPoints = () => {
           .map((entry) => entry.city.split(",")[0].trim()); 
       
         const unique = Array.from(new Set(cities)); 
-      
         setUniqueCities(unique);
       }, [data, isActive]); 
 
@@ -412,8 +412,7 @@ const CashPoints = () => {
     useEffect(() => {
         getCashPoints();
     }, [currentCashPoint, walletAddress]);
-    console.log(data)
-    // Modal to capture user email and location
+
     const handleEmailModalOpen = () => {
         setOpenEmailModal(true);
     };
@@ -424,22 +423,21 @@ const CashPoints = () => {
 
 
     const handleEmailSubmit = async () => {
-        const scriptURL = emailScriptURL; 
-        try {
-            const response = await fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ email, location }),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            const result = await response.json();
-            console.log(result); // Should log "Success"
-            setOpenEmailModal(false);
-        } catch (error) {
-            console.error('Error submitting email:', error);
-            setOpenEmailModal(false);
-        }
-    };
+      const apiURL = `${import.meta.env.VITE_API_URL}/submit`;
+      try {
+          const response = await fetch(apiURL, {
+              method: 'POST',
+              body: JSON.stringify({ email, location }),
+              headers: { 'Content-Type': 'application/json' },
+          });
+          const result = await response.json();
+          console.log(result); // Should log "Success"
+          setOpenEmailModal(false);
+      } catch (error) {
+          console.error('Error submitting email:', error);
+          setOpenEmailModal(false);
+      }
+  };
 
     useEffect(() => {
       const result = data.find(item => (item.address).toLowerCase() === walletAddress);

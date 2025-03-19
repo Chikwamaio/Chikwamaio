@@ -25,6 +25,7 @@ const Dao = () => {
     const [openWithdrawModal, setOpenWithdrawModal] = useState(false);
     const [tokenBalance, setTokenBalance] = useState(0)
     const [availableTokens, setAvailableTokens] = useState('');
+    const [daiBalance, setDaiBalance] = useState();
     const [state, setState] = useState({
         open: false,
         Transition: Fade,
@@ -106,7 +107,12 @@ const Dao = () => {
           const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
           let cost = ethers.utils.formatEther(newPrice) * tokens;
           const buyTokens = cashPointsContract.buyTokens(tokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
-        
+          setState({
+            open: true,
+            Transition: Fade,
+          });
+    
+          setErrorMessage(`Transaction successful: ${JSON.stringify(buyTokens)}`);
           
     }
 
@@ -125,6 +131,13 @@ const Dao = () => {
 
 
       const withdraw = cashPointsContract.withdraw(tokens);
+      setState({
+        open: true,
+        Transition: Fade,
+      });
+
+      setErrorMessage(`Transaction successful: ${JSON.stringify(withdraw)}`);
+
     };
 
     const checkWalletIsConnected = async () => {
@@ -132,6 +145,8 @@ const Dao = () => {
       setWalletAddress(accounts[0]);
       const balance = await cashPointsContract.balanceOf(accounts[0]);
       setTokenBalance(balance);
+      const DaiBalance = await provider.getBalance(accounts[0])
+      setDaiBalance(ethers.utils.formatEther(DaiBalance));
     }
     
        useEffect(() => {
@@ -140,12 +155,20 @@ const Dao = () => {
 
     return(
         <><div className='min-h-screen flex flex-col text-slate-500'>
-        <NavBar walletAddress={walletAddress}/>
+        <NavBar walletAddress={walletAddress} walletBalance={daiBalance}/>
         <main className=' text-black container mx-auto px-6 pt-16 flex-1 text-left'>
         <h1 className='text-3xl md:text-3xl text-slate-700 lg:text-8xl font-bold uppercase mb-8'>Chikwama DAO</h1>
-        <p>A DAO or decentralised autonomous organisation is a member-owned community without centralized leadership. Created because said members share a common goal. The rules that govern a DAO are encoded as a <Link href='https://github.com/Chikwama-io/ChikwamaWebsite/blob/master/contracts/contracts/Cashpoints.sol'>computer program.</Link></p>
+        <p>A DAO or decentralised autonomous organisation is a member-owned community without centralized leadership. Created because said members share a common goal. The rules that govern a DAO are encoded as a <Link 
+  className="text-[#872A7F]" 
+  color="inherit" 
+  href="https://github.com/Chikwamaio/Chikwamaio/blob/master/contracts/contracts/Cashpoints.sol"
+  target="_blank" 
+  rel="noopener noreferrer"
+>
+  computer program.
+</Link></p>
         <br></br>
-        <p>The chikwama DAO was created to catalyse the creation of a global network of blockchain based digital dollar cashpoints. The original members believe that would be cash point operators can be incentivised to operate cash points by allowing them to <Link onClick={handleOpenBuy}>own a stake in the DAO</Link> and <Link onClick={handleOpenWithdraw}>liquidate</Link> their stake in a permissionless manner. </p>
+        <p>The chikwama DAO was created to catalyse the creation of a global network of blockchain based digital dollar cashpoints. The original members believe that would be cash point operators can be incentivised to operate cash points by allowing them to <Link className='text-[#872A7F] ' color="inherit" component='button' onClick={handleOpenBuy}>own a stake in the DAO</Link> and <Link className='text-[#872A7F] ' color="inherit" component='button' onClick={handleOpenWithdraw}>liquidate</Link> their stake in a permissionless manner. </p>
         {loading&&<CircularProgress sx={{
               position: 'absolute',
               top: 250,

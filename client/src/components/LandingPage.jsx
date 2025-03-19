@@ -27,30 +27,25 @@ const LandingPage = () => {
             button: true,  // Add a flag for showing the button
         },
         {
-            label: "Find a Cashpoint",
+            label: "Check there's a cashpoint near home",
             description: "Go to the cash points page and check if there is a nearby cashpoint where you are from. Chikwama offers cashpoints where you can convert your cryptocurrency to local money.",
             icon: <RoomIcon />,
             image: "/wepik-photo-mode-2022825-154940.png",
         },
         {
-            label: "Buy Bitcoin (BTC)",
-            description: "Get some Bitcoin (BTC). If you don’t already own Bitcoin, buy it from any exchange or platform that supports it.",
-            icon: <AttachMoneyIcon />
-        },
-        {
-            label: "Convert BTC to DOC",
-            description: "Go to Sovryn to convert your Bitcoin (BTC) to Dollar on Chain (DOC). Click this box to visit SOVRYN",
+            label: "Fund your metamask wallet with xDAI",
+            description: "Click on this box to find out where you can buy xDAI",
             icon: <CurrencyExchangeIcon/>,
-            link: "https://sovryn.app/convert?from=BTC&to=DOC"
+            link: "https://docs.gnosischain.com/about/tokens/xdai"
         },
         {
             label: "Send the Value Home",
-            description: "Once you have DOC, you can send the value home",
+            description: "Once you have xDAI in your MetaMask wallet, you can send the value home",
             icon: <FastForwardIcon />
         },
         {
             label: "Pick a Convenient Cashpoint",
-            description: "Tell the people at home to find the cheapest and most convenient Chikwama cashpoint. They can then convert the DOC into money they can use easily.",
+            description: "Tell the people at home to find the cheapest and most convenient Chikwama cashpoint. They can then convert the xDAI into money they can use.",
             icon: <RoomIcon />
         },
     ];
@@ -121,6 +116,10 @@ const LandingPage = () => {
 <div className='bg-blue-100 md:py-12 py-6 px-4 lg:px-32 xl:px-40 '>
             <p className='py-4 text-slate-700'>Why use Chikwama?</p>
             <ul className='list-disc pl-8'>
+            <li className='text-slate-700 flex items-center py-2'>
+        <AttachMoneyIcon className="mr-2 text-yellow-400" aria-label="lowest transaction fees"  />
+        <p><b>Permissionless:</b> Thanks to blockchains and stablecoins, anyone can open a digital dollar account—no permission required.</p>
+    </li>
     <li className='text-slate-700 flex items-center py-2"'>
         <FastForwardIcon className="mr-2 text-yellow-400" aria-label="Crypto remittances powered by bitcoin" />
         <p><b>Fast Transactions:</b> Crypto is one of the fastest ways to send money today. Whether you’re sending funds across the globe or across town, your transactions are completed in minutes, not days.</p>
@@ -131,7 +130,7 @@ const LandingPage = () => {
     </li>
     <li className='text-slate-700 flex items-center py-2'>
         <RoomIcon className="mr-2 text-yellow-400" aria-label="Locate cashpoints/ off ramps for your crypto"  />
-        <p><b>Find Cashpoints:</b> Locate nearby cashpoints where you can convert stablecoins, like Dollar on Chain (DOC), to local currency effortlessly.</p>
+        <p><b>Find Cashpoints:</b> Locate nearby cashpoints where you can convert stablecoins, like xDAI, to local currency effortlessly.</p>
     </li>
     <li className='text-slate-700 flex items-center py-2'>
         <LockIcon className="mr-2 text-yellow-400" aria-label="Your funds are always under your control, your keys your crypto" />

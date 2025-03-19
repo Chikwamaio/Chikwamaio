@@ -163,21 +163,21 @@ export default function AddCashPoint({open, close, update, add}) {
               setSellRate(e.target.value);
             }}
           />
-          <InputLabel>Duration(Days):</InputLabel>
-         <Slider 
-         sx={{ width: 260 }} 
-         defaultValue={30} 
-         step={1} 
-         marks={marks} 
-         min={0} 
-         max={365} 
-         valueLabelDisplay="auto"
-         value={duration} onChange={async(e) => {
-          const Duration = e.target.value;
-          setDuration(Duration);
-          await getCostHandler(Duration);
-        }}
-         />
+          <TextField
+            autoFocus
+            margin="dense"
+            value={duration}
+            id="sellRate"
+            label="Duration"
+            type="number"
+            variant="filled"
+            onChange={async(e) => {
+              const Duration = e.target.value;
+              setDuration(Duration);
+              await getCostHandler(Duration);
+            }}
+          />
+
           <DialogContentText>
            Fee: ${feeAmount}</DialogContentText>
         </DialogContent>
