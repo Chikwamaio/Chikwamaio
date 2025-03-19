@@ -4,7 +4,7 @@ import PieChartIcon from '@mui/icons-material/PieChart';
 import Fade from '@mui/material/Fade';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { ethers } from 'ethers';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import Footer from './Footer';

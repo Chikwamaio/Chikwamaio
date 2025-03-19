@@ -1,19 +1,26 @@
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import PhoneIcon from '@mui/icons-material/Phone';
-import {  Box, Card, CardActions, CardContent, CardHeader, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fade, Link, Stack, TextField, Typography } from '@mui/material';
+import {  
+  Box, Card, CardActions, CardContent, CardHeader, Chip, Dialog, 
+  DialogActions, DialogContent, DialogContentText, DialogTitle, Fade, 
+  Link, Stack, TextField, Typography 
+} from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import { ethers } from 'ethers';
-import { Feature, Map, View } from 'ol';
+import Map from 'ol/Map'; // ✅ Explicit import
+import View from 'ol/View'; // ✅ Explicit import
+import Feature from 'ol/Feature'; // ✅ Explicit import
 import { defaults as defaultControls } from 'ol/control';
-import { Point } from 'ol/geom';
+import Point from 'ol/geom/Point';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
-import 'ol/ol.css';
+import 'ol/ol.css'; // ✅ Keep this for styling
 import { fromLonLat, toLonLat } from 'ol/proj';
 import OSM from 'ol/source/OSM';
 import VectorSource from 'ol/source/Vector';
-import { Icon, Style } from 'ol/style';
+import Icon from 'ol/style/Icon';
+import Style from 'ol/style/Style';
 import { useEffect, useRef, useState } from 'react';
 import cashPoints from '../../../contracts/artifacts/contracts/Cashpoints.sol/CashPoints.json';
 import NavBar from './NavBar';

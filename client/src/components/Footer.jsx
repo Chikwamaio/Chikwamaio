@@ -2,7 +2,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-
+import React from 'react';
 const Footer = () => {
   return (
     <footer className="shadow-md bg-gray-100 border-t flex-col justify-between items-center md:pl-24 md:pr-24 justify-between items-center fixed bottom-0 left-0 w-full z-50">
