@@ -290,6 +290,20 @@ const CashPoints = () => {
       let response = new Array();
       let city;
 
+      const CASHPOINT_FEE = await cashPointsContract.CASHPOINT_FEE();
+      const expectedFee = CASHPOINT_FEE.mul(duration); 
+      const enteredFee = ethers.utils.parseUnits(fee.toString(), "ether"); 
+
+      if (!enteredFee.eq(expectedFee)) {
+          setState({
+              open: true,
+              Transition: Fade,
+          });
+          setErrorMessage(`Incorrect fee amount. Expected: ${ethers.utils.formatEther(expectedFee)} DAI`);
+          return;
+      }
+
+      
       if(fee > daiBalance){
         setState({
             open: true,
@@ -304,7 +318,7 @@ const CashPoints = () => {
       };
       const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&result_type=administrative_area_level_2&political&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`, requestOptions);
       response = await res.json();
-      city = response.results[0].formatted_address;
+      city = response.results[0]?.formatted_address;
       const cost = ethers.utils.parseUnits(fee, "ether");
 
 

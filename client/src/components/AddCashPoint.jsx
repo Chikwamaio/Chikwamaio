@@ -51,9 +51,13 @@ export default function AddCashPoint({open, close, update, add}) {
 
   const getCostHandler = async (Duration) => {
     setLoading(true);
-    const fee = await cashPointsContract.CASHPOINT_FEE();
-    let cost = ((parseInt(fee.toString())) * Duration).toString();
-    setFee(ethers.utils.formatEther(cost));
+    try {
+        const fee = await cashPointsContract.CASHPOINT_FEE(); 
+        const cost = fee.mul(ethers.BigNumber.from(Duration)); 
+        setFee(ethers.utils.formatEther(cost));
+    } catch (error) {
+        console.error("Error calculating cost:", error);
+    }
     setLoading(false);
 
   }
@@ -61,13 +65,19 @@ export default function AddCashPoint({open, close, update, add}) {
 
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        setAccuracy(parseInt(position.coords.accuracy))
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-      })
-    };
-  })
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setAccuracy(parseInt(position.coords.accuracy));
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        },
+        { enableHighAccuracy: true }
+      );
+    }
+  }, []);
 
   return (
     <Dialog onClose={close} open={open}>
@@ -170,7 +180,7 @@ export default function AddCashPoint({open, close, update, add}) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button disabled={ !sellRate || !buyRate && !currency || !phoneNumber || !cashPointName } onClick={handleAdd}>{update?'Update':'Add'}</Button>
+          <Button disabled={ !sellRate || !buyRate || !currency || !phoneNumber || !cashPointName || loading || !feeAmount } onClick={handleAdd}>{update?'Update':'Add'}</Button>
         </DialogActions>
     </Dialog>
   );
