@@ -477,6 +477,7 @@ const CashPoints = () => {
 
     useEffect(() => {
       const result = data.find(item => (item.address).toLowerCase() === walletAddress);
+      setCurrentCpStatus(false);
       if(result){
          setUsername(result[0]);
          const endtime = new Date(result[9])
