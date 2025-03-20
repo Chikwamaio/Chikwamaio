@@ -35,16 +35,16 @@ export default function FormDialog( {withdraw, open, close, balance} ) {
 
   const getPriceHandler = async (tokens) => {
     setLoading(true);
-    try{
-      const tokenPrice = ethers.utils.formatEther(await cashPointsContract.PRICE_PER_TOKEN());
-      let value = (tokens*tokenPrice).toString();
-      setValue(value);
-    }catch(error){
-      console.error("Error calculating cost:", error);
+    try {
+        const tokenPrice = await cashPointsContract.PRICE_PER_TOKEN(); 
+        const totalValue = ethers.BigNumber.from(tokens).mul(tokenPrice); 
+
+        setValue(ethers.utils.formatEther(totalValue));
+    } catch (error) {
+        console.error("Error calculating cost:", error);
     }
     setLoading(false);
-
-  }
+};
 
 
   useEffect(() => {
