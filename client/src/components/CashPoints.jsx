@@ -483,7 +483,7 @@ const CashPoints = () => {
          const hasPaid = endtime > new Date();
          setCurrentCpStatus(hasPaid) 
         }
-    },[data])
+    },[data, walletAddress])
 
     return isMetaMaskInstalled ? (
         <div className='min-h-screen flex flex-col text-slate-500'>
