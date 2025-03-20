@@ -149,7 +149,8 @@ const Dao = () => {
         Transition: Fade,
       });
 
-      setErrorMessage(`Transaction successful: ${JSON.stringify(withdraw)}`);
+      setErrorMessage(`Transaction successful: ${JSON.stringify(withdraw.hash)}`);
+      handleCloseWithdrawModal();
       }catch(e){
         setState({
           open: true,
