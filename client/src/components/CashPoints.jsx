@@ -419,7 +419,7 @@ const CashPoints = () => {
     }
     useEffect(() => {
         getCashPoints();
-    }, [currentCashPoint, walletAddress]);
+    }, [currentCashPoint, ethereum]);
 
     const handleEmailModalOpen = () => {
         setOpenEmailModal(true);
