@@ -16,6 +16,7 @@ import { renderMetaMaskPrompt } from './InstallMetaMask';
 const Home = () => {
     const [isMetaMaskInstalled, setIsMetaMaskInstalled] = useState(true);
     const [count, setCount] = useState(0)
+    const [account, setAccount] = useState();
     const [openSend, setOpenSend] = useState(false);
     const [daiBalance, setDaiBalance] = useState();
     const [walletAddress, setWalletAddress] = useState('')
@@ -56,7 +57,32 @@ const Home = () => {
     });
   };
 
+    useEffect(() => {
+      if (ethereum) {
 
+        const getAccount = async () => {
+          const accounts = await window.ethereum.request({ method: "eth_accounts" });
+          if (accounts.length > 0) {
+            setAccount(accounts[0]);
+          }
+        };
+  
+        getAccount(); 
+
+        ethereum.on("accountsChanged", (accounts) => {
+          if (accounts.length > 0) {
+            setWalletAddress(accounts[0])
+          } else {
+            setAccount(null); 
+          }
+        });
+  
+
+        return () => {
+          ethereum.removeListener("accountsChanged", getAccount);
+        };
+      }
+    }, []);
   
   
     const checkWalletIsConnected = async () => {
@@ -141,7 +167,7 @@ const Home = () => {
     checkWalletIsConnected();
 
     
-  }, []);
+  }, [walletAddress]);
 
 
 

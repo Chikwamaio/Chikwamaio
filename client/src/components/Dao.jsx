@@ -20,7 +20,8 @@ const Dao = () => {
     const signer = provider.getSigner();
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
-    const [walletAddress, setWalletAddress] = useState('')
+    const [walletAddress, setWalletAddress] = useState('');
+    const [account, setAccount] = useState();
     const [openBuyModal, setOpenBuyModal] = useState(false);
     const [openWithdrawModal, setOpenWithdrawModal] = useState(false);
     const [tokenBalance, setTokenBalance] = useState(0)
@@ -52,6 +53,33 @@ const Dao = () => {
     setOpenWithdrawModal(true); 
   
   };
+
+      useEffect(() => {
+        if (ethereum) {
+  
+          const getAccount = async () => {
+            const accounts = await window.ethereum.request({ method: "eth_accounts" });
+            if (accounts.length > 0) {
+              setAccount(accounts[0]);
+            }
+          };
+    
+          getAccount(); 
+  
+          ethereum.on("accountsChanged", (accounts) => {
+            if (accounts.length > 0) {
+              setWalletAddress(accounts[0])
+            } else {
+              setAccount(null); 
+            }
+          });
+    
+  
+          return () => {
+            ethereum.removeListener("accountsChanged", getAccount);
+          };
+        }
+      }, []);
 
   const handleCloseBuyModal = () => { setOpenBuyModal(false); };
   const handleCloseWithdrawModal = () => { setOpenWithdrawModal(false); };
@@ -174,7 +202,7 @@ const Dao = () => {
     
        useEffect(() => {
         checkWalletIsConnected();
-      }, [])
+      }, [walletAddress])
 
     return(
         <><div className='min-h-screen flex flex-col text-slate-500'>

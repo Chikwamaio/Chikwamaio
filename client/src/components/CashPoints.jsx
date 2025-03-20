@@ -38,6 +38,7 @@ const CashPoints = () => {
     const [data, getData] = useState([]);
     const [isActive, setIsActive] = useState([]);
     const [walletAddress, setWalletAddress] = useState('');
+    const [account, setAccount] = useState();
     const [state, setState] = useState({ open: false, Transition: Fade });
     const [errorMessage, setErrorMessage] = useState('');
     const [isMetaMaskInstalled, setIsMetaMaskInstalled] = useState(true);
@@ -391,6 +392,33 @@ const CashPoints = () => {
         }
     };
 
+    useEffect(() => {
+      if (ethereum) {
+
+        const getAccount = async () => {
+          const accounts = await window.ethereum.request({ method: "eth_accounts" });
+          if (accounts.length > 0) {
+            setAccount(accounts[0]);
+          }
+        };
+  
+        getAccount(); 
+
+        ethereum.on("accountsChanged", (accounts) => {
+          if (accounts.length > 0) {
+            setWalletAddress(accounts[0])
+          } else {
+            setAccount(null); 
+          }
+        });
+  
+
+        return () => {
+          ethereum.removeListener("accountsChanged", getAccount);
+        };
+      }
+    }, []);
+
 
     const handleCashIn = async ()=>{
       setCurrentCashPoint(null);
@@ -419,7 +447,7 @@ const CashPoints = () => {
     }
     useEffect(() => {
         getCashPoints();
-    }, [currentCashPoint, ethereum]);
+    }, [currentCashPoint, walletAddress]);
 
     const handleEmailModalOpen = () => {
         setOpenEmailModal(true);
