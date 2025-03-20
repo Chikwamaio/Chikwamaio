@@ -87,7 +87,17 @@ export default function FormDialog( {withdraw, open, close, balance} ) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button disabled={balance<=0 || tokensToWithdraw<=0 || tokensToWithdraw > balance || loading} onClick={handleWithdraw}>WITHDRAW</Button>
+          <Button 
+  disabled={
+    !balance ||
+    !tokensToWithdraw ||
+    Number(tokensToWithdraw) > Number(balance) || 
+    loading
+  } 
+  onClick={handleWithdraw}
+>
+  WITHDRAW
+</Button>
         </DialogActions>
       </Dialog>
     </div>
