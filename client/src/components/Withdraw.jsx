@@ -35,9 +35,13 @@ export default function FormDialog( {withdraw, open, close, balance} ) {
 
   const getPriceHandler = async (tokens) => {
     setLoading(true);
-    const tokenPrice = ethers.utils.formatEther(await cashPointsContract.PRICE_PER_TOKEN());
-    let value = (tokens*tokenPrice).toString();
-    setValue(value);
+    try{
+      const tokenPrice = ethers.utils.formatEther(await cashPointsContract.PRICE_PER_TOKEN());
+      let value = (tokens*tokenPrice).toString();
+      setValue(value);
+    }catch(error){
+      console.error("Error calculating cost:", error);
+    }
     setLoading(false);
 
   }
@@ -83,7 +87,7 @@ export default function FormDialog( {withdraw, open, close, balance} ) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button disabled={balance<=0 || tokensToWithdraw<=0 || tokensToWithdraw > balance} onClick={handleWithdraw}>WITHDRAW</Button>
+          <Button disabled={balance<=0 || tokensToWithdraw<=0 || tokensToWithdraw > balance || loading} onClick={handleWithdraw}>WITHDRAW</Button>
         </DialogActions>
       </Dialog>
     </div>

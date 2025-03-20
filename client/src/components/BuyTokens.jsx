@@ -26,7 +26,6 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
 
   const handleBuy = () => {
     buyTokens(tokensToBuy);
-    console.log(tokensToBuy)
   };
 
   const handleClose = () => {
@@ -36,9 +35,14 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
 
   const getPriceHandler = async (tokens) => {
     setLoading(true);
+    try{
     const tokenPrice = ethers.utils.formatEther(await cashPointsContract.PRICE_PER_TOKEN());
     let value = (tokens*tokenPrice).toString();
     setValue(value);
+    }catch(error)
+    {
+      console.error("Error calculating cost:", error);
+    }
     setLoading(false);
 
   }
@@ -84,7 +88,7 @@ export default function FormDialog( {buyTokens, open, close, available} ) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button disabled={!tokensToBuy} onClick={handleBuy}>BUY</Button>
+          <Button disabled={!tokensToBuy || loading} onClick={handleBuy}>BUY</Button>
         </DialogActions>
       </Dialog>
     </div>
