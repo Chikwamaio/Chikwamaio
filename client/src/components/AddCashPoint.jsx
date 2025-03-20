@@ -8,7 +8,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import Slider from '@mui/material/Slider';
 import TextField from '@mui/material/TextField';
 import { ethers } from 'ethers';
 import * as React from 'react';
@@ -58,18 +57,6 @@ export default function AddCashPoint({open, close, update, add}) {
     setLoading(false);
 
   }
-
-
-  const marks = [
-    {
-      value: 0,
-      label: '0',
-    },
-    {
-      value: 365,
-      label: '365',
-    },
-  ];
 
 
   useEffect(() => {

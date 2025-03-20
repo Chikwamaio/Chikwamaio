@@ -29,6 +29,7 @@ import SendMoney from './SendMoney';
 import CashIn from './CashIn';
 import { SocialMediaModal } from './SocialMediaModal';
 import { renderMetaMaskPrompt } from './InstallMetaMask';
+import { isType } from 'ol/expr/expression';
 
 const CashPoints = () => {
     const [openCreate, setOpenCreate] = useState(false);
@@ -44,12 +45,12 @@ const CashPoints = () => {
     const [email, setEmail] = useState('');
     const [location, setLocation] = useState('');
     const [username, setUsername] = useState('');
+    const [currentCpStatus, setCurrentCpStatus] = useState(false);
     const abi = cashPoints.abi;
     const { ethereum } = window;
     const provider = ethereum ? new ethers.providers.Web3Provider(ethereum) : null;
     const signer = provider?.getSigner();
     const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
-    const emailScriptURL = import.meta.env.VITE_GOOGLE_APPS_SCRIPT_WEB_APP_URL;
     const cashPointsContract = new ethers.Contract(contractAddress, abi, signer);
     const [daiBalance, setDaiBalance] = useState();
     const [uniqueCities, setUniqueCities] = useState([]);
@@ -223,7 +224,7 @@ const CashPoints = () => {
           open: true,
           Transition: Fade,
         });
-        setErrorMessage(`Transaction successful: ${JSON.stringify(sendXdai)}`);
+        setErrorMessage(`Transaction successful: ${JSON.stringify(sendXdai.hash)}`);
 
         closeSend();
         closeCashIn();
@@ -448,7 +449,12 @@ const CashPoints = () => {
 
     useEffect(() => {
       const result = data.find(item => (item.address).toLowerCase() === walletAddress);
-      if(result) setUsername(result[0]);
+      if(result){
+         setUsername(result[0]);
+         const endtime = new Date(result[9])
+         const hasPaid = endtime > new Date();
+         setCurrentCpStatus(hasPaid) 
+        }
     },[data])
 
     return isMetaMaskInstalled ? (
@@ -486,7 +492,7 @@ const CashPoints = () => {
                 <button className="z-100 text-white bg-[#872A7F] mb-2 mt-2 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-[#872A7F] hover:border hover:border-[#872A7F] focus:outline-none focus:ring" onClick={handleOpenCreate}>
                     {isCashPoint?"Update Cashpoint details!":"Become a Cashpoint!"}
                 </button>
-                {isCashPoint &&<button onClick={handleCashIn} className="z-100 text-white bg-[#872A7F] ml-2 mb-2 mt-2 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-[#872A7F] hover:border hover:border-[#872A7F] focus:outline-none focus:ring">Cash In!</button>}
+                {currentCpStatus &&<button onClick={handleCashIn} className="z-100 text-white bg-[#872A7F] ml-2 mb-2 mt-2 py-2 px-5 rounded drop-shadow-xl border border-transparent hover:bg-transparent hover:text-[#872A7F] hover:border hover:border-[#872A7F] focus:outline-none focus:ring">Cash In!</button>}
             </div>
 {currentCashPoint && cardPosition && (
   <Card 

@@ -106,17 +106,30 @@ const Dao = () => {
 
           const newPrice = await cashPointsContract.PRICE_PER_TOKEN();
           let cost = ethers.utils.formatEther(newPrice) * tokens;
-          const buyTokens = cashPointsContract.buyTokens(tokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
-          setState({
-            open: true,
-            Transition: Fade,
-          });
-    
-          setErrorMessage(`Transaction successful: ${JSON.stringify(buyTokens)}`);
+
+          try{
+            const buyTokens = await cashPointsContract.buyTokens(tokens, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
+            setState({
+              open: true,
+              Transition: Fade,
+            });
+      
+            setErrorMessage(`Transaction successful: ${JSON.stringify(buyTokens.hash)}`);
+            handleCloseBuyModal();
+          }catch(e){
+
+            setState({
+              open: true,
+              Transition: Fade,
+            });
+      
+            setErrorMessage(`Transaction failed: ${e.message}`);
+          }
+          
           
     }
 
-    const withdrawHandler = (tokens) => {
+    const withdrawHandler = async (tokens) => {
 
       if(tokens % 1 != 0 )
           {
@@ -129,14 +142,23 @@ const Dao = () => {
             return;
           }
 
-
-      const withdraw = cashPointsContract.withdraw(tokens);
+      try{
+        const withdraw = await cashPointsContract.withdraw(tokens);
       setState({
         open: true,
         Transition: Fade,
       });
 
       setErrorMessage(`Transaction successful: ${JSON.stringify(withdraw)}`);
+      }catch(e){
+        setState({
+          open: true,
+          Transition: Fade,
+        });
+  
+        setErrorMessage(`Transaction failed: ${e.message}`);
+      }
+      
 
     };
 
