@@ -53,7 +53,7 @@ const Dao = () => {
   
   };
 
-  const handleCloseBuyModal = () => {setLoading(true); setOpenBuyModal(false); setLoading(false)};
+  const handleCloseBuyModal = () => { setOpenBuyModal(false); };
   const handleCloseWithdrawModal = () => { setOpenWithdrawModal(false); };
   const buyTokensHandler = async (tokens) => {
         const balance = await provider.getBalance(contractAddress);
