@@ -79,7 +79,7 @@ const Home = () => {
   
 
         return () => {
-          ethereum.removeListener("accountsChanged", getAccount);
+          ethereum.removeListener("accountsChanged", ethereum.on);
         };
       }
     }, []);
