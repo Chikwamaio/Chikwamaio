@@ -29,7 +29,7 @@ import SendMoney from './SendMoney';
 import CashIn from './CashIn';
 import { SocialMediaModal } from './SocialMediaModal';
 import { renderMetaMaskPrompt } from './InstallMetaMask';
-import { isType } from 'ol/expr/expression';
+import { fetchServerTime } from '../utils/getTime';
 
 const CashPoints = () => {
     const [openCreate, setOpenCreate] = useState(false);
@@ -62,6 +62,18 @@ const CashPoints = () => {
     const [openCashIn, setOpenCashIn] = useState(false);
 
     const mapRef = useRef(null);
+
+    const [serverTime, setServerTime] = useState(null);
+
+    useEffect(() => {
+        const getTime = async () => {
+            const time = await fetchServerTime();
+            setServerTime(time);
+        };
+        getTime();
+    }, []);
+
+
     useEffect(() => {
 
         const vectorSource = new VectorSource();
@@ -280,8 +292,8 @@ const CashPoints = () => {
       };
 
     const createCashPointHandler = async (cashPointName, phoneNumber, currency, buyRate, sellRate, duration, fee, lat, long, Accuracy) => {
-      const now = new Date();
-      const endtime =  new Date(now.setDate(now.getDate() + duration));
+      const now = serverTime;
+      const endtime = ethers.BigNumber.from(now + (Number(duration) * 24 * 60 * 60));
       const scaledLat= ethers.utils.parseUnits(lat.toString(), "ether");
       const scaledLong = ethers.utils.parseUnits(long.toString(), "ether");
       const scaledAccuracy = ethers.utils.parseUnits(Accuracy.toString(), "ether");
@@ -316,44 +328,93 @@ const CashPoints = () => {
       var requestOptions = {
         method: 'GET',
       };
-      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&result_type=administrative_area_level_2&political&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`, requestOptions);
-      response = await res.json();
-      city = response.results[0]?.formatted_address;
-      const cost = ethers.utils.parseUnits(fee, "ether");
 
+      try {
+        const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&result_type=administrative_area_level_2&political&key=${import.meta.env.VITE_GOOGLE_MAPS_KEY}`, requestOptions);
+        response = await res.json();
+        city = response.results[0]?.formatted_address;
+        const cost = ethers.utils.parseUnits(fee, "ether");
+        
+  
+        if (isCashPoint) {
+          try {
+              const CashPoint = await cashPointsContract.getCashPoint(walletAddress);
+              const currentEndtime = CashPoint._endTime;
 
-      if(isCashPoint){  
-
-        const CashPoint = await cashPointsContract.getCashPoint(walletAddress);
-        const currentEndtime = new Date(Date.parse(CashPoint._endTime));
-        const now = new Date()
-        const IsActive = currentEndtime > now;
-        const newEndtime = IsActive ? new Date(currentEndtime.setDate(currentEndtime.getDate() + duration)) : new Date(now.setDate(now.getDate() + duration));
-        if(city){
-        const updateCashPoint = await cashPointsContract.updateCashPoint(cashPointName, scaledLat, scaledLong, scaledAccuracy, city, phoneNumber, currency, buy, sell, newEndtime.toString(), duration, { value: cost});
-
-        setState({
+              const IsActive = currentEndtime.gt(now);
+      
+              const durationInSeconds = ethers.BigNumber.from(Number(duration) * 24 * 60 * 60);
+              const newEndtime = IsActive ? currentEndtime.add(durationInSeconds) : endtime;
+      
+              if (city) {
+                  try {
+                      const updateCashPoint = await cashPointsContract.updateCashPoint(
+                          cashPointName, 
+                          scaledLat, 
+                          scaledLong, 
+                          scaledAccuracy, 
+                          city, 
+                          phoneNumber, 
+                          currency, 
+                          buy, 
+                          sell, 
+                          newEndtime, 
+                          duration, 
+                          { value: cost, 
+                            gasLimit: ethers.utils.parseUnits("100000", "wei") }
+                      );
+      
+                      setState({
+                          open: true,
+                          Transition: Fade,
+                      });
+      
+                      setErrorMessage(`You have successfully updated ${cashPointName} cash point. Tx Hash: ${updateCashPoint.hash}`);
+                      return;
+                  } catch (error) {
+                      console.error("Error updating cash point:", error);
+                      setState({
+                          open: true,
+                          Transition: Fade,
+                      });
+                      setErrorMessage(`Failed to update ${cashPointName} cash point: ${error.message}`);
+                  }
+              }
+          } catch (error) {
+              console.error("Error fetching cash point:", error);
+              setErrorMessage("Error fetching cash point data. Please try again.");
+          }
+          return;
+      }
+        
+        
+        
+        try {
+          const addCashPoint = await cashPointsContract.addCashPoint(cashPointName,scaledLat, scaledLong, scaledAccuracy, city, phoneNumber, currency, buy, sell, endtime, duration, { value: cost});
+        
+          setState({
             open: true,
             Transition: Fade,
           });
-          setErrorMessage('You have successfully added a cash point ' + JSON.stringify(updateCashPoint));
-        return;  
-      }
+          setErrorMessage('You have successfully added a cash point ' + JSON.stringify(addCashPoint.hash));
+        } catch (error) {
+          setState({
+            open: true,
+            Transition: Fade,
+              });
+            setErrorMessage(`Failed to add new cash point ${error.message}`);
+        }
 
-      console.log('failed to access your location');
-        return;
+        getCashPoints();
+      } catch (error) {
+        setState({
+          open: true,
+          Transition: Fade,
+            });
+          setErrorMessage(`Failed to add new cash point ${error.message}`);
       }
-      
-      
-      
-      
-      const addCashPoint = await cashPointsContract.addCashPoint(cashPointName,scaledLat, scaledLong, scaledAccuracy, city, phoneNumber, currency, buy, sell, endtime.toString(), duration, { value: cost});
-      
-      setState({
-        open: true,
-        Transition: Fade,
-      });
-      setErrorMessage('You have successfully added a cash point ' + JSON.stringify(addCashPoint));
+  
+
     };
 
     const getCashPoints = async () => {
@@ -389,16 +450,17 @@ const CashPoints = () => {
             let registeredCashPoints = [];
             let active = [];
             for (let i = 1; i <= count; i++) {
-     
-                let CashPointAddress = await cashPointsContract.keys(i);
-                let CashPoint = await cashPointsContract.getCashPoint(CashPointAddress);
-                let now = new Date();
-                let cpDate = new Date(CashPoint._endTime);
+
+                const CashPointAddress = await cashPointsContract.keys(i);
+                const CashPoint = await cashPointsContract.getCashPoint(CashPointAddress);
+                const now = new Date(serverTime);
+                const cpDate = new Date(CashPoint._endTime);
                 active.push(cpDate >= now);
                 registeredCashPoints.push({
                   ...CashPoint,
                   address: CashPointAddress,
               });
+              console.log(registeredCashPoints)
             }
             setIsActive(active);
             getData(registeredCashPoints);
@@ -510,7 +572,7 @@ const CashPoints = () => {
       }}
       open={state.open}
         onClose={handleClose}
-        autoHideDuration={3000}
+        autoHideDuration={5000}
         TransitionComponent={state.Transition}
         message={errorMessage}
         key={state.Transition.name}>

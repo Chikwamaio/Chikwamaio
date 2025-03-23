@@ -154,13 +154,13 @@ describe("Cashpoints", function () {
       const buy = ethers.utils.parseUnits("1000", "ether");
       const sell = ethers.utils.parseUnits("1025", "ether"); 
       const now = new Date();
-      const endtime =  new Date(now.setDate(now.getDate() + duration));
+      const endtime = Math.floor(new Date().getTime() / 1000); // Unix timestamp
+      const newEndTime = endtime + duration * 24 * 60 * 60;
       const fee = await cashpoints.CASHPOINT_FEE();
       let cost = ethers.utils.formatEther(fee) * duration;
-      const addCashPoint = cashpoints.connect(addr2).addCashPoint(name, latitude, longitude, accuracy, city, phone, currency, buy, sell, endtime.toString(), duration, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
+      const addCashPoint = cashpoints.connect(addr2).addCashPoint(name, latitude, longitude, accuracy, city, phone, currency, buy, sell, endtime, duration, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
       await expect(addCashPoint).to.emit(cashpoints, "CreatedCashPoint").withArgs(addr2.address);
-      const newEndTime =  new Date(endtime.setDate(endtime.getDate() + duration));
-      const updateCashPoint = cashpoints.connect(addr2).updateCashPoint(name, latitude, longitude, accuracy, city, phone, currency, buy, sell, newEndTime.toString(), 0, { value: ethers.utils.parseUnits((0).toString(), "ether")});
+      const updateCashPoint = cashpoints.connect(addr2).updateCashPoint(name, latitude, longitude, accuracy, city, phone, currency, buy, sell, newEndTime, 0, { value: ethers.utils.parseUnits((0).toString(), "ether")});
       await expect(updateCashPoint).to.emit(cashpoints, "UpdatedCashPoint").withArgs(addr2.address);
       //console.log(await cashpoints.getCashPoint(addr2.address));
       // await expect(addCashPoint).to.changeEtherBalance(

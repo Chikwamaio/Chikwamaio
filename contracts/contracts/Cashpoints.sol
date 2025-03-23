@@ -17,7 +17,7 @@ contract CashPoints is ERC20 {
         string _currency;
         uint _buy; //local currency to usd buy rate
         uint _sell; //local currency to usd sell rate
-        string _endTime; //when time as cashpoint will expire
+        uint _endTime; //when time as cashpoint will expire
         bool _isCashPoint;
     }
 
@@ -68,7 +68,7 @@ contract CashPoints is ERC20 {
         AVAILABLE_TOKENS -= _amount;
     }
 
-    function addCashPoint(string memory name, int lat, int long, uint accuracy, string memory city, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable nonReentrant {
+    function addCashPoint(string memory name, int lat, int long, uint accuracy, string memory city, string memory phone, string memory currency, uint buy, uint sell, uint endtime, uint duration) external payable nonReentrant {
         uint fee = duration * CASHPOINT_FEE;
         require(msg.value == fee, "Please pay the recommended fee");
         require(!cashpoints[msg.sender]._isCashPoint, "Already a cashpoint");
@@ -79,7 +79,7 @@ contract CashPoints is ERC20 {
         emit CreatedCashPoint(msg.sender);
     }
 
-    function updateCashPoint(string memory name,int lat, int long, uint accuracy, string memory city, string memory phone, string memory currency, uint buy, uint sell, string memory endtime, uint duration) external payable nonReentrant {
+    function updateCashPoint(string memory name,int lat, int long, uint accuracy, string memory city, string memory phone, string memory currency, uint buy, uint sell, uint endtime, uint duration) external payable nonReentrant {
         uint fee = duration * CASHPOINT_FEE;
         require(msg.value == fee, "Please pay the recommended fee");
         require(cashpoints[msg.sender]._isCashPoint, "Not a cashpoint");
