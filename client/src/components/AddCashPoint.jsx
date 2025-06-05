@@ -50,10 +50,16 @@ export default function AddCashPoint({open, close, update, add}) {
 
 
   const getCostHandler = async (Duration) => {
+    if (!Duration || isNaN(Duration)) {
+      console.error("Invalid Duration:", Duration);
+      return;
+  }
+  
     setLoading(true);
     try {
         const fee = await cashPointsContract.CASHPOINT_FEE(); 
         const cost = fee.mul(ethers.BigNumber.from(Duration)); 
+        console.log(ethers.utils.formatEther(cost))
         setFee(ethers.utils.formatEther(cost));
     } catch (error) {
         console.error("Error calculating cost:", error);
