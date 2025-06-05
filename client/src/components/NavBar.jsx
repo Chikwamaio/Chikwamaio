@@ -4,10 +4,11 @@ import IconButton from '@mui/material/IconButton';
 import React, { useState } from 'react';
 import chikwamaLogo from '../assets/Icon100.png';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { useNavigate } from "react-router-dom";
 
 const NavBar = ({walletAddress, walletBalance}) => {
   let [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
   const address = walletAddress;
   const tokenBalance = Number(walletBalance).toFixed(2);
   const handleOpenMenu = () =>
@@ -20,7 +21,7 @@ const NavBar = ({walletAddress, walletBalance}) => {
         <div className="bg-white shadow-md md:pl-24 md:pr-24 fixed top-0 left-0 w-full z-50">
           <div className="md:flex items-center justify-between bg-white py-4 md:px-2 px-2">
             <div onClick={navigate('/Home')}>
-
+<a>
                 <span className="mr-1 pt-2">
                   <img
                     className="h-10 inline"
@@ -28,8 +29,8 @@ const NavBar = ({walletAddress, walletBalance}) => {
                     alt="Chikwama Logo"
                   />
                 </span>
-                Chikwama
-     
+                CHIKWAMA
+                </a>
             </div>
             <div className="text-3xl absolute right-8 top-4 cursor-pointer">
               <span className="text-3xl cursor-pointer md:hidden block inline">
