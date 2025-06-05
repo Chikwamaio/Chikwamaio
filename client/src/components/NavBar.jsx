@@ -19,8 +19,8 @@ const NavBar = ({walletAddress, walletBalance}) => {
       <>
         <div className="bg-white shadow-md md:pl-24 md:pr-24 fixed top-0 left-0 w-full z-50">
           <div className="md:flex items-center justify-between bg-white py-4 md:px-2 px-2">
-            <div>
-              <a href="/Home" className="cursor-pointer uppercase">
+            <div onClick={navigate('/Home')}>
+
                 <span className="mr-1 pt-2">
                   <img
                     className="h-10 inline"
@@ -29,7 +29,7 @@ const NavBar = ({walletAddress, walletBalance}) => {
                   />
                 </span>
                 Chikwama
-              </a>
+     
             </div>
             <div className="text-3xl absolute right-8 top-4 cursor-pointer">
               <span className="text-3xl cursor-pointer md:hidden block inline">
@@ -40,8 +40,8 @@ const NavBar = ({walletAddress, walletBalance}) => {
             </div>
             <div>
               <ul className={`md:flex md:items-center md:pb-0 pb-12 absolute md:static bg-white md:z-auto z-[-1] left-0 w-full md:w-auto md:pl-0 pl-9 md:pt-0 pt-6 transition-all duration-500 ease-in ${menuOpen ? 'top-20 opacity-100' : 'hidden'}`}>
-                <li className="cursor-pointer md:mt-5 mt-2 mr-3 hover:text-fuchsia-700"><a href='/cashpoints'>Cashpoints</a></li>
-                <li className="cursor-pointer md:mt-5 mt-2 mr-3 hover:text-fuchsia-700"><a href='/dao'>DAO</a></li>
+                <li className="cursor-pointer md:mt-5 mt-2 mr-3 hover:text-fuchsia-700" onClick={navigate('/Cashpoints')}><a href=''>Cashpoints</a></li>
+                <li className="cursor-pointer md:mt-5 mt-2 mr-3 hover:text-fuchsia-700" onClick={navigate('/Dao')}><a href=''>DAO</a></li>
                 <div className='w-fit '>
                 {/* Token balance displayed here */}
                 <li className="cursor-pointer md:mt-0 mt-2 mr-3 text-yellow-400" style={{ fontFamily: 'Digital-7, monospace' }}>
