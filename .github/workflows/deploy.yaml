@@ -32,6 +32,8 @@ jobs:
         npm ci
 
     - name: Build
+      env: 
+        VITE_CONTRACT_ADDRESS: ${{ secrets.VITE_CONTRACT_ADDRESS }}
       run: |
         cd client
         npm run build
