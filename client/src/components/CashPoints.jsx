@@ -292,8 +292,9 @@ const CashPoints = () => {
       };
 
     const createCashPointHandler = async (cashPointName, phoneNumber, currency, buyRate, sellRate, duration, fee, lat, long, Accuracy) => {
-      const now = serverTime;
-      const endtime = ethers.BigNumber.from(now + (Number(duration) * 24 * 60 * 60));
+      const now = ethers.BigNumber.from(serverTime);
+      const durationInSeconds = ethers.BigNumber.from(duration * 24 * 60 * 60);
+      const endtime = now.add(durationInSeconds);
       const scaledLat= ethers.utils.parseUnits(lat.toString(), "ether");
       const scaledLong = ethers.utils.parseUnits(long.toString(), "ether");
       const scaledAccuracy = ethers.utils.parseUnits(Accuracy.toString(), "ether");
@@ -342,8 +343,7 @@ const CashPoints = () => {
               const currentEndtime = CashPoint._endTime;
 
               const IsActive = currentEndtime.gt(now);
-      
-              const durationInSeconds = ethers.BigNumber.from(Number(duration) * 24 * 60 * 60);
+
               const newEndtime = IsActive ? currentEndtime.add(durationInSeconds) : endtime;
       
               if (city) {
@@ -360,8 +360,7 @@ const CashPoints = () => {
                           sell, 
                           newEndtime, 
                           duration, 
-                          { value: cost, 
-                            gasLimit: ethers.utils.parseUnits("100000", "wei") }
+                          { value: cost}
                       );
       
                       setState({
@@ -446,12 +445,13 @@ const CashPoints = () => {
 
             let NumberOfCashPointsTXN = await cashPointsContract.count();
             let count = NumberOfCashPointsTXN.toNumber();
-
+            console.log(count)
             let registeredCashPoints = [];
             let active = [];
             for (let i = 1; i <= count; i++) {
 
                 const CashPointAddress = await cashPointsContract.keys(i);
+                console.log(CashPointAddress)
                 const CashPoint = await cashPointsContract.getCashPoint(CashPointAddress);
                 const now = new Date(serverTime);
                 const cpDate = new Date(CashPoint._endTime);

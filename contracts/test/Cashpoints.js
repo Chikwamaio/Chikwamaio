@@ -141,33 +141,49 @@ describe("Cashpoints", function () {
     it("Should let user create and update a cashpoint", async function () {
       const { cashpoints, owner, addr1, addr2, initialSupply } = await loadFixture(deployCashpointsContract);
       const amount = ethers.utils.parseUnits("10", "ether");
-      
+  
       await addr1.sendTransaction({ to: cashpoints.address, value: amount });
-      const duration = 10;
+  
+      const duration = 10; // In days
+      const durationInSeconds = ethers.BigNumber.from(duration * 24 * 60 * 60); // Convert days to seconds
       const name = 'Alpha';
-      const latitude = ethers.utils.parseUnits("-15.7801", "ether");
-      const longitude = ethers.utils.parseUnits("35.0190", "ether");
+      const latitude = ethers.utils.parseEther("-15.7801");  // Avoid parseUnits
+      const longitude = ethers.utils.parseEther("35.0190");
       const accuracy = 50;
-      const city = 'blantyre'
-      const phone = ethers.utils.parseUnits("0996971997", "ether");
+      const city = 'blantyre';
+      const phone = "0996971997"; // Keep as string
       const currency = 'MWK, Malawi Kwacha';
-      const buy = ethers.utils.parseUnits("1000", "ether");
-      const sell = ethers.utils.parseUnits("1025", "ether"); 
-      const now = new Date();
-      const endtime = Math.floor(new Date().getTime() / 1000); // Unix timestamp
-      const newEndTime = endtime + duration * 24 * 60 * 60;
+      const buy = ethers.utils.parseEther("1000");
+      const sell = ethers.utils.parseEther("1025"); 
+  
+      const now = ethers.BigNumber.from(Math.floor(Date.now() / 1000)); // Convert now to BigNumber
+      const endtime = now.add(durationInSeconds); // Add duration in seconds
+  
       const fee = await cashpoints.CASHPOINT_FEE();
-      let cost = ethers.utils.formatEther(fee) * duration;
-      const addCashPoint = cashpoints.connect(addr2).addCashPoint(name, latitude, longitude, accuracy, city, phone, currency, buy, sell, endtime, duration, { value: ethers.utils.parseUnits(cost.toString(), "ether")});
+      let cost = fee.mul(duration); // Multiply as BigNumber
+      const addCashPoint = await cashpoints.connect(addr2).addCashPoint(
+          name, latitude, longitude, accuracy, city, phone, currency, buy, sell, endtime, duration, 
+          { value: cost }
+      );
       await expect(addCashPoint).to.emit(cashpoints, "CreatedCashPoint").withArgs(addr2.address);
-      const updateCashPoint = cashpoints.connect(addr2).updateCashPoint(name, latitude, longitude, accuracy, city, phone, currency, buy, sell, newEndTime, 0, { value: ethers.utils.parseUnits((0).toString(), "ether")});
+  
+      const thisCp = await cashpoints.connect(addr2).getCashPoint(addr2.address);
+      const currentEndtime = thisCp._endTime; // BigNumber
+      const newEndTime = currentEndtime.add(durationInSeconds); // Add duration as BigNumber
+  
+      const updateCashPoint = await cashpoints.connect(addr2).updateCashPoint(
+          name, latitude, longitude, accuracy, city, phone, currency, buy, sell, newEndTime, duration, 
+          { value: cost }
+      );
+  
       await expect(updateCashPoint).to.emit(cashpoints, "UpdatedCashPoint").withArgs(addr2.address);
-      //console.log(await cashpoints.getCashPoint(addr2.address));
-      // await expect(addCashPoint).to.changeEtherBalance(
-      //   cashpoints,
-      //   cost
-      // );
-    });
+      
+      const Cp = await cashpoints.connect(addr2).getCashPoint(addr2.address);
+      const updatedEndtime = Cp._endTime;
+      const diff = updatedEndtime.sub(currentEndtime); 
+
+      await expect(diff.eq(durationInSeconds)).to.be.true;
+  });
 
     it("Should let users route transfers through the contract for a fee", async function () {
       const { cashpoints, owner, addr1, addr2, initialSupply } = await loadFixture(deployCashpointsContract);

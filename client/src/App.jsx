@@ -1,5 +1,5 @@
 import {
-  BrowserRouter,
+  HashRouter,
   Route,
   Routes,
 } from "react-router-dom";
@@ -13,7 +13,7 @@ import React from "react";
 
 function App() {
   return ( <>
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path='/Landing' element={<LandingPage/>}></Route>
         <Route path='/Home' element={<Home />}>
@@ -25,7 +25,7 @@ function App() {
           <Route path='*'  element={<LandingPage />}>
           </Route>
           </Routes>
-    </BrowserRouter> 
+    </HashRouter> 
     </>);
 }
 
